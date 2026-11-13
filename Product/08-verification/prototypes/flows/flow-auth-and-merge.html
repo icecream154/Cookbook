@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>PROTO-FLOW-AUTH · 受限操作拦截→登录自动接续与档案合并动线</title>
+  <link rel="stylesheet" href="../shared/wireframe.css" />
+</head>
+<body>
+  <header class="wb-bar" id="topBar"></header>
+  <div class="wb-stage" id="stage" data-vp="mobile">
+    <div class="shell" id="shell" data-vp="mobile"></div>
+  </div>
+  <script src="../shared/mock-data.js"></script>
+  <script>
+    // Cross-page state machine matching FLOW-AUTH-02
+    const S = { vp: 'mobile', step: 'F1_GuestBrowse', favDone: false, activeProfile: '本地草稿：1人食 · 不吃辣' };
+    const STEPS = [
+      { id: 'F1_GuestBrowse', label: '节点1: 游客浏览菜谱详情' },
+      { id: 'F2_AuthIntercept', label: '节点2: 点收藏唤起认证框(挂起意图)' },
+      { id: 'F3_ConflictMerge', label: '节点3: 双端饮食档案冲突二选一' },
+      { id: 'F4_AutoResumed', label: '节点4: 自动完成收藏(零二次点击)' }
+    ];
+    window.setStep = (id) => {
+      S.step = id;
+      S.favDone = id === 'F4_AutoResumed';
+      draw();
+    };
+    window.setVp = (vp) => { S.vp = vp; draw(); };
+    window.resolveMerge = (choice) => {
+      S.activeProfile = choice === 'local' ? '已采用本地新偏好上云 (1人食)' : '已恢复云端旧档案 (三口之家)';
+      S.favDone = true;
+      S.step = 'F4_AutoResumed';
+      draw();
+    };
+
+    function draw() {
+      document.getElementById('topBar').innerHTML = WB.renderTopBar({
+        protoId: 'PROTO-FLOW-AUTH',
+        specHref: '../../../04-ia-and-flows/flows/auth-and-onboarding.md',
+        specLabel: 'FLOW-AUTH-02 / PAT-AuthResume',
+        states: STEPS, activeState: S.step, onState: 'setStep', vp: S.vp, onVp: 'setVp'
+      });
+      document.getElementById('stage').setAttribute('data-vp', S.vp);
+      const sh = document.getElementById('shell');
+      sh.setAttribute('data-vp', S.vp);
+
+      let modal = '';
+      if (S.step === 'F2_AuthIntercept') {
+        modal = `
+          <div class="modal-mask"><div class="sheet-box">
+            <div class="sheet-hd"><span>PAGE-COMM-02 · 快捷登录拦截</span><button onclick="setStep('F1_GuestBrowse')">✕ 取消回退</button></div>
+            <div class="sheet-bd">
+              <div class="banner blue">📌 已暂存 pendingAction = FAVORITE('经典慢炖番茄牛腩煲')</div>
+              <div class="card">手机号：138 **** 8820（老账号，云端存有三口之家旧档案）</div>
+              <div class="card">验证码：829410</div>
+            </div>
+            <div class="sheet-ft"><button class="btn btn-primary" style="width:100%;" onclick="setStep('F3_ConflictMerge')">验证通过 → 进入档案冲突检测</button></div>
+          </div></div>`;
+      } else if (S.step === 'F3_ConflictMerge') {
+        modal = `
+          <div class="modal-mask"><div class="sheet-box">
+            <div class="sheet-hd"><span>RULE-SYNC-02 · 档案冲突裁决</span></div>
+            <div class="sheet-bd">
+              <div class="card" style="border-color:#fb923c;background:#fff7ed;"><strong>本地刚设的草稿</strong><div class="h-sub">1人食 · 不吃辣</div></div>
+              <div class="card"><strong>账号云端原有档案</strong><div class="h-sub">三口之家 · 微辣 · 忌香菜</div></div>
+            </div>
+            <div class="sheet-ft">
+              <button class="btn" style="flex:1;" onclick="resolveMerge('cloud')">恢复云端旧档案</button>
+              <button class="btn btn-primary" style="flex:1;" onclick="resolveMerge('local')">保留本地新草稿</button>
+            </div>
+          </div></div>`;
+      }
+
+      sh.innerHTML = `
+        <main class="shell-main">
+          <div class="wrap">
+            <div class="banner ${S.favDone ? 'blue' : ''}">
+              <div>
+                <strong>当前身份状态</strong>：${S.favDone ? '✅ 已登录食客_林小厨' : '👤 未登录游客'}<br/>
+                <span class="h-sub">当前生效档案：${S.activeProfile}</span>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="h-sub" style="margin-bottom:6px;">[宿主页面切片：PAGE-COOK-01 菜谱详情页]</div>
+              <div class="h-title">🥘 经典慢炖番茄牛腩煲</div>
+              <p class="h-sub" style="margin:6px 0 14px;">请点击下方收藏按钮，验证游客拦截 → 冲突裁决 → 原位自动点亮红心的完整跨页闭环：</p>
+              <button class="btn ${S.favDone ? 'btn-primary' : ''}" style="width:100%;padding:12px;font-size:14px;" onclick="if(!S.favDone) setStep('F2_AuthIntercept')">
+                ${S.favDone ? '♥ 已自动完成收藏（零二次点击！）' : '♡ 点击收藏这道菜（当前未登录，将触发拦截）'}
+              </button>
+            </div>
+          </div>
+          ${modal}
+          ${S.favDone ? `<div class="snackbar"><span>✅ 登录并裁决成功！已自动为你收藏「经典慢炖番茄牛腩煲」</span></div>` : ''}
+        </main>`;
+    }
+    draw();
+  </script>
+</body>
+</html>

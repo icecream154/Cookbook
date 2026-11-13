@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>PROTO-PAGE-PROF · 个人中心与饮食档案画板</title>
+  <link rel="stylesheet" href="../shared/wireframe.css" />
+</head>
+<body>
+  <header class="wb-bar" id="topBar"></header>
+  <div class="wb-stage" id="stage" data-vp="mobile">
+    <div class="shell" id="shell" data-vp="mobile"></div>
+  </div>
+  <script src="../shared/mock-data.js"></script>
+  <script>
+    const S = { vp: 'mobile', st: 'S1_LoggedSynced', size: 3, spiciness: 1, avoids: ['香菜'], dirty: false, toast: '' };
+    const STATES = [
+      { id: 'S1_LoggedSynced', label: 'S1: 已登录云同步摘要态' },
+      { id: 'S2_GuestLocalDraft', label: 'S2: 游客本地草稿待绑定态' },
+      { id: 'S3_ArchiveEditor', label: 'S3: 饮食档案单页编辑态(PAGE-PROF-02)' }
+    ];
+    window.setSt = (id) => { S.st = id; S.toast = ''; draw(); };
+    window.setVp = (vp) => { S.vp = vp; draw(); };
+
+    function draw() {
+      document.getElementById('topBar').innerHTML = WB.renderTopBar({
+        protoId: 'PROTO-PAGE-PROF',
+        specHref: '../../../06-pages/user-profile/profile-home.md',
+        specLabel: 'PAGE-PROF-01 / 02',
+        states: STATES, activeState: S.st, onState: 'setSt', vp: S.vp, onVp: 'setVp'
+      });
+      document.getElementById('stage').setAttribute('data-vp', S.vp);
+      const sh = document.getElementById('shell');
+      sh.setAttribute('data-vp', S.vp);
+
+      let content = '';
+      if (S.st === 'S3_ArchiveEditor') {
+        content = `
+          <div class="h-row">
+            <button class="btn btn-sm" onclick="setSt('S1_LoggedSynced')">← 返回个人中心</button>
+            <strong>PAGE-PROF-02 · 饮食档案单页编辑</strong>
+            <a class="btn btn-sm" href="./common-onboarding.html">重走5步向导</a>
+          </div>
+          <div class="card">
+            <div style="font-weight:700;font-size:12px;margin-bottom:6px;">1. 期望用餐人数 (ENUM-USR-HouseholdSize)</div>
+            <div class="chips" style="margin-bottom:12px;">
+              ${[{n:1,l:'1人食'},{n:2,l:'二人世界'},{n:3,l:'三口之家'},{n:4,l:'四口及以上'}].map(x => `<button class="chip ${S.size===x.n?'active':''}" onclick="S.size=${x.n};S.dirty=true;draw()">${x.l}</button>`).join('')}
+            </div>
+            <div style="font-weight:700;font-size:12px;margin-bottom:6px;">2. 辣度接受上限 (ENUM-RCP-Spiciness)</div>
+            <div class="chips" style="margin-bottom:12px;">
+              ${['不吃辣','微辣','中辣','重辣'].map((l,i) => `<button class="chip ${S.spiciness===i?'active':''}" onclick="S.spiciness=${i};S.dirty=true;draw()">${l}</button>`).join('')}
+            </div>
+            <div style="font-weight:700;font-size:12px;margin-bottom:6px;">3. 忌口排除 (ENUM-USR-AvoidTag)</div>
+            <div class="chips">
+              ${['香菜','葱姜蒜','海鲜水产','牛羊肉'].map(a => `<button class="chip ${S.avoids.includes(a)?'active':''}" onclick="S.avoids=S.avoids.includes('${a}')?S.avoids.filter(x=>x!=='${a}'):[...S.avoids,'${a}'];S.dirty=true;draw()">🚫 ${a}</button>`).join('')}
+            </div>
+          </div>
+          <button class="btn btn-primary" style="width:100%;padding:11px;" onclick="S.toast='✅ 饮食档案已保存，已置位 RULE-SYNC-03 待刷新标记';setSt('S1_LoggedSynced')">💾 保存饮食档案修改</button>`;
+      } else {
+        const isGuest = S.st === 'S2_GuestLocalDraft';
+        content = `
+          <div class="card">
+            <div class="h-row">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span style="font-size:28px;">👩‍🍳</span>
+                <div>
+                  <strong>${isGuest ? '未登录游客' : '食客_林小厨'}</strong>
+                  <div class="h-sub">${isGuest ? '本地草稿态 (profile_source = local_draft)' : '云端已同步 (cloud_synced) · 收藏 3 道'}</div>
+                </div>
+              </div>
+              ${isGuest ? `<a class="btn btn-primary btn-sm" href="./common-onboarding.html">登录永久保存</a>` : `<button class="btn btn-sm" onclick="setSt('S2_GuestLocalDraft')">模拟退出</button>`}
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="h-row"><strong>🎯 我的饮食档案五维摘要</strong><button class="btn btn-sm" onclick="setSt('S3_ArchiveEditor')">编辑档案 ></button></div>
+            <div style="font-size:12px;display:grid;gap:6px;">
+              <div>• <strong>用餐规模</strong>：${S.size === 1 ? '1人食' : S.size === 2 ? '二人世界' : S.size === 3 ? '三口之家(含儿童)' : '四口+'}</div>
+              <div>• <strong>口味与辣度</strong>：${['不吃辣','微辣','中辣','重辣'][S.spiciness]}以内 · 咸鲜家常</div>
+              <div>• <strong>忌口排除</strong>：${S.avoids.join('、') || '无特殊忌口'}</div>
+              <div>• <strong>厨艺与厨具</strong>：家常熟手 · ≤30分钟 · 炒锅/电饭煲/空气炸锅</div>
+              <div>• <strong>健康与目的</strong>：减脂低卡 · 照顾家人营养三餐</div>
+            </div>
+          </div>`;
+      }
+
+      sh.innerHTML = `${WB.renderNav('prof')}<main class="shell-main"><div class="wrap">${content}</div>${S.toast ? `<div class="snackbar"><span>${S.toast}</span></div>` : ''}</main>`;
+    }
+    draw();
+  </script>
+</body>
+</html>

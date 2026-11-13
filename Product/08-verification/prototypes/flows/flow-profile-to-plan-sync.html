@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>PROTO-FLOW-SYNC · 修改饮食档案→返回今日菜谱温和重算动线</title>
+  <link rel="stylesheet" href="../shared/wireframe.css" />
+</head>
+<body>
+  <header class="wb-bar" id="topBar"></header>
+  <div class="wb-stage" id="stage" data-vp="mobile">
+    <div class="shell" id="shell" data-vp="mobile"></div>
+  </div>
+  <script src="../shared/mock-data.js"></script>
+  <script>
+    // Cross-page state machine matching FLOW-PLAN-02 & RULE-SYNC-03
+    const S = { vp: 'mobile', step: 'P1_InitPlan2', planSize: 2, profileSize: 2, dirty: false, msg: '' };
+    const STEPS = [
+      { id: 'P1_InitPlan2', label: '节点1: 今日已生成2人菜单(PAGE-PLAN-01)' },
+      { id: 'P2_EditTo3', label: '节点2: 去档案页改为三口之家(PAGE-PROF-02)' },
+      { id: 'P3_ReturnPrompt', label: '节点3: 回今日菜谱弹温和确认条(不静默覆盖)' },
+      { id: 'P4_Regenerated3', label: '节点4: 点击确认后刷新为两菜一汤' }
+    ];
+    window.setStep = (id) => {
+      S.step = id; S.msg = '';
+      if (id === 'P1_InitPlan2') { S.planSize = 2; S.profileSize = 2; S.dirty = false; }
+      if (id === 'P2_EditTo3') { S.planSize = 2; S.profileSize = 3; }
+      if (id === 'P3_ReturnPrompt') { S.planSize = 2; S.profileSize = 3; S.dirty = true; }
+      if (id === 'P4_Regenerated3') { S.planSize = 3; S.profileSize = 3; S.dirty = false; S.msg = '✅ 已按最新三口之家档案重算为两菜一汤！'; }
+      draw();
+    };
+    window.setVp = (vp) => { S.vp = vp; draw(); };
+
+    function draw() {
+      document.getElementById('topBar').innerHTML = WB.renderTopBar({
+        protoId: 'PROTO-FLOW-SYNC',
+        specHref: '../../../04-ia-and-flows/flows/meal-planning.md',
+        specLabel: 'FLOW-PLAN-02 / RULE-SYNC-03',
+        states: STEPS, activeState: S.step, onState: 'setStep', vp: S.vp, onVp: 'setVp'
+      });
+      document.getElementById('stage').setAttribute('data-vp', S.vp);
+      const sh = document.getElementById('shell');
+      sh.setAttribute('data-vp', S.vp);
+
+      let pageHtml = '';
+      if (S.step === 'P2_EditTo3') {
+        pageHtml = `
+          <div class="card">
+            <div class="h-sub">[当前所在页：PAGE-PROF-02 饮食档案编辑页]</div>
+            <div class="h-title" style="margin:6px 0 10px;">将期望用餐人数从 2 人改为 3 人（三口之家）</div>
+            <div class="chips" style="margin-bottom:14px;">
+              <button class="chip ${S.profileSize===2?'active':''}" onclick="S.profileSize=2;draw()">二人世界 (2人)</button>
+              <button class="chip ${S.profileSize===3?'active':''}" onclick="S.profileSize=3;draw()">三口之家 (3人 · 两菜一汤)</button>
+            </div>
+            <button class="btn btn-primary" style="width:100%;" onclick="setStep('P3_ReturnPrompt')">💾 保存档案并切回「今日菜谱」Tab →</button>
+          </div>`;
+      } else {
+        const recs = S.planSize === 2 ? ['r05', 'r06'] : ['r04', 'r06', 'r08'];
+        pageHtml = `
+          <div class="h-row">
+            <div>
+              <div class="h-title">PAGE-PLAN-01 · 今日菜谱</div>
+              <div class="h-sub">当前菜单生效人数：<strong>${S.planSize}人（${S.planSize === 2 ? '一荤一素' : '两菜一汤'}）</strong> · 档案最新人数：${S.profileSize}人</div>
+            </div>
+            <button class="btn btn-sm" onclick="setStep('P2_EditTo3')">去「我的」改人数 ></button>
+          </div>
+
+          ${S.dirty ? `
+            <div class="banner blue">
+              <div><strong>🔄 RULE-SYNC-03 温和刷新保护</strong>：检测到饮食档案已改为 3 人，为防止覆盖你已买好菜的菜单，请确认：</div>
+              <div class="chips" style="flex-shrink:0;">
+                <button class="btn btn-primary btn-sm" onclick="setStep('P4_Regenerated3')">立即重算今日菜单</button>
+                <button class="btn btn-sm" onclick="S.dirty=false;S.msg='今日维持原2人菜单，明日自动生效3人方案';draw()">保持原菜单</button>
+              </div>
+            </div>` : ''}
+
+          <div class="card">
+            <div class="h-row"><strong>☀️ 今日午餐（${S.planSize === 2 ? '2道：一荤一素' : '3道：两菜一汤'}）</strong></div>
+            <div class="grid-cards">
+              ${recs.map(id => {
+                const r = WB.RECIPES.find(x => x.id === id);
+                return `<div class="rcard"><div class="rthumb"><span class="rrole">${r.roleLabel}</span>${r.emoji}</div><div><strong style="font-size:13px;">${r.title}</strong><div class="h-sub">${r.cuisine} · ${r.totalTime}分</div></div></div>`;
+              }).join('')}
+            </div>
+          </div>`;
+      }
+
+      sh.innerHTML = `<main class="shell-main"><div class="wrap">${pageHtml}</div>${S.msg ? `<div class="snackbar"><span>${S.msg}</span></div>` : ''}</main>`;
+    }
+    draw();
+  </script>
+</body>
+</html>

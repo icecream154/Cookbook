@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>PROTO-PAGE-COOK · 菜谱详情与全屏跟做画板</title>
+  <link rel="stylesheet" href="../shared/wireframe.css" />
+</head>
+<body>
+  <header class="wb-bar" id="topBar"></header>
+  <div class="wb-stage" id="stage" data-vp="mobile">
+    <div class="shell" id="shell" data-vp="mobile"></div>
+  </div>
+  <script src="../shared/mock-data.js"></script>
+  <script>
+    const R = WB.RECIPES.find((x) => x.id === 'r04'); // 经典慢炖番茄牛腩煲 (baseServings=3)
+    const S = { vp: 'mobile', st: 'S1_DefaultScaled', sv: 2, fav: false, cookStep: 1, timer: 45, checked: {}, toast: '' };
+    const STATES = [
+      { id: 'S1_DefaultScaled', label: 'S1: 动态折算与双图表态' },
+      { id: 'S2_AvoidWarning', label: 'S2: 忌口食材温和预警态' },
+      { id: 'S3_MobileMiniPiP', label: 'S3: 手机下滑悬浮小窗跟看态' },
+      { id: 'S4_VideoDegraded', label: 'S4: 弱网视频失败降级态' },
+      { id: 'S5_CookFocusTimer', label: 'S5: 全屏跟做+悬浮倒计时(PAGE-COOK-02)' }
+    ];
+    let ticker = null;
+    window.setSt = (id) => {
+      S.st = id; S.toast = '';
+      if (id === 'S5_CookFocusTimer') startTick(); else if (ticker) { clearInterval(ticker); ticker = null; }
+      draw();
+    };
+    window.setVp = (vp) => { S.vp = vp; draw(); };
+    window.adjSv = (d) => { S.sv = Math.min(8, Math.max(1, S.sv + d)); draw(); };
+    function startTick() {
+      if (ticker) clearInterval(ticker);
+      ticker = setInterval(() => { if (S.timer > 0) { S.timer--; draw(); } }, 1000);
+    }
+
+    function draw() {
+      document.getElementById('topBar').innerHTML = WB.renderTopBar({
+        protoId: 'PROTO-PAGE-COOK',
+        specHref: '../../../06-pages/recipe-consumption/recipe-detail.md',
+        specLabel: 'PAGE-COOK-01 / 02',
+        states: STATES, activeState: S.st, onState: 'setSt', vp: S.vp, onVp: 'setVp'
+      });
+      document.getElementById('stage').setAttribute('data-vp', S.vp);
+      const sh = document.getElementById('shell');
+      sh.setAttribute('data-vp', S.vp);
+
+      if (S.st === 'S5_CookFocusTimer') {
+        const stp = R.steps[S.cookStep - 1];
+        sh.innerHTML = `
+          <div style="flex:1;background:#0f172a;color:#f8fafc;padding:16px;display:flex;flex-direction:column;justify-content:space-between;">
+            <div class="h-row">
+              <span style="color:#34d399;font-size:12px;">● NFR-03 屏幕常亮已开启 · ${S.sv}人份</span>
+              <span style="background:var(--accent);padding:4px 10px;border-radius:99px;font-size:12px;font-weight:700;">⏱ 跨步倒计时 00:${String(S.timer).padStart(2,'0')}</span>
+              <button class="btn btn-sm" onclick="setSt('S1_DefaultScaled')">退出 ✕</button>
+            </div>
+            <div style="background:#1e293b;border:1px solid #334155;border-radius:14px;padding:20px;margin:12px 0;flex:1;display:flex;flex-direction:column;justify-content:center;">
+              <div style="color:#fb923c;font-weight:700;">PAGE-COOK-02 · Step ${S.cookStep} / ${R.steps.length}：${stp.title}</div>
+              <div style="font-size:21px;font-weight:600;line-height:1.65;margin:12px 0;">${WB.formatStep(stp.tpl, R, S.sv)}</div>
+              <div style="padding:18px;border:1px dashed #475569;border-radius:8px;text-align:center;color:#94a3b8;font-size:12px;">[大屏跟做配图：${stp.img}]</div>
+              ${stp.tip ? `<div style="margin-top:10px;font-size:13px;color:#cbd5e1;">💡 ${stp.tip}</div>` : ''}
+            </div>
+            <div style="display:flex;gap:10px;">
+              <button class="btn" style="flex:1;padding:13px;" onclick="S.cookStep=Math.max(1,S.cookStep-1);draw()">← 上一步(计时不中断)</button>
+              <button class="btn btn-primary" style="flex:2;padding:13px;font-size:14px;" onclick="if(S.cookStep<R.steps.length){S.cookStep++;draw();}else{S.toast='🎉 恭喜完成出锅！';setSt('S1_DefaultScaled');}">
+                ${S.cookStep < R.steps.length ? '下一步 →' : '🎉 完成出锅'}
+              </button>
+            </div>
+          </div>`;
+        return;
+      }
+
+      const isSplit = S.vp !== 'mobile';
+      const heatH = ['46%', '64%', '82%', '100%'];
+      const heatBg = ['#f1f5f9', '#fef3c7', '#ffedd5', '#fee2e2'];
+
+      const leftCol = `
+        <div style="${isSplit ? 'width:40%;position:sticky;top:12px;' : ''}">
+          ${S.st === 'S4_VideoDegraded' ? `
+            <div class="card" style="background:#f1f5f9;text-align:center;padding:24px;">
+              <div style="font-size:26px;">${R.emoji}</div>
+              <div style="font-weight:700;font-size:12px;margin:4px 0;">S4 弱网视频失败优雅降级 (NFR-02)</div>
+              <div class="h-sub" style="margin-bottom:8px;">已回退展示高清成品封面图，下方换算与步骤完全可用</div>
+              <button class="btn btn-sm" onclick="setSt('S1_DefaultScaled')">↻ 重试加载视频</button>
+            </div>` : `
+            <div class="card" style="background:#1e293b;color:#fff;aspect-ratio:16/9;display:flex;flex-direction:column;justify-content:space-between;">
+              <div class="h-row" style="font-size:11px;color:#cbd5e1;"><span>[16:9 章节视频播放器]</span><span>${R.video}</span></div>
+              <div style="text-align:center;"><span style="font-size:28px;">${R.emoji}</span></div>
+              <div class="chips">${R.steps.map((st,i) => `<button style="background:#334155;color:#fff;padding:2px 6px;border-radius:4px;font-size:10px;" onclick="S.toast='▶ 视频已Seek至步骤${i+1} (${st.sec}s)';draw()">节点${i+1} 00:${st.sec}</button>`).join('')}</div>
+            </div>`}
+
+          <div class="card">
+            <div class="h-row">
+              <strong>🥕 结构化食材表</strong>
+              <div style="display:inline-flex;border:1px solid var(--line-2);border-radius:6px;overflow:hidden;">
+                <button style="width:26px;background:var(--muted);" onclick="adjSv(-1)">−</button>
+                <span style="padding:2px 10px;font-size:12px;font-weight:700;">${S.sv} 人份</span>
+                <button style="width:26px;background:var(--muted);" onclick="adjSv(1)">+</button>
+              </div>
+            </div>
+            <div style="font-size:11px;color:var(--accent);margin-bottom:8px;">
+              RULE-COOK-02 人性化取整：基准 ${R.baseServings} 人份 → 当前 ${S.sv} 人份（观察牛腩与步骤调料同步折算）
+            </div>
+            ${R.ingredients.map((ing, idx) => `
+              <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed var(--line);font-size:12px;cursor:pointer;" onclick="S.checked[${idx}]=!S.checked[${idx}];draw()">
+                <div>
+                  <span style="${S.checked[idx]?'text-decoration:line-through;color:#94a3b8;':''}">${S.checked[idx]?'☑':'☐'} ${ing.name}</span>
+                  ${(S.st==='S2_AvoidWarning' && ing.avoid==='香菜') ? `<span class="badge warn">⚠️ 你的忌口 · ${ing.note}</span>` : ''}
+                </div>
+                <strong style="color:var(--accent);">${WB.scale(ing, S.sv, R.baseServings)}</strong>
+              </div>`).join('')}
+            ${isSplit ? `<button class="btn btn-primary" style="width:100%;margin-top:10px;" onclick="setSt('S5_CookFocusTimer')">🍳 进入全屏大字跟做模式</button>` : ''}
+          </div>
+        </div>`;
+
+      const rightCol = `
+        <div style="${isSplit ? 'width:60%;' : ''}">
+          <div class="card">
+            <div class="h-title">${R.title}</div>
+            <div class="h-sub">${R.cuisine} · 总耗时 ${R.totalTime}分 · 难度:${R.difficulty} · 不辣</div>
+          </div>
+
+          <div class="card">
+            <strong style="font-size:13px;display:block;margin-bottom:8px;">📊 DOM-RCP-NutritionChart：单人份营养构成环图（恒定1人份口径）</strong>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <svg width="76" height="76" viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="15.9" fill="none" stroke="#e2e8f0" stroke-width="4"></circle>
+                <circle cx="18" cy="18" r="15.9" fill="none" stroke="#059669" stroke-width="4" stroke-dasharray="34 66" stroke-dashoffset="25"></circle>
+                <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f59e0b" stroke-width="4" stroke-dasharray="49 51" stroke-dashoffset="-9"></circle>
+                <text x="18" y="19" text-anchor="middle" font-size="6.5" font-weight="700">${R.calories}</text>
+              </svg>
+              <div style="flex:1;font-size:12px;">
+                <div>蛋白质 ${R.macros.protein}g (34%) · 碳水 ${R.macros.carbs}g (17%) · 脂肪 ${R.macros.fat}g (49%)</div>
+                <div class="chips" style="margin-top:6px;"><span class="badge">✓ 高蛋白</span><span class="badge">✓ 温和养胃</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <strong style="font-size:13px;display:block;margin-bottom:6px;">📈 DOM-RCP-TimelineChart：烹饪工序与火候时间轴图</strong>
+            <div style="display:flex;gap:4px;align-items:flex-end;height:78px;">
+              ${R.timeline.map(t => `<div style="flex:1;height:${heatH[t.heat]};background:${heatBg[t.heat]};border-radius:6px;padding:5px;font-size:10px;border:1px solid rgba(0,0,0,0.08);display:flex;flex-direction:column;justify-content:space-between;"><strong>${t.name}</strong><span>${t.min}m</span></div>`).join('')}
+            </div>
+          </div>
+
+          <div class="card">
+            <strong style="font-size:13px;display:block;margin-bottom:8px;">📝 富文本做法步骤（RULE-COOK-03 动态占位符实时同步）</strong>
+            ${R.steps.map((st, i) => `
+              <div style="padding:10px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px;">
+                <div class="h-row"><strong style="font-size:12px;">Step ${i+1} · ${st.title}</strong><span class="chip accent" style="font-size:10px;padding:1px 6px;">▶ 00:${st.sec}</span></div>
+                <div style="font-size:13px;">${WB.formatStep(st.tpl, R, S.sv)}</div>
+                <div style="margin-top:6px;padding:14px;background:var(--muted);border-radius:6px;text-align:center;font-size:11px;color:var(--ink-2);">[步骤配图：${st.img}]</div>
+              </div>`).join('')}
+          </div>
+        </div>`;
+
+      sh.innerHTML = `
+        ${isSplit ? WB.renderNav('plan') : ''}
+        <main class="shell-main">
+          ${S.st === 'S3_MobileMiniPiP' && S.vp === 'mobile' ? `<div style="position:sticky;top:8px;margin-left:auto;margin-right:12px;width:176px;background:#0f172a;color:#fff;padding:6px 10px;border-radius:8px;font-size:11px;z-index:30;display:flex;justify-content:space-between;"><span>▶ 悬浮小窗 01:52</span><button style="color:#fff;" onclick="setSt('S1_DefaultScaled')">✕</button></div>` : ''}
+          <div class="wrap" style="${isSplit ? 'display:flex;gap:18px;align-items:flex-start;' : 'padding-bottom:70px;'}">
+            ${leftCol}${rightCol}
+          </div>
+          ${!isSplit ? `<div style="position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);padding:8px 12px;display:flex;gap:8px;align-items:center;">
+            <button class="btn" onclick="S.fav=!S.fav;draw()">${S.fav?'♥ 已收藏':'♡ 收藏'}</button>
+            <button class="btn btn-primary" style="flex:1;" onclick="setSt('S5_CookFocusTimer')">🍳 开始跟做 (${S.sv}人份)</button>
+          </div>` : ''}
+          ${S.toast ? `<div class="snackbar"><span>${S.toast}</span></div>` : ''}
+        </main>`;
+    }
+    draw();
+  </script>
+</body>
+</html>

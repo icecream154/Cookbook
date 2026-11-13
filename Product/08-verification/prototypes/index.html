@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>菜谱 Cookbook · 方式 C 细粒度交互微原型总控台</title>
+  <link rel="stylesheet" href="./shared/wireframe.css" />
+</head>
+<body style="background:#f8fafc;">
+  <header class="wb-bar">
+    <div class="wb-group">
+      <span class="wb-tag">08-VERIFICATION · PROTOTYPE HUB</span>
+      <strong>【菜谱 Cookbook】方式 C 细粒度可交互原型总控台</strong>
+    </div>
+    <div class="wb-group">
+      <a class="wb-btn wb-link" href="../../README.md">📚 返回 Product 规范总目录</a>
+      <a class="wb-btn wb-link" href="../acceptance-criteria.md">✅ 查看 AC-* 验收用例清单</a>
+    </div>
+  </header>
+
+  <main style="max-width:1080px;margin:28px auto;padding:0 20px;">
+    <div class="banner blue" style="margin-bottom:22px;">
+      <div>
+        <strong>设计原则（拒绝单体巨型原型）</strong>：采用「6 个功能空间多状态交互画板 + 2 个跨空间状态传递微原型」解耦架构。每个原型顶部均内置<strong>规格书第 4 节状态枚举一键直达器</strong>与<strong>手机/平板/Web 三端容器壳切换器</strong>，所有正常态与极端边界态无需前置铺垫一键即测。
+      </div>
+    </div>
+
+    <h2 style="font-size:16px;margin-bottom:12px;">一、功能空间多状态交互画板（Page Stateboards · 与 `06-pages/` 严格 1:1 咬合）</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));gap:14px;margin-bottom:28px;">
+      <div class="card">
+        <div class="h-row"><strong>PROTO-PAGE-COMM · 引导与认证画板</strong><span class="badge">2 份规格</span></div>
+        <p class="h-sub" style="margin-bottom:10px;">覆盖 5 步卡片偏好向导各步交互、验证码快捷认证与双端档案冲突裁决卡。</p>
+        <div class="chips">
+          <a class="btn btn-primary btn-sm" href="./pages/common-onboarding.html">▶ 打开交互画板</a>
+          <a class="btn btn-sm" href="../../06-pages/common-and-onboarding/onboarding-wizard.md">PAGE-COMM-01/02</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="h-row"><strong>PROTO-PAGE-PLAN · 今日菜谱与汇总画板</strong><span class="badge">2 份规格</span></div>
+        <p class="h-sub" style="margin-bottom:10px;">一键直达：1人一碗端 / 三口两菜一汤 / 游客默认态 / 待刷新态 / 今日食材合并抽屉。</p>
+        <div class="chips">
+          <a class="btn btn-primary btn-sm" href="./pages/daily-plan.html">▶ 打开交互画板</a>
+          <a class="btn btn-sm" href="../../06-pages/daily-plan/daily-meal-plan.md">PAGE-PLAN-01/02</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="h-row"><strong>PROTO-PAGE-SRCH · 找菜谱复合检索画板</strong><span class="badge">2 份规格</span></div>
+        <p class="h-sub" style="margin-bottom:10px;">一键直达：同义食材联想 / 多食材智能排序 vs 严格全含 / 筛选抽屉 / 零结果阶梯放宽。</p>
+        <div class="chips">
+          <a class="btn btn-primary btn-sm" href="./pages/recipe-discovery.html">▶ 打开交互画板</a>
+          <a class="btn btn-sm" href="../../06-pages/recipe-discovery/recipe-search.md">PAGE-SRCH-01/02</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="h-row"><strong>PROTO-PAGE-FAV · 轻量单层收藏夹画板</strong><span class="badge">1 份规格</span></div>
+        <p class="h-sub" style="margin-bottom:10px;">一键直达：列表角色快筛 / 取消收藏 4 秒防误删撤销条 / 0 收藏空态 / 游客未登录引导态。</p>
+        <div class="chips">
+          <a class="btn btn-primary btn-sm" href="./pages/favorites.html">▶ 打开交互画板</a>
+          <a class="btn btn-sm" href="../../06-pages/favorites/favorites-list.md">PAGE-FAV-01</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="h-row"><strong>PROTO-PAGE-COOK · 菜谱详情与跟做画板</strong><span class="badge">2 份规格</span></div>
+        <p class="h-sub" style="margin-bottom:10px;">一键直达：人数同步换算与双图表 / 忌口预警态 / 手机小窗跟看 / 弱网降级 / 全屏跟做倒计时。</p>
+        <div class="chips">
+          <a class="btn btn-primary btn-sm" href="./pages/recipe-consumption.html">▶ 打开交互画板</a>
+          <a class="btn btn-sm" href="../../06-pages/recipe-consumption/recipe-detail.md">PAGE-COOK-01/02</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="h-row"><strong>PROTO-PAGE-PROF · 个人中心与饮食档案画板</strong><span class="badge">2 份规格</span></div>
+        <p class="h-sub" style="margin-bottom:10px;">一键直达：已登录五维档案摘要态 / 游客本地草稿待绑定态 / 单页分组快速编辑态。</p>
+        <div class="chips">
+          <a class="btn btn-primary btn-sm" href="./pages/user-profile.html">▶ 打开交互画板</a>
+          <a class="btn btn-sm" href="../../06-pages/user-profile/profile-home.md">PAGE-PROF-01/02</a>
+        </div>
+      </div>
+    </div>
+
+    <h2 style="font-size:16px;margin-bottom:12px;">二、跨功能空间状态传递微原型（Cross-Page Flow Sandboxes · 与 `04-flows/` 咬合）</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(460px, 1fr));gap:14px;">
+      <div class="card">
+        <div class="h-row"><strong>PROTO-FLOW-AUTH · 游客受限操作拦截→登录自动接续与旧档案合并动线</strong><span class="badge blue">跨页动线</span></div>
+        <p class="h-sub" style="margin-bottom:10px;">完整演示：游客本地设 1 人食 → 详情页点击收藏触发拦截 → 验证老账号检出云端三口之家旧档案 → 裁决合并后自动把刚才那道菜点亮红心。</p>
+        <div class="chips">
+          <a class="btn btn-primary btn-sm" href="./flows/flow-auth-and-merge.html">▶ 体验跨页交互动线</a>
+          <a class="btn btn-sm" href="../../04-ia-and-flows/flows/auth-and-onboarding.md">FLOW-AUTH-02</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="h-row"><strong>PROTO-FLOW-SYNC · 饮食档案变更→返回今日菜谱温和确认重算动线</strong><span class="badge blue">跨页动线</span></div>
+        <p class="h-sub" style="margin-bottom:10px;">完整演示：今日已生成 2 人一荤一素菜单 → 去个人档案改为三口之家保存 → 切回今日菜谱不静默覆盖，弹出温和确认条由用户拍板重算。</p>
+        <div class="chips">
+          <a class="btn btn-primary btn-sm" href="./flows/flow-profile-to-plan-sync.html">▶ 体验跨页交互动线</a>
+          <a class="btn btn-sm" href="../../04-ia-and-flows/flows/meal-planning.md">FLOW-PLAN-02</a>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

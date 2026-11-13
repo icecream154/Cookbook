@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>PROTO-PAGE-FAV · 收藏夹多状态画板</title>
+  <link rel="stylesheet" href="../shared/wireframe.css" />
+</head>
+<body>
+  <header class="wb-bar" id="topBar"></header>
+  <div class="wb-stage" id="stage" data-vp="mobile">
+    <div class="shell" id="shell" data-vp="mobile"></div>
+  </div>
+  <script src="../shared/mock-data.js"></script>
+  <script>
+    const S = { vp: 'mobile', st: 'S1_LoggedWithItems', favIds: ['r04', 'r05', 'r06'], role: 'all', lastRemoved: null };
+    const STATES = [
+      { id: 'S1_LoggedWithItems', label: 'S1: 已登录有收藏过滤态' },
+      { id: 'S2_UndoRemoving', label: 'S2: 取消收藏4秒撤销态(PAT-UndoSnackbar)' },
+      { id: 'S3_LoggedEmpty', label: 'S3: 已登录0收藏引导态' },
+      { id: 'S4_GuestUnauthed', label: 'S4: 未登录游客引导态' }
+    ];
+    window.setSt = (id) => {
+      S.st = id;
+      if (id === 'S1_LoggedWithItems') { S.favIds = ['r04', 'r05', 'r06']; S.lastRemoved = null; }
+      if (id === 'S2_UndoRemoving') { S.favIds = ['r05', 'r06']; S.lastRemoved = '经典慢炖番茄牛腩煲'; }
+      draw();
+    };
+    window.setVp = (vp) => { S.vp = vp; draw(); };
+    window.unfav = (id) => {
+      const r = WB.RECIPES.find((x) => x.id === id);
+      S.favIds = S.favIds.filter((x) => x !== id);
+      S.lastRemoved = r.title;
+      S.st = S.favIds.length ? 'S2_UndoRemoving' : 'S3_LoggedEmpty';
+      draw();
+    };
+    window.undo = () => {
+      if (!S.favIds.includes('r04')) S.favIds.unshift('r04');
+      S.lastRemoved = null; S.st = 'S1_LoggedWithItems'; draw();
+    };
+
+    function draw() {
+      document.getElementById('topBar').innerHTML = WB.renderTopBar({
+        protoId: 'PROTO-PAGE-FAV',
+        specHref: '../../../06-pages/favorites/favorites-list.md',
+        specLabel: 'PAGE-FAV-01',
+        states: STATES, activeState: S.st, onState: 'setSt', vp: S.vp, onVp: 'setVp'
+      });
+      document.getElementById('stage').setAttribute('data-vp', S.vp);
+      const sh = document.getElementById('shell');
+      sh.setAttribute('data-vp', S.vp);
+
+      let body = '';
+      if (S.st === 'S4_GuestUnauthed') {
+        body = `<div class="card" style="text-align:center;padding:40px 18px;margin-top:20px;">
+          <div style="font-size:32px;">❤️</div>
+          <div class="h-title" style="margin:8px 0;">S4 未登录引导态：登录后同步你的私房拿手菜谱</div>
+          <p class="h-sub" style="margin-bottom:14px;">点亮红心即收，跨手机、平板与 Web 实时同步</p>
+          <a class="btn btn-primary" href="./common-onboarding.html">立即登录 / 注册</a>
+        </div>`;
+      } else if (S.st === 'S3_LoggedEmpty') {
+        body = `<div class="card" style="text-align:center;padding:40px 18px;margin-top:20px;">
+          <div style="font-size:32px;">📖</div>
+          <div class="h-title" style="margin:8px 0;">S3 空数据态：还没有收藏过菜谱哦</div>
+          <div class="chips" style="justify-content:center;margin-top:12px;">
+            <a class="btn btn-primary btn-sm" href="./daily-plan.html">看看今日三餐</a>
+            <a class="btn btn-sm" href="./recipe-discovery.html">去菜谱库探索</a>
+          </div>
+        </div>`;
+      } else {
+        const list = S.favIds.map((id) => WB.RECIPES.find((x) => x.id === id)).filter((r) => S.role === 'all' || r.dishRole === S.role);
+        body = `
+          <div class="h-row"><div class="h-title">我的收藏夹 (${S.favIds.length})</div><span class="h-sub">最近收藏排序</span></div>
+          <div class="chips" style="margin-bottom:12px;">
+            ${[{k:'all',l:'全部'},{k:'main_meat',l:'主荤硬菜'},{k:'side_veg',l:'清爽时蔬'}].map(t => `<button class="chip ${S.role===t.k?'active':''}" onclick="S.role='${t.k}';draw()">${t.l}</button>`).join('')}
+          </div>
+          <div class="grid-cards">
+            ${list.map(r => `
+              <div class="rcard">
+                <div class="rthumb"><span class="rrole">${r.roleLabel}</span>${r.emoji}</div>
+                <div style="flex:1;">
+                  <div style="font-weight:700;font-size:13px;">${r.title}</div>
+                  <div class="h-sub">${r.cuisine} · ${r.totalTime}分</div>
+                  <div class="chips" style="margin-top:6px;">
+                    <a class="btn btn-sm" href="./recipe-consumption.html">查看做法</a>
+                    <button class="btn btn-sm" style="color:var(--danger);margin-left:auto;" onclick="unfav('${r.id}')">♥ 取消收藏</button>
+                  </div>
+                </div>
+              </div>`).join('')}
+          </div>`;
+      }
+
+      sh.innerHTML = `
+        ${WB.renderNav('fav')}
+        <main class="shell-main">
+          <div class="wrap">${body}</div>
+          ${S.st === 'S2_UndoRemoving' && S.lastRemoved ? `<div class="snackbar"><span>已将「${S.lastRemoved}」移出收藏夹 (4s)</span><button onclick="undo()">撤销</button></div>` : ''}
+        </main>`;
+    }
+    draw();
+  </script>
+</body>
+</html>

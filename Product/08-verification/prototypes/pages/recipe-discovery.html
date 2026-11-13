@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>PROTO-PAGE-SRCH · 找菜谱复合检索画板</title>
+  <link rel="stylesheet" href="../shared/wireframe.css" />
+</head>
+<body>
+  <header class="wb-bar" id="topBar"></header>
+  <div class="wb-stage" id="stage" data-vp="mobile">
+    <div class="shell" id="shell" data-vp="mobile"></div>
+  </div>
+  <script src="../shared/mock-data.js"></script>
+  <script>
+    const S = {
+      vp: 'mobile',
+      st: 'S3_MultiIngSmart',
+      q: '',
+      ings: ['番茄', '牛肉', '土豆'],
+      mode: 'smart_rank', // 'smart_rank' | 'strict_all'
+      cuisines: []
+    };
+    const STATES = [
+      { id: 'S1_BrowseDefault', label: 'S1: 默认热搜探索态' },
+      { id: 'S2_SuggestTyping', label: 'S2: 同义词输入联想态(西红柿->番茄)' },
+      { id: 'S3_MultiIngSmart', label: 'S3: 多食材智能匹配度排序态' },
+      { id: 'S4_ZeroResultFallback', label: 'S4: 零结果阶梯放宽兜底态' },
+      { id: 'S5_FilterDrawerOpen', label: 'S5: 复合筛选抽屉展开态(PAGE-SRCH-02)' }
+    ];
+    window.setSt = (id) => {
+      S.st = id;
+      if (id === 'S1_BrowseDefault') { S.q = ''; S.ings = []; S.cuisines = []; }
+      if (id === 'S2_SuggestTyping') { S.q = '西红柿'; S.ings = []; S.cuisines = []; }
+      if (id === 'S3_MultiIngSmart') { S.q = ''; S.ings = ['番茄', '牛肉', '土豆']; S.mode = 'smart_rank'; S.cuisines = []; }
+      if (id === 'S4_ZeroResultFallback') { S.q = ''; S.ings = ['牛肉', '土豆']; S.mode = 'strict_all'; S.cuisines = ['粤菜']; }
+      draw();
+    };
+    window.setVp = (vp) => { S.vp = vp; draw(); };
+    window.togIng = (ing) => {
+      const i = S.ings.indexOf(ing);
+      if (i >= 0) S.ings.splice(i, 1); else S.ings.push(ing);
+      draw();
+    };
+
+    function filterList() {
+      return WB.RECIPES.map((r) => {
+        const hit = S.ings.filter((k) => r.ingredients.some((x) => x.id === k));
+        const miss = S.ings.filter((k) => !hit.includes(k));
+        return { r, hit, miss };
+      }).filter(({ r, hit }) => {
+        if (S.cuisines.length && !S.cuisines.includes(r.cuisine)) return false;
+        if (S.ings.length) {
+          if (S.mode === 'strict_all' && hit.length < S.ings.length) return false;
+          if (S.mode === 'smart_rank' && hit.length === 0) return false;
+        }
+        return true;
+      }).sort((a, b) => b.hit.length - a.hit.length);
+    }
+
+    function filterFormHtml() {
+      return `
+        <div style="margin-bottom:12px;">
+          <div style="font-size:12px;font-weight:700;margin-bottom:6px;">需要的食材 (RULE-SRCH-02 清冰箱多选)</div>
+          ${S.ings.length >= 2 ? `<div class="chips" style="margin-bottom:8px;">
+            <button class="chip ${S.mode==='smart_rank'?'accent':''}" onclick="S.mode='smart_rank';draw()">智能匹配度排序</button>
+            <button class="chip ${S.mode==='strict_all'?'accent':''}" onclick="S.mode='strict_all';draw()">严格全部包含(AND)</button>
+          </div>` : ''}
+          <div class="chips">
+            ${['番茄','牛肉','土豆','鸡蛋','虾仁','西蓝花','豆腐'].map(x => `<button class="chip ${S.ings.includes(x)?'active':''}" onclick="togIng('${x}')">${x}</button>`).join('')}
+          </div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;margin-bottom:6px;">菜系分类 (ENUM-RCP-Cuisine)</div>
+          <div class="chips">
+            ${['家常菜','川菜','粤菜','湘菜'].map(c => `<button class="chip ${S.cuisines.includes(c)?'active':''}" onclick="S.cuisines=S.cuisines.includes('${c}')?[]:['${c}'];draw()">${c}</button>`).join('')}
+          </div>
+        </div>`;
+    }
+
+    function draw() {
+      document.getElementById('topBar').innerHTML = WB.renderTopBar({
+        protoId: 'PROTO-PAGE-SRCH',
+        specHref: '../../../06-pages/recipe-discovery/recipe-search.md',
+        specLabel: 'PAGE-SRCH-01 / 02',
+        states: STATES, activeState: S.st, onState: 'setSt', vp: S.vp, onVp: 'setVp'
+      });
+      document.getElementById('stage').setAttribute('data-vp', S.vp);
+      const sh = document.getElementById('shell');
+      sh.setAttribute('data-vp', S.vp);
+
+      const list = filterList();
+
+      sh.innerHTML = `
+        ${WB.renderNav('srch')}
+        <main class="shell-main">
+          <div class="wrap" style="display:flex;gap:18px;align-items:flex-start;">
+            ${S.vp === 'desktop' ? `<aside class="card" style="width:260px;flex-shrink:0;"><strong>PAGE-SRCH-02 常驻筛选栏</strong><hr style="margin:8px 0;border:none;border-top:1px dashed var(--line);"/>${filterFormHtml()}</aside>` : ''}
+            <div style="flex:1;min-width:0;">
+              <div class="card" style="padding:8px 12px;display:flex;justify-content:space-between;">
+                <span>🔍 ${S.q || '搜菜名、同义食材（如：西红柿 / 牛腩）...'}</span>
+                ${S.vp !== 'desktop' ? `<button class="chip accent" onclick="setSt('S5_FilterDrawerOpen')">⚙ 复合筛选 (${S.ings.length + S.cuisines.length})</button>` : ''}
+              </div>
+
+              ${S.st === 'S2_SuggestTyping' ? `
+                <div class="card" style="border-color:#fb923c;">
+                  <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:6px;">RULE-SRCH-01 同义标准食材库实时联想：</div>
+                  <div style="padding:6px;background:var(--accent-bg);border-radius:6px;cursor:pointer;font-size:12px;" onclick="S.ings=['番茄'];S.st='S3_MultiIngSmart';draw()">
+                    🍅 <strong>[标准食材] 番茄</strong>（命中俗称“西红柿”） —— 点击直接筛选含番茄菜谱 >
+                  </div>
+                </div>` : ''}
+
+              ${S.ings.length ? `<div class="chips" style="margin-bottom:10px;">
+                ${S.ings.map(i => `<span class="chip accent">含:${i}</span>`).join('')}
+                ${S.cuisines.map(c => `<span class="chip accent">菜系:${c}</span>`).join('')}
+                <span class="h-sub">共命中 ${list.length} 道</span>
+              </div>` : ''}
+
+              ${list.length ? `<div class="grid-cards">${list.map(({r, hit, miss}) => `
+                <a class="rcard" href="./recipe-consumption.html">
+                  <div class="rthumb"><span class="rrole">${r.cuisine}</span>${r.emoji}</div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-weight:700;font-size:13px;">${r.title}</div>
+                    <div class="h-sub">${r.totalTime}分 · ${r.calories}kcal/人</div>
+                    <div class="chips" style="margin-top:5px;">
+                      ${S.ings.length ? `<span class="badge blue">命中 ${hit.length}/${S.ings.length} 食材${miss.length ? ' · 缺:' + miss.join('/') : ''}</span>` : `<span class="badge">${r.healthTags[0]}</span>`}
+                      ${r.ingredients.some(x => x.avoid === '香菜') ? `<span class="badge warn">⚠️ 含你的忌口:香菜</span>` : ''}
+                    </div>
+                  </div>
+                </a>`).join('')}</div>` : `
+                <div class="card" style="text-align:center;padding:28px 16px;">
+                  <div style="font-size:28px;">🥣</div>
+                  <strong style="display:block;margin:6px 0;">S4 零结果阶梯放宽诊断 (RULE-SRCH-04)</strong>
+                  <p class="h-sub" style="margin-bottom:12px;">未找到同时满足「${S.cuisines.join('/')} + 严格包含(${S.ings.join('+')})」的菜谱</p>
+                  <div class="chips" style="justify-content:center;">
+                    <button class="btn btn-primary btn-sm" onclick="S.cuisines=[];S.mode='smart_rank';S.st='S3_MultiIngSmart';draw()">一键移除「粤菜」并切为智能匹配 (可恢复 3 道)</button>
+                  </div>
+                </div>`}
+            </div>
+          </div>
+
+          ${S.st === 'S5_FilterDrawerOpen' ? `
+            <div class="modal-mask" onclick="setSt('S3_MultiIngSmart')">
+              <div class="sheet-box" onclick="event.stopPropagation()">
+                <div class="sheet-hd"><span>PAGE-SRCH-02 · 多维复合筛选抽屉</span><button onclick="setSt('S3_MultiIngSmart')">✕</button></div>
+                <div class="sheet-bd">${filterFormHtml()}</div>
+                <div class="sheet-ft">
+                  <button class="btn" onclick="setSt('S1_BrowseDefault')">重置全部</button>
+                  <button class="btn btn-primary" style="flex:1;" onclick="setSt('S3_MultiIngSmart')">查看匹配的 ${list.length} 道菜谱</button>
+                </div>
+              </div>
+            </div>` : ''}
+        </main>`;
+    }
+    draw();
+  </script>
+</body>
+</html>

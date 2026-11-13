@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>PROTO-PAGE-PLAN · 今日菜谱与食材汇总画板</title>
+  <link rel="stylesheet" href="../shared/wireframe.css" />
+</head>
+<body>
+  <header class="wb-bar" id="topBar"></header>
+  <div class="wb-stage" id="stage" data-vp="mobile">
+    <div class="shell" id="shell" data-vp="mobile"></div>
+  </div>
+  <script src="../shared/mock-data.js"></script>
+  <script>
+    const S = {
+      vp: 'mobile',
+      st: 'S2_FamilyPlan',
+      lunchIds: ['r05', 'r06', 'r08'],
+      mealsChecked: { b: true, l: true, d: true },
+      ingChecked: {},
+      toast: ''
+    };
+    const STATES = [
+      { id: 'S1_SoloPlan', label: 'S1: 1人食(一碗端)' },
+      { id: 'S2_FamilyPlan', label: 'S2: 三口之家(两菜一汤)' },
+      { id: 'S3_GuestDefault', label: 'S3: 游客未建档兜底态' },
+      { id: 'S4_ProfileDirty', label: 'S4: 画像更新温和待重算态' },
+      { id: 'S5_IngSummaryDrawer', label: 'S5: 食材汇总抽屉(PAGE-PLAN-02)' },
+      { id: 'S6_EmptyMealSelected', label: 'S6: 汇总三餐全取消空态' }
+    ];
+    window.setSt = (id) => {
+      S.st = id; S.toast = '';
+      if (id === 'S6_EmptyMealSelected') S.mealsChecked = { b: false, l: false, d: false };
+      if (id === 'S5_IngSummaryDrawer') S.mealsChecked = { b: true, l: true, d: true };
+      draw();
+    };
+    window.setVp = (vp) => { S.vp = vp; draw(); };
+    window.swapSoup = () => {
+      S.lunchIds[2] = S.lunchIds[2] === 'r08' ? 'r02' : 'r08';
+      S.toast = '已按 RULE-PLAN-04 同角色互斥防重替换汤羹';
+      draw();
+    };
+    window.togMeal = (k) => {
+      S.mealsChecked[k] = !S.mealsChecked[k];
+      const any = S.mealsChecked.b || S.mealsChecked.l || S.mealsChecked.d;
+      S.st = any ? 'S5_IngSummaryDrawer' : 'S6_EmptyMealSelected';
+      draw();
+    };
+
+    function cardHtml(id, reason, showSwap) {
+      const r = WB.RECIPES.find((x) => x.id === id);
+      return `
+        <div class="rcard">
+          <div class="rthumb"><span class="rrole">${r.roleLabel}</span>${r.emoji}<span class="rvid">▶${r.video}</span></div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:700;font-size:13px;">${r.title}</div>
+            <div class="h-sub">${r.cuisine} · ${r.totalTime}分 · ${r.calories}kcal/人</div>
+            <div class="chips" style="margin-top:5px;">
+              <span class="badge">${reason}</span>
+              ${showSwap ? `<button class="btn btn-sm" style="margin-left:auto;" onclick="swapSoup()">⇄ 换一道</button>` : `<a class="btn btn-sm" style="margin-left:auto;" href="./recipe-consumption.html">看详情 ></a>`}
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function draw() {
+      document.getElementById('topBar').innerHTML = WB.renderTopBar({
+        protoId: 'PROTO-PAGE-PLAN',
+        specHref: '../../../06-pages/daily-plan/daily-meal-plan.md',
+        specLabel: 'PAGE-PLAN-01 / 02',
+        states: STATES, activeState: S.st, onState: 'setSt', vp: S.vp, onVp: 'setVp'
+      });
+      document.getElementById('stage').setAttribute('data-vp', S.vp);
+      const sh = document.getElementById('shell');
+      sh.setAttribute('data-vp', S.vp);
+
+      const isSolo = S.st === 'S1_SoloPlan';
+      const isGuest = S.st === 'S3_GuestDefault';
+      const sv = isSolo ? 1 : isGuest ? 2 : 3;
+
+      const lunchRecs = isSolo
+        ? cardHtml('r03', '1人一锅端少洗碗')
+        : isGuest
+          ? cardHtml('r05', '时令高分精选') + cardHtml('r07', '10分钟快手')
+          : cardHtml(S.lunchIds[0], '儿童友好免辣') + cardHtml(S.lunchIds[1], '契合减脂低卡') + cardHtml(S.lunchIds[2], '温和养胃', true);
+
+      let drawerHtml = '';
+      if (S.st === 'S5_IngSummaryDrawer' || S.st === 'S6_EmptyMealSelected') {
+        const merged = {};
+        const pick = [];
+        if (S.mealsChecked.b) pick.push({ m: '早', id: 'r01' });
+        if (S.mealsChecked.l) pick.push({ m: '午', id: 'r05' }, { m: '午', id: 'r08' });
+        if (S.mealsChecked.d) pick.push({ m: '晚', id: 'r04' });
+        pick.forEach(({ m, id }) => {
+          const r = WB.RECIPES.find((x) => x.id === id);
+          r.ingredients.forEach((ing) => {
+            if (ing.mode === 'unscaled') return;
+            if (!merged[ing.id]) merged[ing.id] = { name: ing.name, unit: ing.unit, mode: ing.mode, raw: 0, src: [] };
+            merged[ing.id].raw += ing.amount * (3 / r.baseServings);
+            merged[ing.id].src.push(`${m}·${r.title}`);
+          });
+        });
+        const rows = Object.entries(merged);
+        drawerHtml = `
+          <div class="modal-mask" onclick="setSt('S2_FamilyPlan')">
+            <div class="sheet-box" onclick="event.stopPropagation()">
+              <div class="sheet-hd"><span>🛒 PAGE-PLAN-02 · 今日食材汇总 (按3人份合并)</span><button onclick="setSt('S2_FamilyPlan')">✕</button></div>
+              <div class="sheet-bd">
+                <div class="chips" style="margin-bottom:12px;">
+                  <button class="chip ${S.mealsChecked.b?'active':''}" onclick="togMeal('b')">${S.mealsChecked.b?'✓ ':''}早餐</button>
+                  <button class="chip ${S.mealsChecked.l?'active':''}" onclick="togMeal('l')">${S.mealsChecked.l?'✓ ':''}午餐</button>
+                  <button class="chip ${S.mealsChecked.d?'active':''}" onclick="togMeal('d')">${S.mealsChecked.d?'✓ ':''}晚餐</button>
+                </div>
+                ${rows.length ? rows.map(([k, v]) => `
+                  <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--line);cursor:pointer;${S.ingChecked[k]?'text-decoration:line-through;color:#94a3b8;':''}" onclick="S.ingChecked['${k}']=!S.ingChecked['${k}'];draw()">
+                    <div><div>${S.ingChecked[k]?'☑':'☐'} <strong>${v.name}</strong></div><div class="h-sub">用于：${v.src.join(' + ')}</div></div>
+                    <strong style="color:var(--accent);">${WB.scale({amount:v.raw,unit:v.unit,mode:v.mode},1,1)}</strong>
+                  </div>`).join('') : `<div style="text-align:center;padding:28px;" class="h-sub">空状态(S6)：请至少勾选一餐以汇总所需食材</div>`}
+              </div>
+              <div class="sheet-ft">
+                <button class="btn" onclick="S.toast='📋 已复制待买食材文本至剪贴板';setSt('S2_FamilyPlan')">📋 复制买菜清单</button>
+                <button class="btn btn-primary" onclick="setSt('S2_FamilyPlan')">完成核对</button>
+              </div>
+            </div>
+          </div>`;
+      }
+
+      sh.innerHTML = `
+        ${WB.renderNav('plan')}
+        <main class="shell-main">
+          <div class="wrap">
+            <div class="h-row">
+              <div><div class="h-title">今日菜谱推荐</div><div class="h-sub">RULE-PLAN-02 智能配餐 · 当前生效：${sv}人份</div></div>
+              <button class="btn btn-sm" onclick="setSt('S5_IngSummaryDrawer')">🛒 今日食材汇总</button>
+            </div>
+            <div class="chips" style="margin-bottom:12px;">
+              <button class="chip ${isSolo?'active':''}" onclick="setSt('S1_SoloPlan')">👥 1人食</button>
+              <button class="chip ${!isSolo&&!isGuest?'active':''}" onclick="setSt('S2_FamilyPlan')">👥 三口之家</button>
+              <span class="chip">🌶 微辣以内</span>
+              <span class="chip">🚫 忌:香菜</span>
+            </div>
+            ${isGuest ? `<div class="banner"><div><strong>✨ S3 游客通用默认态</strong>：花30秒设置人数与忌口生成专属三餐</div><a class="btn btn-primary btn-sm" href="./common-onboarding.html">立即定制</a></div>` : ''}
+            ${S.st === 'S4_ProfileDirty' ? `<div class="banner blue"><div><strong>🔄 S4 画像待刷新态 (RULE-SYNC-03)</strong>：检测到你刚更新了饮食档案，是否立即重算今日菜单？</div><div class="chips"><button class="btn btn-primary btn-sm" onclick="S.toast='已按新档案重算今日三餐';setSt('S2_FamilyPlan')">立即重新生成</button><button class="btn btn-sm" onclick="setSt('S2_FamilyPlan')">保持原菜单</button></div></div>` : ''}
+
+            <div class="card">
+              <div class="h-row"><strong>🌅 元气早餐 · 主食早点</strong><span class="h-sub">约 10 分钟</span></div>
+              <div class="grid-cards">${cardHtml('r01', '契合高蛋白')}</div>
+            </div>
+            <div class="card">
+              <div class="h-row"><strong>☀️ 丰盛午餐 · ${isSolo ? '1道一碗端' : isGuest ? '默认一荤一素' : '两菜一汤'}</strong><button class="btn btn-sm" onclick="swapSoup()">↻ 整餐换一批</button></div>
+              <div class="grid-cards">${lunchRecs}</div>
+            </div>
+          </div>
+          ${drawerHtml}
+          ${S.toast ? `<div class="snackbar"><span>${S.toast}</span></div>` : ''}
+        </main>`;
+    }
+    draw();
+  </script>
+</body>
+</html>

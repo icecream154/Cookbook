@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>PROTO-PAGE-COMM · 引导向导与快捷认证画板</title>
+  <link rel="stylesheet" href="../shared/wireframe.css" />
+</head>
+<body>
+  <header class="wb-bar" id="topBar"></header>
+  <div class="wb-stage" id="stage" data-vp="mobile">
+    <div class="shell" id="shell" data-vp="mobile"></div>
+  </div>
+  <script src="../shared/mock-data.js"></script>
+  <script>
+    const S = {
+      vp: 'mobile',
+      st: 'S1_Step1_Household',
+      size: 3, kids: true, purposes: ['解决每天吃什么', '照顾家人营养三餐'],
+      spiciness: 1, avoids: ['香菜'], skill: '家常熟手', apps: ['燃气灶/炒锅汤锅', '空气炸锅'], health: ['均衡膳食', '减脂低卡'],
+      toast: ''
+    };
+    const STATES = [
+      { id: 'S1_Step1_Household', label: 'S1: 向导Step1(人数结构)' },
+      { id: 'S2_Step2_3_TasteAvoid', label: 'S2: 向导Step2-3(辣度忌口)' },
+      { id: 'S3_Step4_5_SkillHealth', label: 'S3: 向导Step4-5(厨具健康)' },
+      { id: 'S1_AuthForm', label: 'AUTH-S1: 验证码接续表单' },
+      { id: 'S2_ProfileConflict', label: 'AUTH-S2: 云端旧档案冲突裁决' }
+    ];
+    window.setSt = (id) => { S.st = id; S.toast = ''; draw(); };
+    window.setVp = (vp) => { S.vp = vp; draw(); };
+    window.pickSize = (n) => { S.size = n; draw(); };
+    window.togArr = (arrName, val) => {
+      const a = S[arrName]; const i = a.indexOf(val);
+      if (i >= 0) a.splice(i, 1); else a.push(val);
+      draw();
+    };
+    window.flash = (msg) => { S.toast = msg; draw(); };
+
+    function draw() {
+      document.getElementById('topBar').innerHTML = WB.renderTopBar({
+        protoId: 'PROTO-PAGE-COMM',
+        specHref: '../../../06-pages/common-and-onboarding/onboarding-wizard.md',
+        specLabel: 'PAGE-COMM-01 / 02',
+        states: STATES, activeState: S.st, onState: 'setSt', vp: S.vp, onVp: 'setVp'
+      });
+      document.getElementById('stage').setAttribute('data-vp', S.vp);
+      const sh = document.getElementById('shell');
+      sh.setAttribute('data-vp', S.vp);
+
+      let modalHtml = '';
+      if (S.st === 'S1_Step1_Household') {
+        modalHtml = `
+          <div class="sheet-hd"><span>饮食偏好向导 (1 / 5)</span><button class="btn btn-sm" onclick="flash('已按 RULE-SYNC-01 跳过并采用默认参数')">跳过先逛 ></button></div>
+          <div class="sheet-bd">
+            <div class="h-title" style="margin-bottom:8px;">平时主要为几个人做饭？</div>
+            <div class="chips" style="margin-bottom:10px;">
+              ${[{n:1,l:'1人食'},{n:2,l:'二人世界'},{n:3,l:'三口之家'},{n:4,l:'四口及以上'}].map(x => `<button class="chip ${S.size===x.n?'active':''}" onclick="pickSize(${x.n})">${x.l}</button>`).join('')}
+            </div>
+            ${S.size >= 2 ? `<div class="chips" style="margin-bottom:14px;">
+              <button class="chip ${S.kids?'accent':''}" onclick="S.kids=!S.kids;draw()">${S.kids?'✓ ':''}家有儿童(优先免辣高钙)</button>
+            </div>` : ''}
+            <div style="font-weight:700;font-size:12px;margin-bottom:6px;">使用 APP 目的 (ENUM-USR-Purpose · 上限3项)</div>
+            <div class="chips">
+              ${['解决每天吃什么','零基础学做菜','减脂增肌控卡','照顾家人营养三餐'].map(p => `<button class="chip ${S.purposes.includes(p)?'active':''}" onclick="togArr('purposes','${p}')">${p}</button>`).join('')}
+            </div>
+          </div>
+          <div class="sheet-ft"><span></span><button class="btn btn-primary" onclick="setSt('S2_Step2_3_TasteAvoid')">下一步 →</button></div>`;
+      } else if (S.st === 'S2_Step2_3_TasteAvoid') {
+        modalHtml = `
+          <div class="sheet-hd"><span>饮食偏好向导 (2~3 / 5)</span><button class="btn btn-sm" onclick="flash('保留已填项跳过')">跳过 ></button></div>
+          <div class="sheet-bd">
+            <div style="font-weight:700;font-size:13px;margin-bottom:6px;">最高辣度接受度 (ENUM-RCP-Spiciness 硬约束)</div>
+            <div class="chips" style="margin-bottom:14px;">
+              ${['0 不吃辣','1 微辣(宫保鸡丁)','2 中辣','3 重辣'].map((l,i) => `<button class="chip ${S.spiciness===i?'active':''}" onclick="S.spiciness=${i};draw()">${l}</button>`).join('')}
+            </div>
+            <div style="font-weight:700;font-size:13px;margin-bottom:6px;">绝对不吃或过敏的食材 (ENUM-USR-AvoidTag)</div>
+            <div class="chips">
+              <button class="chip ${S.avoids.length===0?'active':''}" onclick="S.avoids=[];draw()">✓ 无特殊忌口</button>
+              ${['香菜','葱姜蒜','海鲜水产','牛羊肉','花生坚果'].map(a => `<button class="chip ${S.avoids.includes(a)?'active':''}" onclick="togArr('avoids','${a}')">🚫 ${a}</button>`).join('')}
+            </div>
+          </div>
+          <div class="sheet-ft"><button class="btn" onclick="setSt('S1_Step1_Household')">← 上一步</button><button class="btn btn-primary" onclick="setSt('S3_Step4_5_SkillHealth')">下一步 →</button></div>`;
+      } else if (S.st === 'S3_Step4_5_SkillHealth') {
+        modalHtml = `
+          <div class="sheet-hd"><span>饮食偏好向导 (4~5 / 5)</span><span></span></div>
+          <div class="sheet-bd">
+            <div style="font-weight:700;font-size:13px;margin-bottom:6px;">做菜能力与拥有厨具</div>
+            <div class="chips" style="margin-bottom:12px;">
+              ${['厨房小白','家常熟手','料理达人'].map(k => `<button class="chip ${S.skill===k?'active':''}" onclick="S.skill='${k}';draw()">${k}</button>`).join('')}
+              ${['燃气灶/炒锅汤锅','电饭煲','空气炸锅','烤箱'].map(ap => `<button class="chip ${S.apps.includes(ap)?'accent':''}" onclick="togArr('apps','${ap}')">${ap}</button>`).join('')}
+            </div>
+            <div style="font-weight:700;font-size:13px;margin-bottom:6px;">健康饮食偏好 (ENUM-USR-HealthTag)</div>
+            <div class="chips">
+              ${['均衡膳食','减脂低卡','高蛋白增肌','控糖低GI','温和养胃'].map(h => `<button class="chip ${S.health.includes(h)?'active':''}" onclick="togArr('health','${h}')">${h}</button>`).join('')}
+            </div>
+          </div>
+          <div class="sheet-ft"><button class="btn" onclick="setSt('S2_Step2_3_TasteAvoid')">← 上一步</button><a class="btn btn-primary" href="./daily-plan.html">✨ 生成我的今日三餐</a></div>`;
+      } else if (S.st === 'S1_AuthForm') {
+        modalHtml = `
+          <div class="sheet-hd"><span>PAGE-COMM-02 · 快捷登录/注册一体化</span><span>✕</span></div>
+          <div class="sheet-bd">
+            <div class="banner blue">💡 PAT-AuthResume 挂起意图：验证通过后将自动为你收藏「经典慢炖番茄牛腩煲」</div>
+            <div class="card" style="padding:8px 10px;">📱 手机号：138 **** 8820</div>
+            <div class="card" style="padding:8px 10px;display:flex;justify-content:space-between;"><span>🔢 验证码：829410</span><span class="h-sub">54s后重发</span></div>
+            <div class="h-sub">☑ 已阅读并同意《用户服务协议》与《隐私政策》</div>
+          </div>
+          <div class="sheet-ft"><button class="btn btn-primary" style="width:100%;" onclick="setSt('S2_ProfileConflict')">模拟输完6位验证码(检出双端档案冲突) →</button></div>`;
+      } else {
+        modalHtml = `
+          <div class="sheet-hd"><span>RULE-SYNC-02 · 饮食档案冲突二选一裁决</span><span></span></div>
+          <div class="sheet-bd">
+            <p class="h-sub" style="margin-bottom:10px;">检测到该老账号云端已有历史档案，与你刚才在本地定制的草稿不一致，请选择保留哪份：</p>
+            <div class="card" style="border-color:#fb923c;background:#fff7ed;">
+              <strong>方案 A：采用刚才本地定制的新偏好</strong>
+              <div class="h-sub">1人食 · 不吃辣 · 减脂低卡</div>
+            </div>
+            <div class="card">
+              <strong>方案 B：恢复云端账号原有档案</strong>
+              <div class="h-sub">三口之家(含儿童) · 微辣 · 忌香菜</div>
+            </div>
+          </div>
+          <div class="sheet-ft">
+            <button class="btn" style="flex:1;" onclick="flash('✅ 已恢复云端档案，并自动完成刚才挂起的收藏动作！')">选方案 B</button>
+            <button class="btn btn-primary" style="flex:1;" onclick="flash('✅ 已覆盖同步新偏好上云，并自动完成收藏！')">选方案 A</button>
+          </div>`;
+      }
+
+      sh.innerHTML = `
+        ${WB.renderNav('plan')}
+        <main class="shell-main">
+          <div class="wrap" style="opacity:0.45;">
+            <div class="h-title">宿主背景页示意（今日菜谱 / 菜谱详情）</div>
+            <p class="h-sub">当前画板聚焦演示跨空间公共层 PAGE-COMM-01 与 PAGE-COMM-02 的全部模态状态。</p>
+          </div>
+          <div class="modal-mask"><div class="sheet-box">${modalHtml}</div></div>
+          ${S.toast ? `<div class="snackbar"><span>${S.toast}</span></div>` : ''}
+        </main>`;
+    }
+    draw();
+  </script>
+</body>
+</html>
