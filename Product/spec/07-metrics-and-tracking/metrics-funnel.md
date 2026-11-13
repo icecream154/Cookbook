@@ -1,6 +1,6 @@
 # 07-1. 核心业务数据指标体系与转化漏斗（`MET-*`）
 
-本文档定义衡量【菜谱】应用核心产品价值的**北极星指标（North Star Metric）**与**五大模块转化漏斗公式**。根据 [00-spec-standard.md](../00-spec-standard.md) 强制铁律，所有指标的分子与分母均精确绑定至 [event-dictionary.md](./event-dictionary.md) 中的关键业务事件（`EVT-*`），确保 100% 可计算、无虚空口径。
+本文档定义衡量【菜谱】应用核心产品价值的**北极星指标**（North Star Metric）与**五大模块转化漏斗公式**。根据元规范 [02-id-and-traceability.md 铁律 5](../../meta/02-id-and-traceability.md#rule-5)，所有指标的分子与分母均精确绑定至 [event-dictionary.md](./event-dictionary.md) 中的关键业务事件（`EVT-*`），确保 100% 可计算、无虚空口径。
 
 ---
 

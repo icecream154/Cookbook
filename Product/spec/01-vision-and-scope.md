@@ -25,11 +25,11 @@
 
 ---
 
-## 3. MVP 功能范围总表（`FEAT-*`）
+## 3. 产品功能版图与范围边界（`FEAT-*`）
 
-### 3.1 首期纳入范围（In-Scope）
+### 3.1 当前纳入的功能版图（In-Scope Capabilities）
 
-| 功能 ID | 功能名称 | 归属业务模块 | 支撑场景 | MVP 完成标准（一句话验收边界） | 下游核心映射 |
+| 功能 ID | 功能名称 | 归属业务模块 | 支撑场景 | 核心能力边界定义 | 下游核心映射 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | <a id="feat-01"></a>**FEAT-01** | 渐进式饮食建档与注册登录一体化 | 引导与个人中心 | [SCN-01](#scn-01), [SCN-02](#scn-02), [SCN-03](#scn-03) | 支持先逛后登；提供 5 步偏好向导与单页微调，快捷认证后自动接续原受限动作并裁决合并本地/云端档案 | [FLOW-AUTH-01](./04-ia-and-flows/flows/auth-and-onboarding.md#flow-auth-01), [PAGE-COMM-01](./06-pages/common-and-onboarding/onboarding-wizard.md#page-comm-01) |
 | <a id="feat-02"></a>**FEAT-02** | 个性化今日三餐智能配餐与换菜 | 今日菜谱 | [SCN-01](#scn-01), [SCN-02](#scn-02), [SCN-03](#scn-03) | 严格排除个人忌口与超纲辣度/厨具，按人数自动组合早中晚餐结构，外显命中理由并支持单菜/整餐互斥防重换一换 | [RULE-PLAN-02](./03-business-rules/meal-recommendation.md#rule-plan-02), [PAGE-PLAN-01](./06-pages/daily-plan/daily-meal-plan.md#page-plan-01) |
@@ -39,8 +39,11 @@
 | <a id="feat-06"></a>**FEAT-06** | 屏幕常亮大字分步跟做与跨步计时 | 菜谱消费 | [SCN-04](#scn-04) | 提供开火前备料清点卡、大字号高对比单步视图、防息屏常亮锁以及翻页不中断的顶部悬浮倒计时器 | [FLOW-COOK-02](./04-ia-and-flows/flows/detail-and-cooking.md#flow-cook-02), [PAGE-COOK-02](./06-pages/recipe-consumption/cooking-focus-mode.md#page-cook-02) |
 | <a id="feat-07"></a>**FEAT-07** | 轻量单层收藏夹与防误删保护 | 收藏夹 | [SCN-01](#scn-01), [SCN-02](#scn-02) | 全站一键红心收藏免分组弹窗打断，收藏夹页支持餐次/关键词秒级筛选及取消收藏 4 秒撤销保护 | [PAT-UndoSnackbar](./05-components-and-patterns/interaction-patterns.md#pat-undosnackbar), [PAGE-FAV-01](./06-pages/favorites/favorites-list.md#page-fav-01) |
 
-### 3.2 首期明确排除范围（Out-of-Scope）
-- **UGC 社区与社交**：不支持用户上传/编辑自建菜谱、评论区盖楼、点赞关注动态流（首期采用高质量结构化官方菜谱库 PGC）。
+### 3.2 当前产品非目标边界（Non-Goals / Out-of-Scope）
+
+以下领域不在当前产品能力边界内，以确保核心配餐与下厨体验的专注度。未来随产品演进若决定拓展某项能力，须先将其从本节移入 `3.1` 分配 `FEAT-*` 编号，再向下游 `02` ~ `08` 各层增量展开：
+
+- **UGC 社区与社交**：不支持用户上传/编辑自建菜谱、评论区盖楼、点赞关注动态流（当前采用高质量结构化官方精编菜谱库 PGC）。
 - **生鲜履约交易**：不接入第三方买菜平台购物车结算与骑手配送。
 - **重硬件外设联动**：不支持拍照估算食物热量或蓝牙控制智能烤箱/料理机。
 
