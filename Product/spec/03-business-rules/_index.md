@@ -2,7 +2,7 @@
 
 ## 1. 业务规则分类划分标准
 
-因业务规则大量横跨多个静态领域实体，本目录**不按静态实体拆分，而按系统执行的核心业务决策能力簇（Business Capability）划分**为 4 份规则文档。全站所有终端与页面涉及判定、配餐、换算、过滤与同步逻辑时，必须唯一引用本目录规则，严禁在页面文档私自重写。
+因业务规则大量横跨多个静态领域实体联合读取，本目录**不按静态实体拆分，而按系统执行的核心业务决策能力簇（Business Capability）划分**为 4 份规则文档。全站所有终端与页面涉及判定、配餐、换算、过滤与同步逻辑时，必须唯一引用本目录规则，严禁在页面文档私自重写。
 
 | 规则文件 | 能力簇名称 | ID 前缀 | 核心管辖决策 |
 | :--- | :--- | :--- | :--- |
@@ -13,22 +13,22 @@
 
 ---
 
-## 2. 全量业务规则注册索引表（共 15 条）
+## 2. 全量业务规则注册索引表（共 15 条，支持一键跳转上下游）
 
-| 规则 ID | 规则标准名称 | 输入领域依赖 | 核心消费页面 / 流程 |
+| 规则 ID | 规则标准名称 | 输入领域依赖（点击查阅字典） | 核心消费页面 / 流程（点击查阅视图） |
 | :--- | :--- | :--- | :--- |
-| [RULE-PLAN-01](./meal-recommendation.md#rule-plan-01) | 今日三餐硬过滤一票否决规则 | `DOM-USR-DietaryProfile`, `DOM-RCP-Recipe` | `PAGE-PLAN-01`, `FLOW-PLAN-01` |
-| [RULE-PLAN-02](./meal-recommendation.md#rule-plan-02) | 按用餐人数餐次配餐结构矩阵 | `ENUM-USR-HouseholdSize`, `ENUM-RCP-DishRole` | `PAGE-PLAN-01`, `FLOW-PLAN-01` |
-| [RULE-PLAN-03](./meal-recommendation.md#rule-plan-03) | 个性化推荐命中理由生成规则 | `DOM-USR-DietaryProfile`, `DOM-RCP-Recipe` | `COMP-RecipeCard`, `PAGE-PLAN-01` |
-| [RULE-PLAN-04](./meal-recommendation.md#rule-plan-04) | 单菜与整餐“换一换”互斥防重规则 | `DOM-PLN-DailyMealPlan`, `DOM-RCP-Recipe` | `PAGE-PLAN-01`, `FLOW-PLAN-01` |
-| [RULE-PLAN-05](./meal-recommendation.md#rule-plan-05) | 当日跨菜谱同类食材合并规则 | `DOM-PLN-IngredientSummaryItem`, `ENUM-RCP-ScaleMode` | `PAGE-PLAN-02`, `FLOW-PLAN-01` |
-| [RULE-SRCH-01](./search-and-matching.md#rule-srch-01) | 关键词与标准食材同义词召回规则 | `DOM-RCP-StandardIngredient`, `DOM-RCP-Recipe` | `COMP-SearchBar`, `PAGE-SRCH-01` |
-| [RULE-SRCH-02](./search-and-matching.md#rule-srch-02) | 多食材“智能匹配度 vs 严格全含”规则 | `ENUM-PLN-IngMatchMode`, `DOM-RCP-RecipeIngredient` | `PAGE-SRCH-01`, `PAGE-SRCH-02` |
-| [RULE-SRCH-03](./search-and-matching.md#rule-srch-03) | 主动检索下个人忌口显隐与预警规则 | `DOM-USR-DietaryProfile`, `DOM-RCP-RecipeIngredient` | `PAGE-SRCH-01`, `PAGE-COOK-01` |
-| [RULE-SRCH-04](./search-and-matching.md#rule-srch-04) | 复合筛选布尔组合与零结果阶梯放宽规则 | `DOM-RCP-Recipe`, `ENUM-PLN-SortOrder` | `PAGE-SRCH-01`, `PAGE-SRCH-02`, `FLOW-DISC-01` |
-| [RULE-COOK-01](./portion-and-cooking.md#rule-cook-01) | 详情页目标人数初始值继承优先级规则 | `DOM-USR-DietaryProfile`, `DOM-RCP-Recipe` | `PAGE-COOK-01`, `FLOW-COOK-01` |
-| [RULE-COOK-02](./portion-and-cooking.md#rule-cook-02) | 多量纲食材人性化取整换算规则 | `DOM-RCP-RecipeIngredient`, `ENUM-RCP-ScaleMode` | `PAGE-COOK-01`, `PAGE-COOK-02`, `PAGE-PLAN-02` |
-| [RULE-COOK-03](./portion-and-cooking.md#rule-cook-03) | 食材表与步骤富文本动态数值同步规则 | `DOM-RCP-RecipeStep`, `DOM-RCP-RecipeIngredient` | `PAGE-COOK-01`, `PAGE-COOK-02` |
-| [RULE-SYNC-01](./identity-and-sync.md#rule-sync-01) | 游客本地偏好草稿与默认兜底规则 | `DOM-USR-DietaryProfile` | `PAGE-COMM-01`, `PAGE-PLAN-01`, `FLOW-AUTH-01` |
-| [RULE-SYNC-02](./identity-and-sync.md#rule-sync-02) | 登录时云端旧档案与本地草稿冲突裁决规则 | `DOM-USR-Account`, `DOM-USR-DietaryProfile` | `PAGE-COMM-02`, `FLOW-AUTH-02` |
-| [RULE-SYNC-03](./identity-and-sync.md#rule-sync-03) | 饮食档案变更对当日菜单的温和刷新保护规则 | `DOM-USR-DietaryProfile`, `DOM-PLN-DailyMealPlan` | `PAGE-PROF-02`, `PAGE-PLAN-01`, `FLOW-PLAN-02` |
+| [RULE-PLAN-01](./meal-recommendation.md#rule-plan-01) | 今日三餐硬过滤一票否决规则 | [DOM-USR-DietaryProfile 饮食档案](../02-domain-model/user-profile/entities.md#dom-usr-dietaryprofile)、[DOM-RCP-Recipe 菜谱](../02-domain-model/recipe-catalog/entities.md#dom-rcp-recipe) | [PAGE-PLAN-01 今日菜谱](../06-pages/daily-plan/daily-meal-plan.md#page-plan-01)、[FLOW-PLAN-01 配餐换菜流](../04-ia-and-flows/flows/meal-planning.md#flow-plan-01) |
+| [RULE-PLAN-02](./meal-recommendation.md#rule-plan-02) | 按用餐人数餐次配餐结构矩阵 | [ENUM-USR-HouseholdSize 人数档位](../02-domain-model/user-profile/enums.md#enum-usr-householdsize)、[ENUM-RCP-DishRole 配餐角色](../02-domain-model/recipe-catalog/enums.md#enum-rcp-dishrole) | [PAGE-PLAN-01 今日菜谱](../06-pages/daily-plan/daily-meal-plan.md#page-plan-01)、[FLOW-PLAN-01 配餐换菜流](../04-ia-and-flows/flows/meal-planning.md#flow-plan-01) |
+| [RULE-PLAN-03](./meal-recommendation.md#rule-plan-03) | 个性化推荐命中理由生成规则 | [DOM-USR-DietaryProfile 饮食档案](../02-domain-model/user-profile/entities.md#dom-usr-dietaryprofile)、[DOM-RCP-Recipe 菜谱](../02-domain-model/recipe-catalog/entities.md#dom-rcp-recipe) | [COMP-RecipeCard 菜谱卡片](../05-components-and-patterns/shared-components.md#comp-recipecard)、[PAGE-PLAN-01 今日菜谱](../06-pages/daily-plan/daily-meal-plan.md#page-plan-01) |
+| [RULE-PLAN-04](./meal-recommendation.md#rule-plan-04) | 单菜与整餐“换一换”互斥防重规则 | [DOM-PLN-DailyMealPlan 每日三餐单](../02-domain-model/meal-and-collection/entities.md#dom-pln-dailymealplan)、[DOM-RCP-Recipe 菜谱](../02-domain-model/recipe-catalog/entities.md#dom-rcp-recipe) | [PAGE-PLAN-01 今日菜谱](../06-pages/daily-plan/daily-meal-plan.md#page-plan-01)、[FLOW-PLAN-01 配餐换菜流](../04-ia-and-flows/flows/meal-planning.md#flow-plan-01) |
+| [RULE-PLAN-05](./meal-recommendation.md#rule-plan-05) | 当日跨菜谱同类食材合并规则 | [DOM-PLN-IngredientSummaryItem 食材合并项](../02-domain-model/meal-and-collection/entities.md#dom-pln-ingredientsummaryitem)、[ENUM-RCP-ScaleMode 取整模式](../02-domain-model/recipe-catalog/enums.md#enum-rcp-scalemode) | [PAGE-PLAN-02 食材汇总抽屉](../06-pages/daily-plan/ingredient-summary-drawer.md#page-plan-02)、[FLOW-PLAN-01 配餐换菜流](../04-ia-and-flows/flows/meal-planning.md#flow-plan-01) |
+| [RULE-SRCH-01](./search-and-matching.md#rule-srch-01) | 关键词与标准食材同义词召回规则 | [DOM-RCP-StandardIngredient 标准食材](../02-domain-model/recipe-catalog/entities.md#dom-rcp-standardingredient)、[DOM-RCP-Recipe 菜谱](../02-domain-model/recipe-catalog/entities.md#dom-rcp-recipe) | [COMP-SearchBar 联想搜索框](../05-components-and-patterns/shared-components.md#comp-searchbar)、[PAGE-SRCH-01 找菜谱主页](../06-pages/recipe-discovery/recipe-search.md#page-srch-01) |
+| [RULE-SRCH-02](./search-and-matching.md#rule-srch-02) | 多食材“智能匹配度 vs 严格全含”规则 | [ENUM-PLN-IngMatchMode 匹配模式](../02-domain-model/meal-and-collection/enums.md#enum-pln-ingmatchmode)、[DOM-RCP-RecipeIngredient 食材项](../02-domain-model/recipe-catalog/entities.md#dom-rcp-recipeingredient) | [PAGE-SRCH-01 找菜谱主页](../06-pages/recipe-discovery/recipe-search.md#page-srch-01)、[PAGE-SRCH-02 复合筛选面板](../06-pages/recipe-discovery/complex-filter-panel.md#page-srch-02) |
+| [RULE-SRCH-03](./search-and-matching.md#rule-srch-03) | 主动检索下个人忌口显隐与预警规则 | [DOM-USR-DietaryProfile 饮食档案](../02-domain-model/user-profile/entities.md#dom-usr-dietaryprofile)、[DOM-RCP-RecipeIngredient 食材项](../02-domain-model/recipe-catalog/entities.md#dom-rcp-recipeingredient) | [PAGE-SRCH-01 找菜谱主页](../06-pages/recipe-discovery/recipe-search.md#page-srch-01)、[PAGE-COOK-01 菜谱详情页](../06-pages/recipe-consumption/recipe-detail.md#page-cook-01) |
+| [RULE-SRCH-04](./search-and-matching.md#rule-srch-04) | 复合筛选布尔组合与零结果阶梯放宽规则 | [DOM-RCP-Recipe 菜谱](../02-domain-model/recipe-catalog/entities.md#dom-rcp-recipe)、[ENUM-PLN-SortOrder 排序方式](../02-domain-model/meal-and-collection/enums.md#enum-pln-sortorder) | [PAGE-SRCH-01 找菜谱主页](../06-pages/recipe-discovery/recipe-search.md#page-srch-01)、[FLOW-DISC-01 复合检索流](../04-ia-and-flows/flows/search-and-collection.md#flow-disc-01) |
+| [RULE-COOK-01](./portion-and-cooking.md#rule-cook-01) | 详情页目标人数初始值继承优先级规则 | [DOM-USR-DietaryProfile 饮食档案](../02-domain-model/user-profile/entities.md#dom-usr-dietaryprofile)、[DOM-RCP-Recipe 菜谱](../02-domain-model/recipe-catalog/entities.md#dom-rcp-recipe) | [PAGE-COOK-01 菜谱详情页](../06-pages/recipe-consumption/recipe-detail.md#page-cook-01)、[FLOW-COOK-01 详情换算流](../04-ia-and-flows/flows/detail-and-cooking.md#flow-cook-01) |
+| [RULE-COOK-02](./portion-and-cooking.md#rule-cook-02) | 多量纲食材人性化取整换算规则 | [DOM-RCP-RecipeIngredient 食材项](../02-domain-model/recipe-catalog/entities.md#dom-rcp-recipeingredient)、[ENUM-RCP-ScaleMode 取整模式](../02-domain-model/recipe-catalog/enums.md#enum-rcp-scalemode) | [PAGE-COOK-01 菜谱详情页](../06-pages/recipe-consumption/recipe-detail.md#page-cook-01)、[PAGE-COOK-02 全屏跟做](../06-pages/recipe-consumption/cooking-focus-mode.md#page-cook-02) |
+| [RULE-COOK-03](./portion-and-cooking.md#rule-cook-03) | 食材表与步骤富文本动态数值同步规则 | [DOM-RCP-RecipeStep 做法步骤](../02-domain-model/recipe-catalog/entities.md#dom-rcp-recipestep)、[DOM-RCP-RecipeIngredient 食材项](../02-domain-model/recipe-catalog/entities.md#dom-rcp-recipeingredient) | [PAGE-COOK-01 菜谱详情页](../06-pages/recipe-consumption/recipe-detail.md#page-cook-01)、[PAGE-COOK-02 全屏跟做](../06-pages/recipe-consumption/cooking-focus-mode.md#page-cook-02) |
+| [RULE-SYNC-01](./identity-and-sync.md#rule-sync-01) | 游客本地偏好草稿与默认兜底规则 | [DOM-USR-DietaryProfile 饮食档案](../02-domain-model/user-profile/entities.md#dom-usr-dietaryprofile) | [PAGE-COMM-01 偏好引导向导](../06-pages/common-and-onboarding/onboarding-wizard.md#page-comm-01)、[FLOW-AUTH-01 冷启动建档流](../04-ia-and-flows/flows/auth-and-onboarding.md#flow-auth-01) |
+| [RULE-SYNC-02](./identity-and-sync.md#rule-sync-02) | 登录时云端旧档案与本地草稿冲突裁决规则 | [DOM-USR-Account 用户账号](../02-domain-model/user-profile/entities.md#dom-usr-account)、[DOM-USR-DietaryProfile 饮食档案](../02-domain-model/user-profile/entities.md#dom-usr-dietaryprofile) | [PAGE-COMM-02 快捷认证弹窗](../06-pages/common-and-onboarding/auth-modal.md#page-comm-02)、[FLOW-AUTH-02 拦截认证合并流](../04-ia-and-flows/flows/auth-and-onboarding.md#flow-auth-02) |
+| [RULE-SYNC-03](./identity-and-sync.md#rule-sync-03) | 饮食档案变更对当日菜单的温和刷新保护规则 | [DOM-USR-DietaryProfile 饮食档案](../02-domain-model/user-profile/entities.md#dom-usr-dietaryprofile)、[DOM-PLN-DailyMealPlan 每日三餐单](../02-domain-model/meal-and-collection/entities.md#dom-pln-dailymealplan) | [PAGE-PROF-02 档案编辑页](../06-pages/user-profile/dietary-archive-editor.md#page-prof-02)、[PAGE-PLAN-01 今日菜谱](../06-pages/daily-plan/daily-meal-plan.md#page-plan-01) |

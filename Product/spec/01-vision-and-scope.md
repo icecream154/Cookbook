@@ -29,15 +29,15 @@
 
 ### 3.1 当前纳入的功能版图（In-Scope Capabilities）
 
-| 功能 ID | 功能名称 | 归属业务模块 | 支撑场景 | 核心能力边界定义 | 下游核心映射 |
+| 功能 ID | 功能名称 | 归属业务模块 | 支撑目标场景（附语义短名） | 核心能力边界定义 | 下游核心规格映射 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| <a id="feat-01"></a>**FEAT-01** | 渐进式饮食建档与注册登录一体化 | 引导与个人中心 | [SCN-01](#scn-01), [SCN-02](#scn-02), [SCN-03](#scn-03) | 支持先逛后登；提供 5 步偏好向导与单页微调，快捷认证后自动接续原受限动作并裁决合并本地/云端档案 | [FLOW-AUTH-01](./04-ia-and-flows/flows/auth-and-onboarding.md#flow-auth-01), [PAGE-COMM-01](./06-pages/common-and-onboarding/onboarding-wizard.md#page-comm-01) |
-| <a id="feat-02"></a>**FEAT-02** | 个性化今日三餐智能配餐与换菜 | 今日菜谱 | [SCN-01](#scn-01), [SCN-02](#scn-02), [SCN-03](#scn-03) | 严格排除个人忌口与超纲辣度/厨具，按人数自动组合早中晚餐结构，外显命中理由并支持单菜/整餐互斥防重换一换 | [RULE-PLAN-02](./03-business-rules/meal-recommendation.md#rule-plan-02), [PAGE-PLAN-01](./06-pages/daily-plan/daily-meal-plan.md#page-plan-01) |
-| <a id="feat-03"></a>**FEAT-03** | 今日三餐跨菜谱食材合并核对 | 今日菜谱 | [SCN-02](#scn-02), [SCN-03](#scn-03) | 支持按餐次勾选开关，基于标准食材库自动折算并合并当日所需食材总量，支持打勾核对与文本复制 | [RULE-PLAN-05](./03-business-rules/meal-recommendation.md#rule-plan-05), [PAGE-PLAN-02](./06-pages/daily-plan/ingredient-summary-drawer.md#page-plan-02) |
-| <a id="feat-04"></a>**FEAT-04** | 多维复合检索与正反食材过滤 | 找菜谱 | [SCN-01](#scn-01), [SCN-02](#scn-02), [SCN-03](#scn-03), [SCN-04](#scn-04) | 支持菜名/同义食材搜索，支持多食材“智能匹配度 vs 严格全含”、排除忌口、菜系、辣度、耗时、仅看收藏组合过滤及零结果放宽兜底 | [RULE-SRCH-02](./03-business-rules/search-and-matching.md#rule-srch-02), [PAGE-SRCH-01](./06-pages/recipe-discovery/recipe-search.md#page-srch-01) |
-| <a id="feat-05"></a>**FEAT-05** | 多媒体富文本详情、双图表与动态换算 | 菜谱消费 | [SCN-03](#scn-03), [SCN-04](#scn-04) | 提供视频章节锚点与手机下滑小窗、单人份营养环图、工序火候时间轴图，以及食材清单与步骤正文同步人性化取整换算 | [RULE-COOK-02](./03-business-rules/portion-and-cooking.md#rule-cook-02), [PAGE-COOK-01](./06-pages/recipe-consumption/recipe-detail.md#page-cook-01) |
-| <a id="feat-06"></a>**FEAT-06** | 屏幕常亮大字分步跟做与跨步计时 | 菜谱消费 | [SCN-04](#scn-04) | 提供开火前备料清点卡、大字号高对比单步视图、防息屏常亮锁以及翻页不中断的顶部悬浮倒计时器 | [FLOW-COOK-02](./04-ia-and-flows/flows/detail-and-cooking.md#flow-cook-02), [PAGE-COOK-02](./06-pages/recipe-consumption/cooking-focus-mode.md#page-cook-02) |
-| <a id="feat-07"></a>**FEAT-07** | 轻量单层收藏夹与防误删保护 | 收藏夹 | [SCN-01](#scn-01), [SCN-02](#scn-02) | 全站一键红心收藏免分组弹窗打断，收藏夹页支持餐次/关键词秒级筛选及取消收藏 4 秒撤销保护 | [PAT-UndoSnackbar](./05-components-and-patterns/interaction-patterns.md#pat-undosnackbar), [PAGE-FAV-01](./06-pages/favorites/favorites-list.md#page-fav-01) |
+| <a id="feat-01"></a>**FEAT-01** | 渐进式饮食建档与注册登录一体化 | 引导与个人中心 | [SCN-01 独居一碗端](#scn-01)、[SCN-02 双人快手与收藏](#scn-02)、[SCN-03 多口营养配餐](#scn-03) | 支持先逛后登；提供 5 步偏好向导与单页微调，快捷认证后自动接续原受限动作并裁决合并本地/云端档案 | [FLOW-AUTH-01 冷启动渐进建档流](./04-ia-and-flows/flows/auth-and-onboarding.md#flow-auth-01)、[PAGE-COMM-01 5步偏好引导向导](./06-pages/common-and-onboarding/onboarding-wizard.md#page-comm-01) |
+| <a id="feat-02"></a>**FEAT-02** | 个性化今日三餐智能配餐与换菜 | 今日菜谱 | [SCN-01 独居一碗端](#scn-01)、[SCN-02 双人快手与收藏](#scn-02)、[SCN-03 多口营养配餐](#scn-03) | 严格排除个人忌口与超纲辣度/厨具，按人数自动组合早中晚餐结构，外显命中理由并支持单菜/整餐互斥防重换一换 | [RULE-PLAN-02 按人数配餐结构矩阵](./03-business-rules/meal-recommendation.md#rule-plan-02)、[PAGE-PLAN-01 今日菜谱主页](./06-pages/daily-plan/daily-meal-plan.md#page-plan-01) |
+| <a id="feat-03"></a>**FEAT-03** | 今日三餐跨菜谱食材合并核对 | 今日菜谱 | [SCN-02 双人快手与收藏](#scn-02)、[SCN-03 多口营养配餐](#scn-03) | 支持按餐次勾选开关，基于标准食材库自动折算并合并当日所需食材总量，支持打勾核对与文本复制 | [RULE-PLAN-05 跨菜谱同类食材合并](./03-business-rules/meal-recommendation.md#rule-plan-05)、[PAGE-PLAN-02 今日食材汇总抽屉](./06-pages/daily-plan/ingredient-summary-drawer.md#page-plan-02) |
+| <a id="feat-04"></a>**FEAT-04** | 多维复合检索与正反食材过滤 | 找菜谱 | [SCN-01 独居一碗端](#scn-01)、[SCN-02 双人快手与收藏](#scn-02)、[SCN-03 多口营养配餐](#scn-03)、[SCN-04 灶台实操跟做](#scn-04) | 支持菜名/同义食材搜索，支持多食材“智能匹配度 vs 严格全含”、排除忌口、菜系、辣度、耗时、仅看收藏组合过滤及零结果放宽兜底 | [RULE-SRCH-02 多食材双模匹配规则](./03-business-rules/search-and-matching.md#rule-srch-02)、[PAGE-SRCH-01 找菜谱检索主页](./06-pages/recipe-discovery/recipe-search.md#page-srch-01) |
+| <a id="feat-05"></a>**FEAT-05** | 多媒体富文本详情、双图表与动态换算 | 菜谱消费 | [SCN-03 多口营养配餐](#scn-03)、[SCN-04 灶台实操跟做](#scn-04) | 提供视频章节锚点与手机下滑小窗、单人份营养环图、工序火候时间轴图，以及食材清单与步骤正文同步人性化取整换算 | [RULE-COOK-02 多量纲人性化取整](./03-business-rules/portion-and-cooking.md#rule-cook-02)、[PAGE-COOK-01 多媒体菜谱详情页](./06-pages/recipe-consumption/recipe-detail.md#page-cook-01) |
+| <a id="feat-06"></a>**FEAT-06** | 屏幕常亮大字分步跟做与跨步计时 | 菜谱消费 | [SCN-04 灶台实操跟做](#scn-04) | 提供开火前备料清点卡、大字号高对比单步视图、防息屏常亮锁以及翻页不中断的顶部悬浮倒计时器 | [FLOW-COOK-02 全屏跟做与悬浮计时流](./04-ia-and-flows/flows/detail-and-cooking.md#flow-cook-02)、[PAGE-COOK-02 全屏分步跟做视图](./06-pages/recipe-consumption/cooking-focus-mode.md#page-cook-02) |
+| <a id="feat-07"></a>**FEAT-07** | 轻量单层收藏夹与防误删保护 | 收藏夹 | [SCN-01 独居一碗端](#scn-01)、[SCN-02 双人快手与收藏](#scn-02) | 全站一键红心收藏免分组弹窗打断，收藏夹页支持餐次/关键词秒级筛选及取消收藏 4 秒撤销保护 | [PAT-UndoSnackbar 4秒延迟撤销条](./05-components-and-patterns/interaction-patterns.md#pat-undosnackbar)、[PAGE-FAV-01 我的收藏夹主页](./06-pages/favorites/favorites-list.md#page-fav-01) |
 
 ### 3.2 当前产品非目标边界（Non-Goals / Out-of-Scope）
 
@@ -53,6 +53,6 @@
 
 | 约束 ID | 约束维度 | 规格要求 |
 | :--- | :--- | :--- |
-| <a id="nfr-01"></a>**NFR-01** | **Mobile-First 全端响应式一致性** | 以手机竖屏（`< 768px`）为首要设计基准，同时无缝适配平板厨房横屏分栏（`768px ~ 1023px`）与桌面 Web 宽屏常驻筛选布局（`>= 1024px`），三端共享 100% 相同的业务规则与数据契约（详见 [ia-and-shell.md](./04-ia-and-flows/ia-and-shell.md)）。 |
+| <a id="nfr-01"></a>**NFR-01** | **Mobile-First 全端响应式一致性** | 以手机竖屏（`< 768px`）为首要设计基准，同时无缝适配平板厨房横屏分栏（`768px ~ 1023px`）与桌面 Web 宽屏常驻筛选布局（`>= 1024px`），三端共享 100% 相同的业务规则与数据契约（详见 [04-1 全局信息架构与多端容器壳](./04-ia-and-flows/ia-and-shell.md)）。 |
 | <a id="nfr-02"></a>**NFR-02** | **本地优先与弱网韧性** | 未登录游客定制的饮食偏好、最近搜索词、当日买菜勾选态均须持久化至本地存储；详情页视频流加载缓慢或失败时不得阻塞食材表与图文步骤渲染。 |
-| <a id="nfr-03"></a>**NFR-03** | **厨房环境适老化与防油污易用性** | 在全屏跟做视图（`PAGE-COOK-02`）中，自动请求屏幕常亮（Wake Lock），核心翻页与计时按钮最小触控高度 `>= 48px`，正文最小字号 `>= 20px`。 |
+| <a id="nfr-03"></a>**NFR-03** | **厨房环境适老化与防油污易用性** | 在 [PAGE-COOK-02 全屏分步跟做视图](./06-pages/recipe-consumption/cooking-focus-mode.md#page-cook-02) 中，自动请求屏幕常亮（Wake Lock），核心翻页与计时按钮最小触控高度 `>= 48px`，正文最小字号 `>= 20px`。 |

@@ -9,6 +9,7 @@
 1. **表格与矩阵优先，禁止散文砌墙**：凡涉及实体结构、枚举取值、超过 2 个条件组合的分支规则、多端布局差异、页面状态穷举、事件映射，一律使用结构化 Markdown 表格表达；连续纯文本段落不得超过 4 行。
 2. **中英文混排加粗安全规范（CommonMark 兼容）**：在标准 CommonMark 解析器中，闭合的 `**` 若内侧紧邻标点（如 `）`、`”`、`」`）且外侧紧邻中文字符而无空格或标点，会导致加粗解析失效。编写时统一**将括号或引号置于 `**` 外侧**（正确示例：`支持**移动端**（<768px）`、按“**可视组件**”拆分；禁止示例：`支持**移动端（<768px）**自适应`）。
 3. **Mermaid 图表语法安全规范**：节点标签凡包含括号 `()`、斜杠 `/`、冒号 `:` 或星号 `*`，必须使用英文双引号包裹（如 `N1["[PAGE-CHK-01] 确认订单页 (主视图)"]`），且严禁在节点标签内使用原始 HTML 标签。
+4. **“禁裸代号”就地自解释引用基本法**：跨文件引用任何 ID、枚举或数据库字段时，**严禁只写冷冰冰的裸编号或裸英文列名逼迫读者频繁跳页查字典**（详见 [02-id-and-traceability.md 第 2.2 节](./02-id-and-traceability.md#self-explanatory-ref)）。必须统一采用 **`[ID 中文短名](链接)` + 括号一句话核心作用/代表项微摘要**，以及 **`中文业务名（英文属性名）`** 对照写法，做到“不跳转即可读懂当前段落 90% 语义，需查底层完整矩阵时一键点击直达”。
 
 ---
 
@@ -26,7 +27,7 @@
 ```markdown
 | 功能 ID | 功能名称 | 归属业务模块 | 支撑场景 | 核心能力边界定义 | 下游核心映射 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| <a id="feat-01"></a>**FEAT-01** | 单笔订单多地址拆单配送 | 交易结算 | [SCN-01](#scn-01) | 支持单次结算为不同商品行分配独立收货地址并自动按仓库拆分子订单；暂不支持跨境保税仓混拆 | [RULE-ORD-02](./03-business-rules/fulfillment.md#rule-ord-02), [PAGE-CHK-01](./06-pages/checkout/checkout-main.md#page-chk-01) |
+| <a id="feat-01"></a>**FEAT-01** | 单笔订单多地址拆单配送 | 交易结算 | [SCN-01 行政集中集采](#scn-01) | 支持单次结算为不同商品行分配独立收货地址并自动按仓库拆分子订单；暂不支持跨境保税仓混拆 | [RULE-ORD-02 多地址按仓拆单规则](./03-business-rules/fulfillment.md#rule-ord-02)、[PAGE-CHK-01 确认订单主页](./06-pages/checkout/checkout-main.md#page-chk-01) |
 ```
 
 ---
@@ -48,7 +49,7 @@
   | :--- | :--- | :--- | :--- | :--- | :--- |
   | `orderId` | 订单全局单号 | `String` | 是 | 全局唯一，18 位数字串 | 交易主键 |
   | `payableCents` | 实付总金额 | `Int` | 是 | `>= 0`，单位：分 | 扣除全部优惠并加上运费后的最终应付额 |
-  | `status` | 订单状态 | `Enum` | 是 | [ENUM-ORD-OrderStatus](./enums.md#enum-ord-orderstatus) | 当前履约生命周期阶段 |
+  | `status` | 订单状态 | `Enum` | 是 | [ENUM-ORD-OrderStatus 订单状态枚举](./enums.md#enum-ord-orderstatus)（待付款/待发货等 6 态） | 当前履约生命周期阶段 |
   ```
 
 - **标准枚举字典表（`enums.md`）**：
@@ -56,7 +57,7 @@
   ### <a id="enum-ord-orderstatus"></a>`ENUM-ORD-OrderStatus`（订单状态枚举）
   | 枚举编码 (Code) | 标准展示文案 (Label) | 排序或计算权重 | 业务判定语义说明 |
   | :--- | :--- | :--- | :--- |
-  | `PENDING_PAY` | 待付款 | `10` | 已锁库存待买家完成支付，超时未付自动流转至 `CLOSED` |
+  | `PENDING_PAY` | 待付款 | `10` | 已锁库存待买家完成支付，超时未付自动流转至已关闭（`CLOSED`） |
   | `PAID` | 待发货 | `20` | 支付网关回调确认成功，等待仓库推单出库 |
   ```
 
@@ -69,14 +70,14 @@
 ## <a id="rule-pric-01"></a>1. `RULE-PRIC-01`（平台满减券与会员折扣叠加计价规则）
 
 - **1. 触发时机与适用范围**：购物车勾算预览、确认订单页初始化及切换优惠券时实时调用。
-- **2. 输入依赖契约**：买家会员等级 [ENUM-USR-VipTier](../02-domain-model/member/enums.md#enum-usr-viptier)、订单商品小计 [DOM-ORD-Order.subtotalCents](../02-domain-model/order/entities.md#dom-ord-order)、所选优惠券类型 [ENUM-PRM-CouponType](../02-domain-model/promotion/enums.md#enum-prm-coupontype)。
+- **2. 输入依赖契约**：买家会员等级 [ENUM-USR-VipTier 会员等级枚举](../02-domain-model/member/enums.md#enum-usr-viptier)（普通/金卡/黑金）、[DOM-ORD-Order 交易订单](../02-domain-model/order/entities.md#dom-ord-order) 的商品原价小计（`subtotalCents`）、所选 [ENUM-PRM-CouponType 优惠券类型](../02-domain-model/promotion/enums.md#enum-prm-coupontype)。
 - **3. 核心判定矩阵与计算公式**：先按商品原价小计判定是否达到满减券门槛，扣减满减额后再乘以会员等级折扣率（结果按“分”四舍五入）：
   | 优惠券类型 | 普通会员 (`NONE`) | 金卡会员 (`GOLD`, 95折) | 黑金会员 (`PLATINUM`, 90折) |
   | :--- | :--- | :--- | :--- |
   | **平台通用满减券** | `subtotal - couponAmt` | `(subtotal - couponAmt) * 0.95` | `(subtotal - couponAmt) * 0.90` |
   | **特价秒杀专享券** | `subtotal - couponAmt` | 不叠加折上折，取两者更低价 | 不叠加折上折，取两者更低价 |
 - **4. 边界与降级兜底（Fallback）**：若折算后金额 `<= 0`，实付商品金额强制保底为 `1` 分（运费另计）；若计价服务超时，降级按商品原价展示并在提交按钮上方提示“优惠计算重试中”。
-- **5. 下游消费索引**：[FLOW-CHK-01](../04-ia-and-flows/flows/checkout.md#flow-chk-01) · [PAGE-CHK-01](../06-pages/checkout/checkout-main.md#page-chk-01)
+- **5. 下游消费索引**：[FLOW-CHK-01 购物车合并结算流](../04-ia-and-flows/flows/checkout.md#flow-chk-01) · [PAGE-CHK-01 确认订单主页](../06-pages/checkout/checkout-main.md#page-chk-01)
 ```
 
 ---
@@ -92,8 +93,8 @@
      ```markdown
      | 席位 | 导航标准文案 | 绑定根页面 | 默认首屏 | 角标/状态指示 | 游客可达性 | 切换保活 (Keep-Alive) 与重按行为 |
      | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-     | **Tab 1** | 商城首页 | [PAGE-HOME-01](../06-pages/home/home-main.md#page-home-01) | 是 | 无常驻红点 | 直接可读 | 切换保留滚动位；激活态重按平滑回顶 |
-     | **Tab 3** | 购物车 | [PAGE-CART-01](../06-pages/cart/cart-main.md#page-cart-01) | 否 | 显示有效加购件数徽标 | 允许切入展示登录引导空态（禁点 Tab 直接弹框拦截） | 切换保留勾选态；激活态重按回顶并静默刷新库存 |
+     | **Tab 1** | 商城首页 | [PAGE-HOME-01 商城首页主页](../06-pages/home/home-main.md#page-home-01) | 是 | 无常驻红点 | 直接可读 | 切换保留滚动位；激活态重按平滑回顶 |
+     | **Tab 3** | 购物车 | [PAGE-CART-01 购物车主页](../06-pages/cart/cart-main.md#page-cart-01) | 否 | 显示有效加购件数徽标 | 允许切入展示登录引导空态（禁点 Tab 直接弹框拦截） | 切换保留勾选态；激活态重按回顶并静默刷新库存 |
      ```
 2. **第 2 节：多端视口断点、画布栅格与导航壳基线表（`SHELL-*` Master Baseline）**
    必须定量声明断点区间、设计基准宽、安全边距、栅格列数/槽宽、版心上限与导航栏几何尺寸：
@@ -124,17 +125,17 @@
   ````markdown
   ## <a id="flow-chk-01"></a>1. `FLOW-CHK-01`：购物车合并结算至支付闭环流
 
-  - **1. 关联范围与前置条件**（Given）：支撑 [FEAT-01](../../01-vision-and-scope.md#feat-01)；用户已登录且在 [PAGE-CART-01](../../06-pages/cart/cart-main.md#page-cart-01) 勾选 `>= 1` 件有效可售商品。
+  - **1. 关联范围与前置条件**（Given）：支撑 [FEAT-01 多地址拆单结算](../../01-vision-and-scope.md#feat-01)；用户已登录且在 [PAGE-CART-01 购物车主页](../../06-pages/cart/cart-main.md#page-cart-01) 勾选 `>= 1` 件有效可售商品。
   - **2. 端到端交互与规则流转图**：
     ```mermaid
     flowchart TD
-        START(["[PAGE-CART-01] 点击去结算"]) --> CHECK_STK{"校验可售库存 [RULE-INV-01]"}
+        START(["[PAGE-CART-01 购物车] 点击去结算"]) --> CHECK_STK{"校验可售库存 [RULE-INV-01]"}
         CHECK_STK -- "库存不足" --> TOAST_ERR["原页拦截提示缺货商品并刷新列表"]
-        CHECK_STK -- "校验通过" --> CHK_MAIN["Push 进入 [PAGE-CHK-01] 确认订单页并执行计价 [RULE-PRIC-01]"]
-        CHK_MAIN -- "提交订单成功" --> PAY_RES["锁库生单, 跳转 [PAGE-CHK-03] 支付结果页"]
+        CHECK_STK -- "校验通过" --> CHK_MAIN["Push 进入 [PAGE-CHK-01 确认订单页] 执行叠加计价 [RULE-PRIC-01]"]
+        CHK_MAIN -- "提交订单成功" --> PAY_RES["锁库生单, 跳转 [PAGE-CHK-03 支付结果页]"]
     ```
-  - **3. 中断与异常回退**：在 `PAGE-CHK-01` 未提交直接返回购物车时，不锁定库存、不扣减优惠券；提交后未支付退出时订单进入待付款倒计时。
-  - **4. 跨页状态与缓存同步影响**：订单提交成功后，立即从 `PAGE-CART-01` 缓存中移除本次已结算商品行并重算底栏合计，同时触发 `PAGE-PROF-01`“待付款/待发货”角标计数刷新。
+  - **3. 中断与异常回退**：在 [PAGE-CHK-01 确认订单页](../../06-pages/checkout/checkout-main.md#page-chk-01) 未提交直接返回购物车时，不锁定库存、不扣减优惠券；提交后未支付退出时订单进入待付款倒计时。
+  - **4. 跨页状态与缓存同步影响**：订单提交成功后，立即从 `PAGE-CART-01`（购物车）缓存中移除本次已结算商品行并重算底栏合计，同时触发 [PAGE-PROF-01 个人中心](../../06-pages/member/profile-main.md#page-prof-01)“待付款/待发货”角标计数刷新。
   ````
 
 ---
@@ -153,19 +154,19 @@
 ### 1.2 输入属性与数据绑定表（Props Contract）
 | 属性标识 | 数据类型 / 绑定源 | 必填 | 默认值 / 边界约束 | 渲染说明 |
 | :--- | :--- | :--- | :--- | :--- |
-| `item` | [DOM-CAT-Sku](../02-domain-model/catalog/entities.md#dom-cat-sku) | 是 | 标题超 2 行末尾 `...` 截断 | 渲染主图、标题与销售价 |
+| `item` | [DOM-CAT-Sku 商品规格实体](../02-domain-model/catalog/entities.md#dom-cat-sku) | 是 | 标题超 2 行末尾 `...` 截断 | 渲染主图、标题与销售价 |
 | `variant` | `'home_feed' \| 'search_hit' \| 'fav_list'` | 是 | `'search_hit'` | 控制下方差异化信息与操作按钮 |
 
 ### 1.3 场景变体矩阵表（Variants Matrix）
 | 变体编码 | 挂载宿主页面 | 差异化展示字段与规则绑定 | 专属局部操作按钮 | 主热区跳转与传参 |
 | :--- | :--- | :--- | :--- | :--- |
-| `home_feed` | [PAGE-HOME-01](../06-pages/home/home-main.md#page-home-01) | 展示个性化推荐理由胶囊（最多 2 个） | `[不感兴趣]` 负反馈按钮 | 跳 `PAGE-PRD-01` 并透传 `from='home'` |
-| `fav_list` | [PAGE-FAV-01](../06-pages/fav/fav-main.md#page-fav-01) | 降价时高亮展示“比收藏时降 X 元”徽章 | 点击红心移除触发 [PAT-UndoSnackbar](./interaction-patterns.md#pat-undosnackbar) | 跳 `PAGE-PRD-01` 并透传 `from='fav'` |
+| `home_feed` | [PAGE-HOME-01 商城首页](../06-pages/home/home-main.md#page-home-01) | 展示个性化推荐理由胶囊（最多 2 个） | `[不感兴趣]` 负反馈按钮 | 跳 [PAGE-PRD-01 商品详情页](../06-pages/catalog/prd-detail.md#page-prd-01) 透传来源 `from='home'` |
+| `fav_list` | [PAGE-FAV-01 我的收藏夹](../06-pages/fav/fav-main.md#page-fav-01) | 降价时高亮展示“比收藏时降 X 元”徽章 | 点击红心移除触发 [PAT-UndoSnackbar 4秒延迟撤销条](./interaction-patterns.md#pat-undosnackbar) | 跳 `PAGE-PRD-01` 透传来源 `from='fav'` |
 
 ### 1.4 内部状态与事件透出表（States & Emitted Events）
 | 触发子热区 / 内部状态 | 防抖或置灰边界约束 | 透出事件语义（交由宿主绑定规则与埋点） | 组件局部即时反馈 |
 | :--- | :--- | :--- | :--- |
-| 点击右上红心热区 | `300ms` 节流防连点 | `onToggleFav(skuId)` → 宿主接入 [PAT-AuthResume](./interaction-patterns.md#pat-authresume) | 已登录态乐观切换实心/空心红心 |
+| 点击右上红心热区 | `300ms` 节流防连点 | `onToggleFav(skuId)` → 宿主接入 [PAT-AuthResume 未登录拦截并自动接续](./interaction-patterns.md#pat-authresume) | 已登录态乐观切换实心/空心红心 |
 | 点击卡片主区域 | 售罄态仍允许进详情看补货 | `onOpenDetail(skuId, context)` | 触发按压缩放微反馈后路由跳转 |
 ```
 
@@ -176,31 +177,31 @@
 | 异常或并发边界场景 | 系统确定性裁决与恢复行为 | 严禁出现的体验反例 |
 | :--- | :--- | :--- |
 | 倒计时 4000ms 内连续移除了第 2 条记录 | 立即提交第 1 条的物理删除，底部提示条文案无缝刷新为第 2 条并重置 `4000ms` 计时器 | 屏幕堆叠多条悬浮条，或点撤销误把两条一起恢复 |
-| 挂起受限动作弹登录框后，用户手动点 `✕` 关闭 | 立即清空内存 `pendingAction`，宿主页面保持点击前原貌零副作用 | 关闭弹窗后按钮卡在 Loading 态，或下次无关登录时意外重放旧动作 |
+| 挂起受限动作弹登录框后，用户手动点 `✕` 关闭 | 立即清空内存挂起意图（`pendingAction`），宿主页面保持点击前原貌零副作用 | 关闭弹窗后按钮卡在加载态，或下次无关登录时意外重放旧动作 |
 ```
 
 ---
 
 ### <a id="tpl-page"></a>2.6 `06-pages/<space>/<view>.md`（单页与子视图规格）固定五段式模板
-任何 `PAGE-*` 文档严格由以下 **5 个固定小节**构成，严守“**三不抄铁律**”（枚举全集链接 `02`、计算公式链接 `03`、公共组件与通用状态机链接 `05`）：
+任何 `PAGE-*` 文档严格由以下 **5 个固定小节**构成，严守“**三不抄铁律**”（枚举全集链接 `02`、计算公式链接 `03`、公共组件与通用状态机链接 `05`），且所有链接必须附带中文语义名与代表项微摘要：
 
 1. **第 1 节：页面元信息与路由契约表**
    必填行：`页面 ID 与名称`、`视图载体与层级`（标注 `L1/L2/L3/G` 及主页面/抽屉形态）、`访问权限与游客策略`、`路由入参与上下文继承`（上游透传参数及缺省回退值）、`上游进入入口`、`下游跳转出口与无栈兜底`、`关联可交互画板`。
 2. **第 2 节：多端响应式布局与容器挂载表**
-   必须显式完整覆盖 `SHELL-Mobile`、`SHELL-Tablet`、`SHELL-Desktop` 三个视口容器壳链接，并标明所挂载的 `04` 标准分栏骨架（`Mode-*`）或次级容器变形规则：
+   必须显式完整覆盖 `SHELL-Mobile`、`SHELL-Tablet`、`SHELL-Desktop` 三个视口容器壳链接（附断点像素说明），并标明所挂载的 `04` 标准分栏骨架（`Mode-*`）或次级容器变形规则：
    ```markdown
    | 视口容器壳 | 挂载分栏骨架 / 容器形态 | 区块排布、滚动分配与吸顶/吸底差异 |
    | :--- | :--- | :--- |
-   | [SHELL-Mobile](../../04-ia-and-flows/ia-and-shell.md#shell-mobile) | [Mode-SplitDetail](../../04-ia-and-flows/ia-and-shell.md#mode-splitdetail) | 单栏纵向滚动；顶部导航吸顶，结算主按钮固定于 `Slot-BottomBar` |
-   | [SHELL-Tablet](../../04-ia-and-flows/ia-and-shell.md#shell-tablet) | [Mode-SplitDetail](../../04-ia-and-flows/ia-and-shell.md#mode-splitdetail) | 左侧 `76px` 导航轨常驻；主区左右分栏独立滚动（左 `55%` 商品清单，右 `45%` Sticky 账单卡） |
-   | [SHELL-Desktop](../../04-ia-and-flows/ia-and-shell.md#shell-desktop) | [Mode-SplitDetail](../../04-ia-and-flows/ia-and-shell.md#mode-splitdetail) | 左侧 `220px` 侧栏常驻；`1200px` 版心内左主栏（`66%`）+ 右吸顶结算台（`34%` Sticky） |
+   | [SHELL-Mobile 手机竖屏壳 (<768px)](../../04-ia-and-flows/ia-and-shell.md#shell-mobile) | [Mode-SplitDetail 主副分栏骨架](../../04-ia-and-flows/ia-and-shell.md#mode-splitdetail) | 单栏纵向滚动；顶部导航吸顶，结算主按钮固定于底部操作槽（`Slot-BottomBar`） |
+   | [SHELL-Tablet 平板横屏壳 (768~1023px)](../../04-ia-and-flows/ia-and-shell.md#shell-tablet) | [Mode-SplitDetail 主副分栏骨架](../../04-ia-and-flows/ia-and-shell.md#mode-splitdetail) | 左侧 `76px` 导航轨常驻；主区左右分栏独立滚动（左 `55%` 商品清单，右 `45%` Sticky 账单卡） |
+   | [SHELL-Desktop 桌面宽屏壳 (>=1024px)](../../04-ia-and-flows/ia-and-shell.md#shell-desktop) | [Mode-SplitDetail 主副分栏骨架](../../04-ia-and-flows/ia-and-shell.md#mode-splitdetail) | 左侧 `220px` 侧栏常驻；`1200px` 版心内左主栏（`66%`）+ 右吸顶结算台（`34%` Sticky） |
    ```
 3. **第 3 节：区块组装与数据绑定表**
    ```markdown
    | 区块编号 | 区块名称 | 复用组件 (链接 COMP-*) 或原子控件 | 绑定领域实体/枚举 (链接 DOM-*/ENUM-*) | 显隐条件与边界截断约束 |
    | :--- | :--- | :--- | :--- | :--- |
-   | **B1** | 收货地址栏 | 地址摘要卡 + `[切换地址 >]` | [DOM-USR-Address](../../02-domain-model/member/entities.md#dom-usr-address) | 常驻；无默认地址时高亮显示 `+ 新建收货地址` |
-   | **B2** | 确认商品列表 | [COMP-QuantityStepper](../../05-components-and-patterns/shared-components.md#comp-quantitystepper) + 行卡片 | [DOM-ORD-OrderItem](../../02-domain-model/order/entities.md#dom-ord-orderitem) | 常驻；超长规格名最多 1 行截断 |
+   | **B1** | 收货地址栏 | 地址摘要卡 + `[切换地址 >]` | [DOM-USR-Address 收货地址实体](../../02-domain-model/member/entities.md#dom-usr-address) | 常驻；无默认地址时高亮显示 `+ 新建收货地址` |
+   | **B2** | 确认商品列表 | [COMP-QuantityStepper 数量步进器](../../05-components-and-patterns/shared-components.md#comp-quantitystepper) + 行卡片 | [DOM-ORD-OrderItem 订单商品行](../../02-domain-model/order/entities.md#dom-ord-orderitem) | 常驻；超长规格名最多 1 行截断 |
    ```
 4. **第 4 节：页面级状态枚举表**（硬性铁律 6：状态编码 `S1/S2/...` 必须与 `08` 画板顶栏按钮 **1:1 同名且数量一致**）
    ```markdown
@@ -213,8 +214,8 @@
    ```markdown
    | 用户操作或生命周期 (When) | 前置校验 / 交互契约 (链接 PAT-*) | 调用业务规则 / 流程 (链接 RULE-*/FLOW-*) | 界面反馈或路由跳转 (Then) | 触发埋点及属性快照 (链接 EVT-*) |
    | :--- | :--- | :--- | :--- | :--- |
-   | 勾选或取消平台满减券 | `200ms` 防连点 | [RULE-PRIC-01](../../03-business-rules/pricing.md#rule-pric-01) | 实时重算优惠抵扣额与实付总额 | — |
-   | 点击 `[提交订单]` 主按钮 | 校验地址非空且无失效行 | [FLOW-CHK-01](../../04-ia-and-flows/flows/checkout.md#flow-chk-01) | 锁库生单并唤起收银台；若并发缺货切至 `S2_HasInvalidSku` | [EVT-04](../../07-metrics-and-tracking/event-dictionary.md#evt-04) |
+   | 勾选或取消平台满减券 | `200ms` 防连点 | [RULE-PRIC-01 满减与会员折扣叠加计价](../../03-business-rules/pricing.md#rule-pric-01) | 实时重算优惠抵扣额与实付总额 | — |
+   | 点击 `[提交订单]` 主按钮 | 校验地址非空且无失效行 | [FLOW-CHK-01 购物车合并结算流](../../04-ia-and-flows/flows/checkout.md#flow-chk-01) | 锁库生单并唤起收银台；若并发缺货切至 `S2_HasInvalidSku` | [EVT-04 提交订单 (checkout_submitted)](../../07-metrics-and-tracking/event-dictionary.md#evt-04) |
    ```
 
 ---
@@ -222,12 +223,12 @@
 ### <a id="tpl-metric"></a>2.7 `07-metrics-and-tracking/`（核心指标与事件字典）标准模板
 
 #### <a id="tpl-metric-funnel"></a>2.7.1 `metrics-funnel.md`（北极星与转化漏斗 `MET-*`）标准模板
-严格由 **1. 北极星指标表（`MET-NSM`）** → **2. 核心业务漏斗与护栏诊断表（`MET-01 ~ MET-NN`）** → **3. 全链路事件跃迁漏斗图（Mermaid）** 三节构成，每个指标必须写清去重统计粒度、时间窗口及精确到 `EVT-*` 属性过滤条件的分子/分母：
+严格由 **1. 北极星指标表（`MET-NSM`）** → **2. 核心业务漏斗与护栏诊断表（`MET-01 ~ MET-NN`）** → **3. 全链路事件跃迁漏斗图（Mermaid）** 三节构成，公式必须采用“**自然语言业务口径（`[EVT-* 中文名]` + 过滤条件）**”可读写法，严禁写成纯代号除法：
 
 ```markdown
-| 指标 ID | 归属功能 | 指标名称 | 统计粒度与窗口 | 精确计算公式（主漏斗公式 + 配套护栏口径，必须链接 `EVT-*`） | 异常阈值与业务归因诊断 |
+| 指标 ID | 归属功能 | 指标名称 | 统计粒度与窗口 | 精确计算公式（自然语言口径 + 关联 `EVT-*` 链接） | 异常阈值与业务归因诊断 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| <a id="met-01"></a>**MET-01** | [FEAT-02](../01-vision-and-scope.md#feat-02) | **搜索至加购转化率** | 去重会话数（Session）· 自然日/周 | • **主转化率** = 触发 [EVT-03](./event-dictionary.md#evt-03)（`source='search'`）的会话数 ÷ 触发 [EVT-02](./event-dictionary.md#evt-02) 的会话数<br>• **辅看零结果率** = `EVT-02`（`result_total == 0`）次数 ÷ `EVT-02` 总次数 | 若零结果率 `> 8%`，需排查同义词词典缺口或长尾供给不足 |
+| <a id="met-01"></a>**MET-01** | [FEAT-02 商品多维检索](../01-vision-and-scope.md#feat-02) | **搜索至加购转化率** | 去重会话数（Session）· 自然日/周 | • **主转化率** = 搜索结果加购会话数（[EVT-03 加入购物车](./event-dictionary.md#evt-03)，限定 `source='search'`）÷ 执行检索会话数（[EVT-02 执行商品检索](./event-dictionary.md#evt-02)）<br>• **辅看零结果率** = 命中为 `0` 的检索次数（`EVT-02` 且 `result_total == 0`）÷ 执行检索总次数（`EVT-02`） | 若零结果率 `> 8%`，需排查同义词词典缺口或长尾供给不足 |
 ```
 
 #### <a id="tpl-event-dict"></a>2.7.2 `event-dictionary.md`（底层埋点字典 `EVT-*`）标准模板
@@ -236,5 +237,5 @@
 ```markdown
 | 事件 ID | 事件英文标识与中文名 | 触发载体 (`PAGE-*` / `COMP-*`) | 精确触发时机与防重条件 | 必传私有属性契约（`字段名: 类型 = 约束/枚举链接`） | 消费指标 (`MET-*`) |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| <a id="evt-02"></a>**EVT-02** | `search_executed`<br>执行商品检索 | [PAGE-SRCH-01](../06-pages/search/search-main.md#page-srch-01) | 关键词提交或筛选变更在防抖（`250ms`）后接口返回结果列表时上报（输入拼音过程不报） | • `has_query`: `Boolean`（是否含关键词）<br>• `sort_by`: `Enum`（[ENUM-CAT-SortType](../02-domain-model/catalog/enums.md#enum-cat-sorttype)）<br>• `result_total`: `Int`（`>= 0`，命中总数） | [MET-01](./metrics-funnel.md#met-01) |
+| <a id="evt-02"></a>**EVT-02** | `search_executed`<br>执行商品检索 | [PAGE-SRCH-01 搜索结果主页](../06-pages/search/search-main.md#page-srch-01) | 关键词提交或筛选变更在防抖（`250ms`）后接口返回结果列表时上报（输入拼音过程不报） | • `has_query`: `Boolean`（是否含关键词）<br>• `sort_by`: `Enum`（[ENUM-CAT-SortType 排序方式枚举](../02-domain-model/catalog/enums.md#enum-cat-sorttype)）<br>• `result_total`: `Int`（`>= 0`，命中总数） | [MET-01 搜索至加购转化率](./metrics-funnel.md#met-01) |
 ```

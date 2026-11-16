@@ -14,10 +14,10 @@
 | 枚举编码 | 标准展示文案 | 排序规则说明 |
 | :--- | :--- | :--- |
 | `comprehensive` | 综合推荐 | 默认排序；综合偏好契合度与菜谱精选权重 |
-| `ing_match_desc` | 食材匹配最多 | 当勾选 `>= 2` 项包含食材且处于 `smart_rank` 时自动激活 |
-| `time_asc` | 耗时最短 | 按 `prep_time_min + cook_time_min` 升序排列 |
-| `calories_asc` | 热量最低 | 按 `calories_per_serving` 升序排列 |
-| `fav_recent` | 最近收藏 | 仅用于收藏夹页，按 `favorited_at` 降序排列 |
+| `ing_match_desc` | 食材匹配最多 | 当勾选 `>= 2` 项包含食材且处于智能排序模式（`smart_rank`）时自动激活 |
+| `time_asc` | 耗时最短 | 按总耗时（备菜 `prep_time_min` + 开火 `cook_time_min`）升序排列 |
+| `calories_asc` | 热量最低 | 按单人份热量（`calories_per_serving`）升序排列 |
+| `fav_recent` | 最近收藏 | 仅用于收藏夹页，按收藏时间（`favorited_at`）降序排列 |
 
 ---
 

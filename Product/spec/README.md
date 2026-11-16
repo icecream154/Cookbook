@@ -151,7 +151,7 @@ flowchart TD
 
 ### 4. 前端与客户端工程师（承接下游 `../../Code/` 客户端）
 > **阅读目标**：搭建三端自适应容器壳、封装复用组件与本地草稿缓存、开发全部页面状态机与端侧实时分量换算、接入埋点。
-1. **搭建路由壳与全局拦截机制**：按 [ia-and-shell.md](./04-ia-and-flows/ia-and-shell.md) 搭建三端响应式容器壳；按 [interaction-patterns.md](./05-components-and-patterns/interaction-patterns.md) 封装“未登录受限动作挂起并在认证后自动重放”拦截器（`PAT-AuthResume`）、4 秒可撤销提示条（`PAT-UndoSnackbar`）及游客本地偏好草稿缓存（[RULE-SYNC-01](./03-business-rules/identity-and-sync.md#rule-sync-01)）。
+1. **搭建路由壳与全局拦截机制**：按 [ia-and-shell.md](./04-ia-and-flows/ia-and-shell.md) 搭建三端响应式容器壳；按 [interaction-patterns.md](./05-components-and-patterns/interaction-patterns.md) 封装“未登录受限动作挂起并在认证后自动重放”拦截器（`PAT-AuthResume`）、4 秒可撤销提示条（`PAT-UndoSnackbar`）及游客本地偏好草稿缓存（[RULE-SYNC-01 游客本地草稿与默认兜底规则](./03-business-rules/identity-and-sync.md#rule-sync-01)）。
 2. **逐空间开发页面视图与端侧换算引擎**：按 [06-pages/_index.md](./06-pages/_index.md) 实现 11 个视图的数据绑定、第 4 节状态机切换及第 5 节交互事件；开发详情页与跟做页时，严格依据 [portion-and-cooking.md](./03-business-rules/portion-and-cooking.md)（`RULE-COOK-01~03`）实现食材人性化取整与步骤富文本占位符实时联动，随时对照 [prototypes/index.html](./08-verification/prototypes/index.html) 校验交互细节。
 3. **埋点上报与提测自检**：按各单页规格第 5 节绑定的 `EVT-*` 链接查阅 [event-dictionary.md](./07-metrics-and-tracking/event-dictionary.md) 完成埋点上报，提测前对照 [acceptance-criteria.md](./08-verification/acceptance-criteria.md) 逐条自测。
 
