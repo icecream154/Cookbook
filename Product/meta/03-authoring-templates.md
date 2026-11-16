@@ -31,8 +31,8 @@
 
 ---
 
-### <a id="tpl-domain"></a>2.2 `02-domain-model/<subdomain>/`（静态领域模型）标准模板
-每个业务子域目录下拆分为 `terms.md`、`entities.md`、`enums.md` 三份文件，必填列与填充示范如下：
+### <a id="tpl-domain"></a>2.2 `02-domain-model/`（静态领域模型）标准模板
+不论业务域采用轻量平铺还是按聚合簇多级嵌套子包（详见 [01-layered-architecture.md 第 3.1 节](./01-layered-architecture.md)），领域模型文件均严格按**业务术语、静态实体、标准枚举**三类契约表编写，必填列与填充示范如下：
 
 - **业务术语表（`terms.md`）**：
   ```markdown

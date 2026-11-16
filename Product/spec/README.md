@@ -69,7 +69,7 @@ flowchart TD
 | 层级 | 本层总入口 | 本层回答的核心业务问题 | 本项目内部文件组织结构 | 状态 |
 | :--- | :--- | :--- | :--- | :--- |
 | **01 愿景与范围** | [01-vision-and-scope.md](./01-vision-and-scope.md) | 为什么要做【菜谱】？服务哪几类做饭人群场景？当前产品功能版图包含什么、明确不涉足哪些非目标边界？ | 宏观统领，单文件承载。 | ✅ 已定版 |
-| **02 领域模型** | [02-domain-model/_index.md](./02-domain-model/_index.md) | 系统有哪些静态业务概念？用户档案、菜谱、三餐单、收藏记录各有哪些字段与标准枚举值？ | 按数据归属边界拆为 **3 个子目录**（`user-profile/`、`recipe-catalog/`、`meal-and-collection/`），每域内固定拆为 `terms.md`、`entities.md`、`enums.md`。 | ✅ 已定版 |
+| **02 领域模型** | [02-domain-model/_index.md](./02-domain-model/_index.md) | 系统有哪些静态业务概念？用户档案、菜谱、三餐单、收藏记录各有哪些字段与标准枚举值？ | 按数据归属边界拆为 **3 个业务域包**（`user-profile/`、`recipe-catalog/`、`meal-and-collection/`）；当前各域规模适中（每域 2~6 个实体），采用轻量平铺形态（`terms.md`、`entities.md`、`enums.md`），后续膨胀时可按聚合簇继续下钻拆包。 | ✅ 已定版 |
 | **03 业务规则** | [03-business-rules/_index.md](./03-business-rules/_index.md) | 三餐怎么过滤忌口并按人数配菜？多食材怎么匹配？切人数时食材怎么人性化取整？游客登录怎么合并旧档案？ | 按核心业务决策能力拆分为 **4 份专题规则文档**（共 15 条五要素规则卡）。 | ✅ 已定版 |
 | **04 架构与流程** | [ia-and-shell.md](./04-ia-and-flows/ia-and-shell.md)<br>[flows/_index.md](./04-ia-and-flows/flows/_index.md) | 手机/平板/Web 三端导航栏怎么布局？用户完成建档、配餐、找菜、跟做要跨哪几个页面流转与同步状态？ | 1 份三端响应式容器壳文档 + `flows/` 下按用户旅程拆分的 **4 份跨页流程图文档**（共 8 条流程）。 | ✅ 已定版 |
 | **05 组件与交互** | [05-components-and-patterns/_index.md](./05-components-and-patterns/_index.md) | 菜谱卡片、人数步进器、联想搜索框在各处有哪些变体？未登录拦截自动接续和 4 秒撤销条怎么统一运作？ | 按“**可视复用组件**”与“**跨页交互契约**”拆分为 `shared-components.md` 与 `interaction-patterns.md`。 | ✅ 已定版 |
