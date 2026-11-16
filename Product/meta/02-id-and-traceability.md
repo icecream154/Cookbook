@@ -20,22 +20,22 @@
 
 | 所属层 | 条目类型 | 标准 ID 语法格式 | HTML 锚点格式（全小写） | 编号规则与通用写法示例 |
 | :--- | :--- | :--- | :--- | :--- |
-| `01` | 用户场景 | `SCN-<NN>` | `#scn-<nn>` | 两位序号递增。*示例：`SCN-01`（高频差旅人士机场极速改签场景）* |
-| `01` | 功能版图项 | `FEAT-<NN>` | `#feat-<nn>` | 两位序号递增。*示例：`FEAT-02`（多维条件航班检索与低价日历）* |
-| `01` | 非功能约束 | `NFR-<NN>` | `#nfr-<nn>` | 两位序号递增。*示例：`NFR-01`（手机/平板/桌面三端响应式一致性）* |
-| `02` | 业务术语 | `TERM-<DOM>-<NN>` | `#term-<dom>-<nn>` | 按子域各自递增。*示例：`TERM-ORD-01`（可退改票面净价定义）* |
-| `02` | 领域实体 | `DOM-<DOM>-<PascalName>` | `#dom-<dom>-<lowername>` | 英文大驼峰实体名。*示例：`DOM-ORD-Order`（交易订单聚合根实体）* |
-| `02` | 标准枚举 | `ENUM-<DOM>-<PascalName>` | `#enum-<dom>-<lowername>` | 英文大驼峰枚举名。*示例：`ENUM-ORD-OrderStatus`（订单生命周期状态枚举）* |
-| `03` | 业务规则 | `RULE-<CAP>-<NN>` | `#rule-<cap>-<nn>` | 按能力簇各自递增。*示例：`RULE-PRIC-01`（跨店满减与店铺券叠加计价规则）* |
-| `04` | 视口容器壳 | `SHELL-<Viewport>` | `#shell-<viewport>` | 按断点语义命名。*示例：`SHELL-Mobile`、`SHELL-Tablet`、`SHELL-Desktop`* |
-| `04` | 跨页业务流 | `FLOW-<FLOW>-<NN>` | `#flow-<flow>-<nn>` | 按旅程阶段递增。*示例：`FLOW-CHK-01`（购物车合并结算至支付成功闭环流）* |
-| `05` | 公共组件 | `COMP-<PascalName>` | `#comp-<lowername>` | 大驼峰组件语义名。*示例：`COMP-ProductCard`（跨页复用商品摘要卡片）* |
-| `05` | 交互模式 | `PAT-<PascalName>` | `#pat-<lowername>` | 大驼峰交互契约名。*示例：`PAT-AuthResume`（未登录拦截后自动接续原操作模式）* |
-| `06` | 页面/子视图 | `PAGE-<SPACE>-<NN>` | `#page-<space>-<nn>` | 按功能空间递增。*示例：`PAGE-CHK-01`（确认订单主页）、`PAGE-CHK-02`（优惠券选择抽屉）* |
-| `07` | 业务指标 | `MET-NSM` 或 `MET-<NN>` | `#met-nsm` / `#met-<nn>` | 北极星固定 `MET-NSM`，其余递增。*示例：`MET-01`（搜索至加购漏斗转化率）* |
-| `07` | 埋点事件 | `EVT-<NN>` | `#evt-<nn>` | 两位序号递增。*示例：`EVT-04`（`checkout_submitted` 提交订单按钮点击事件）* |
-| `08` | 验收用例 | `AC-<CAP>-<NN>` | `#ac-<cap>-<nn>` | 按能力簇递增。*示例：`AC-PRIC-02`（优惠券门槛临界值退回重算验收）* |
-| `08` | 交互微原型 | `PROTO-PAGE-<SPACE>`<br>`PROTO-FLOW-<KEY>` | —（对应独立 `.html` 文件） | 对应状态画板或跨页沙盒。*示例：`PROTO-PAGE-CHK`（结算空间多状态画板）* |
+| `01` 愿景与范围 | 用户场景 | `SCN-<NN>` | `#scn-<nn>` | 两位序号递增。*示例：`SCN-01`（高频差旅人士机场极速改签场景）* |
+| `01` 愿景与范围 | 功能版图项 | `FEAT-<NN>` | `#feat-<nn>` | 两位序号递增。*示例：`FEAT-02`（多维条件航班检索与低价日历）* |
+| `01` 愿景与范围 | 非功能约束 | `NFR-<NN>` | `#nfr-<nn>` | 两位序号递增。*示例：`NFR-01`（手机/平板/桌面三端响应式一致性）* |
+| `02` 领域模型 | 业务术语 | `TERM-<DOM>-<NN>` | `#term-<dom>-<nn>` | 按子域各自递增。*示例：`TERM-ORD-01`（可退改票面净价定义）* |
+| `02` 领域模型 | 领域实体 | `DOM-<DOM>-<PascalName>` | `#dom-<dom>-<lowername>` | 英文大驼峰实体名。*示例：`DOM-ORD-Order`（交易订单聚合根实体）* |
+| `02` 领域模型 | 标准枚举 | `ENUM-<DOM>-<PascalName>` | `#enum-<dom>-<lowername>` | 英文大驼峰枚举名。*示例：`ENUM-ORD-OrderStatus`（订单生命周期状态枚举）* |
+| `03` 业务规则 | 业务规则 | `RULE-<CAP>-<NN>` | `#rule-<cap>-<nn>` | 按能力簇各自递增。*示例：`RULE-PRIC-01`（跨店满减与店铺券叠加计价规则）* |
+| `04` 架构与流程 | 视口容器壳 | `SHELL-<Viewport>` | `#shell-<viewport>` | 按断点语义命名。*示例：`SHELL-Mobile`、`SHELL-Tablet`、`SHELL-Desktop`* |
+| `04` 架构与流程 | 跨页业务流 | `FLOW-<FLOW>-<NN>` | `#flow-<flow>-<nn>` | 按旅程阶段递增。*示例：`FLOW-CHK-01`（购物车合并结算至支付成功闭环流）* |
+| `05` 组件与交互 | 公共组件 | `COMP-<PascalName>` | `#comp-<lowername>` | 大驼峰组件语义名。*示例：`COMP-ProductCard`（跨页复用商品摘要卡片）* |
+| `05` 组件与交互 | 交互模式 | `PAT-<PascalName>` | `#pat-<lowername>` | 大驼峰交互契约名。*示例：`PAT-AuthResume`（未登录拦截后自动接续原操作模式）* |
+| `06` 页面规格 | 页面/子视图 | `PAGE-<SPACE>-<NN>` | `#page-<space>-<nn>` | 按功能空间递增。*示例：`PAGE-CHK-01`（确认订单主页）、`PAGE-CHK-02`（优惠券选择抽屉）* |
+| `07` 指标与埋点 | 业务指标 | `MET-NSM` 或 `MET-<NN>` | `#met-nsm` / `#met-<nn>` | 北极星固定 `MET-NSM`，其余递增。*示例：`MET-01`（搜索至加购漏斗转化率）* |
+| `07` 指标与埋点 | 埋点事件 | `EVT-<NN>` | `#evt-<nn>` | 两位序号递增。*示例：`EVT-04`（`checkout_submitted` 提交订单按钮点击事件）* |
+| `08` 验收与原型 | 验收用例 | `AC-<CAP>-<NN>` | `#ac-<cap>-<nn>` | 按能力簇递增。*示例：`AC-PRIC-02`（优惠券门槛临界值退回重算验收）* |
+| `08` 验收与原型 | 交互微原型 | `PROTO-PAGE-<SPACE>`<br>`PROTO-FLOW-<KEY>` | —（对应独立 `.html` 文件） | 对应状态画板或跨页沙盒。*示例：`PROTO-PAGE-CHK`（结算空间多状态画板）* |
 
 ---
 

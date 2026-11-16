@@ -47,4 +47,24 @@ flowchart TB
 
 ### 2. 进入【菜谱 Cookbook】产品规格实例库（[spec/README.md](./spec/README.md)）
 - **产品规格总导读与各角色阅读指南**：👉 **[打开 spec/README.md](./spec/README.md)**
-- **浏览器可交互 HTML 微原型总控台**：👉 **[打开 spec/08-verification/prototypes/index.html](./spec/08-verification/prototypes/index.html)**
+- **可交互 HTML 微原型总控台源码**：👉 **[spec/08-verification/prototypes/index.html](./spec/08-verification/prototypes/index.html)**
+
+---
+
+## 三、本地浏览器一键运行预览（macOS / Windows 通用）
+
+由于浏览器直接以本地文件协议（`file://`）打开 HTML 时，点击跳往 `.md` 规格书的链接会触发文件下载（而非网页渲染），且部分浏览器沙盒限制 `../../` 跨目录跳转，本目录内置了**零依赖跨平台预览脚本 [preview.js](./preview.js)**（无需执行 `npm install`，只要本地装有 Node.js 即可运行，同时自动渲染所有 `.md` 表格、锚点与 Mermaid 流程图）：
+
+- **macOS / Linux 终端启动**：
+  ```bash
+  cd Product
+  node preview.js
+  ```
+- **Windows（PowerShell 或 CMD）启动**：
+  ```powershell
+  cd Product
+  node preview.js
+  ```
+
+执行后会自动唤起系统默认浏览器打开微原型总控台（默认地址 `http://127.0.0.1:8090/spec/08-verification/prototypes/index.html`，若端口占用会自动顺延），实现 **HTML 微原型 ↔ Markdown 规格书 ↔ Mermaid 架构图** 在同一浏览器内的双向无缝互跳。
+

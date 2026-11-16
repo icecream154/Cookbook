@@ -121,7 +121,7 @@ flowchart TD
 
 - **`08` 验收标准与可交互 HTML 微原型**
   - [acceptance-criteria.md](./08-verification/acceptance-criteria.md)：覆盖配餐硬过滤、多食材检索放宽、自然计数食材取整、双端档案合并等边界的 10 组 `Given-When-Then` 必测验收用例（`AC-*`）。
-  - [prototypes/index.html](./08-verification/prototypes/index.html)（**浏览器直接打开即可交互体验的微原型总控台**）：
+  - [prototypes/index.html](./08-verification/prototypes/index.html)（**可交互微原型总控台**，推荐在 `Product/` 根目录执行 `node preview.js` 启动本地预览，支持与 `.md` 规格书双向无缝跳转）：
     - **6 个功能空间多状态交互画板**：[引导与认证](./08-verification/prototypes/pages/common-onboarding.html) · [今日菜谱与汇总](./08-verification/prototypes/pages/daily-plan.html) · [找菜谱复合检索](./08-verification/prototypes/pages/recipe-discovery.html) · [收藏夹](./08-verification/prototypes/pages/favorites.html) · [菜谱详情与全屏跟做](./08-verification/prototypes/pages/recipe-consumption.html) · [个人中心与饮食档案](./08-verification/prototypes/pages/user-profile.html)（顶栏均支持切换手机/平板/Web 视口，以及一键直达页面规格第 4 节定义的全部状态分支）。
     - **2 个跨页面状态传递微原型**：[游客点收藏触发登录→双端档案冲突裁决→自动完成收藏](./08-verification/prototypes/flows/flow-auth-and-merge.html) · [修改个人饮食档案→切回今日菜谱温和确认重算](./08-verification/prototypes/flows/flow-profile-to-plan-sync.html)。
 
