@@ -8,7 +8,7 @@
   1. **入口显式携带人数**（如从今日三餐页点入时携带当前套餐生效的 `applied_servings`）。
   2. **用户已定制的饮食档案默认人数**（`profile_source != 'default'` 时的 `household_size`）。
   3. **菜谱自身原始基准人份**（`recipe.base_servings`，适用于未定制偏好的纯游客从检索页直接点入）。
-- **作用域隔离边界**：用户在详情页内通过步进器手动增减 `target_servings`（允许区间 `1 ~ 8`）**仅在当前菜谱浏览与跟做会话内生效**，严禁反向篡改用户个人饮食档案中的全局 `household_size`。
+- **作用域隔离边界**：用户在详情页内通过步进器手动增减 `target_servings`（允许区间 `1 ~ 8`），**仅在当前菜谱浏览与跟做会话内生效**，严禁反向篡改用户个人饮食档案中的全局 `household_size`。
 - **消费索引**：[FLOW-COOK-01](../04-ia-and-flows/flows/detail-and-cooking.md#flow-cook-01)、[PAGE-COOK-01](../06-pages/recipe-consumption/recipe-detail.md#page-cook-01)。
 
 ---

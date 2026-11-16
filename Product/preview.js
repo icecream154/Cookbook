@@ -89,7 +89,7 @@ function renderMarkdownPage(mdText, reqPath) {
           .replace(/\\*\\*(.+?)\\*\\*/g, '<strong>$1</strong>');
       }
       const lines = md.replace(/\\r\\n/g, '\\n').split('\\n');
-      let html = '', inCode = false, codeLang = '', codeBuf = [], inTable = false, tRows = [];
+      let html = '', inCode = false, codeFence = '', codeLang = '', codeBuf = [], inTable = false, tRows = [];
       function flushTable() {
         if (!inTable) return;
         inTable = false;
@@ -102,15 +102,15 @@ function renderMarkdownPage(mdText, reqPath) {
         tRows = [];
       }
       for (const line of lines) {
-        if (/^\\s*\`\`\`/.test(line)) {
-          flushTable();
-          if (!inCode) { inCode = true; codeLang = line.replace(/^\\s*\`\`\`/, '').trim(); codeBuf = []; }
-          else {
+        const fm = line.match(/^\\s*(\`{3,})(.*)$/);
+        if (fm) {
+          if (!inCode) { flushTable(); inCode = true; codeFence = fm[1]; codeLang = fm[2].trim(); codeBuf = []; continue; }
+          else if (fm[1].length >= codeFence.length && !fm[2].trim()) {
             inCode = false;
             const body = codeBuf.join('\\n').replace(/&/g, '&amp;').replace(/</g, '&lt;');
             html += codeLang === 'mermaid' ? '<div class="mermaid">' + body + '</div>' : '<pre><code>' + body + '</code></pre>';
+            continue;
           }
-          continue;
         }
         if (inCode) { codeBuf.push(line); continue; }
         if (/^\\|.*\\|\\s*$/.test(line.trim())) { inTable = true; tRows.push(line.trim()); continue; }

@@ -1,0 +1,2220 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 时代的软件研发范式重构与团队协同启动会</title>
+  <style>
+    :root,
+    [data-theme="dark"] {
+      --bg-base: #070b14;
+      --bg-ambient-1: rgba(59, 130, 246, 0.13);
+      --bg-ambient-2: rgba(20, 184, 166, 0.10);
+      --bg-ambient-3: rgba(139, 92, 246, 0.08);
+      --bg-topbar: rgba(10, 15, 28, 0.86);
+      --bg-card: rgba(17, 25, 42, 0.82);
+      --bg-card-hover: rgba(24, 35, 58, 0.94);
+      --bg-card-subtle: rgba(15, 23, 42, 0.55);
+      --bg-elevated: #131c31;
+      --bg-badge: rgba(59, 130, 246, 0.14);
+      --border-subtle: rgba(148, 163, 184, 0.15);
+      --border-strong: rgba(148, 163, 184, 0.28);
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --accent-blue: #60a5fa;
+      --accent-blue-bg: rgba(59, 130, 246, 0.14);
+      --accent-blue-border: rgba(96, 165, 250, 0.35);
+      --accent-teal: #2dd4bf;
+      --accent-teal-bg: rgba(20, 184, 166, 0.14);
+      --accent-teal-border: rgba(45, 212, 191, 0.35);
+      --accent-amber: #fbbf24;
+      --accent-amber-bg: rgba(245, 158, 11, 0.14);
+      --accent-amber-border: rgba(251, 191, 36, 0.38);
+      --accent-rose: #fb7185;
+      --accent-rose-bg: rgba(244, 63, 94, 0.13);
+      --accent-rose-border: rgba(251, 113, 133, 0.35);
+      --accent-violet: #a78bfa;
+      --accent-violet-bg: rgba(139, 92, 246, 0.15);
+      --accent-violet-border: rgba(167, 139, 250, 0.36);
+      --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.32);
+      --grid-line: rgba(148, 163, 184, 0.045);
+      --ocean-deep: #071526;
+      --ocean-mid: #0c233c;
+      --ocean-ring: rgba(56, 189, 248, 0.16);
+    }
+
+    [data-theme="light"] {
+      --bg-base: #f3f6fb;
+      --bg-ambient-1: rgba(37, 99, 235, 0.07);
+      --bg-ambient-2: rgba(13, 148, 136, 0.06);
+      --bg-ambient-3: rgba(124, 58, 237, 0.05);
+      --bg-topbar: rgba(255, 255, 255, 0.90);
+      --bg-card: rgba(255, 255, 255, 0.94);
+      --bg-card-hover: #ffffff;
+      --bg-card-subtle: rgba(241, 245, 249, 0.85);
+      --bg-elevated: #ffffff;
+      --bg-badge: rgba(37, 99, 235, 0.09);
+      --border-subtle: rgba(15, 23, 42, 0.10);
+      --border-strong: rgba(15, 23, 42, 0.20);
+      --text-primary: #0f172a;
+      --text-secondary: #334155;
+      --text-muted: #64748b;
+      --accent-blue: #2563eb;
+      --accent-blue-bg: rgba(37, 99, 235, 0.09);
+      --accent-blue-border: rgba(37, 99, 235, 0.28);
+      --accent-teal: #0d9488;
+      --accent-teal-bg: rgba(13, 148, 136, 0.09);
+      --accent-teal-border: rgba(13, 148, 136, 0.28);
+      --accent-amber: #d97706;
+      --accent-amber-bg: rgba(217, 119, 6, 0.10);
+      --accent-amber-border: rgba(217, 119, 6, 0.30);
+      --accent-rose: #e11d48;
+      --accent-rose-bg: rgba(225, 29, 72, 0.08);
+      --accent-rose-border: rgba(225, 29, 72, 0.26);
+      --accent-violet: #7c3aed;
+      --accent-violet-bg: rgba(124, 58, 237, 0.09);
+      --accent-violet-border: rgba(124, 58, 237, 0.28);
+      --shadow-card: 0 8px 24px rgba(15, 23, 42, 0.06);
+      --grid-line: rgba(15, 23, 42, 0.035);
+      --ocean-deep: #eff6ff;
+      --ocean-mid: #e0f2fe;
+      --ocean-ring: rgba(37, 99, 235, 0.22);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Inter", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.55;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 12% 15%, var(--bg-ambient-1), transparent 42%),
+        radial-gradient(circle at 88% 82%, var(--bg-ambient-2), transparent 42%),
+        radial-gradient(circle at 52% 48%, var(--bg-ambient-3), transparent 50%),
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 100% 100%, 36px 36px, 36px 36px;
+      z-index: 0;
+    }
+
+    /* Top Navigation Bar */
+    .topbar {
+      position: relative;
+      z-index: 30;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      background: var(--bg-topbar);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-subtle);
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+    }
+
+    .brand-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-teal));
+      box-shadow: 0 0 10px var(--accent-blue);
+    }
+
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+
+    .nav-tab {
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 12.5px;
+      font-weight: 500;
+      padding: 5px 10px;
+      border-radius: 7px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.18s ease;
+      font-family: inherit;
+    }
+
+    .nav-tab:hover {
+      color: var(--text-primary);
+      background: var(--bg-card-subtle);
+    }
+
+    .nav-tab.active {
+      color: var(--accent-blue);
+      background: var(--accent-blue-bg);
+      border-color: var(--accent-blue-border);
+      font-weight: 600;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .ctrl-btn {
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-card-subtle);
+      color: var(--text-secondary);
+      font-size: 12px;
+      padding: 5px 10px;
+      border-radius: 7px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: inherit;
+      transition: all 0.16s ease;
+    }
+
+    .ctrl-btn:hover {
+      border-color: var(--border-strong);
+      color: var(--text-primary);
+      background: var(--bg-card-hover);
+    }
+
+    .ctrl-btn.active {
+      border-color: var(--accent-amber-border);
+      background: var(--accent-amber-bg);
+      color: var(--accent-amber);
+    }
+
+    .page-counter {
+      font-family: "SF Mono", "JetBrains Mono", Menlo, monospace;
+      font-size: 12px;
+      color: var(--text-muted);
+      min-width: 46px;
+      text-align: center;
+    }
+
+    /* Progress Bar */
+    .progress-track {
+      position: fixed;
+      top: 50px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: transparent;
+      z-index: 31;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-teal), var(--accent-violet));
+      width: 0%;
+      transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Slide Stage */
+    .deck-stage {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      height: calc(100vh - 50px);
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      padding: 22px 42px 26px;
+      overflow-y: auto;
+      display: none;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.28s ease, transform 0.28s ease;
+    }
+
+    .slide.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .slide-inner {
+      width: 100%;
+      max-width: 1380px;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Common Header */
+    .slide-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 12px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: "SF Mono", "JetBrains Mono", Menlo, monospace;
+      font-size: 11.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-blue);
+      margin-bottom: 5px;
+    }
+
+    .eyebrow-pill {
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--accent-blue-bg);
+      border: 1px solid var(--accent-blue-border);
+    }
+
+    .slide-title {
+      font-size: clamp(22px, 2.1vw, 30px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      color: var(--text-primary);
+    }
+
+    .slide-subtitle {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      max-width: 540px;
+      text-align: right;
+      line-height: 1.5;
+    }
+
+    /* Cards & Utility Blocks */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 16px 18px;
+      box-shadow: var(--shadow-card);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+    }
+
+    .card.interactive {
+      cursor: pointer;
+    }
+
+    .card.interactive:hover {
+      border-color: var(--accent-blue-border);
+      background: var(--bg-card-hover);
+      transform: translateY(-2px);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-card-subtle);
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .badge-blue { color: var(--accent-blue); background: var(--accent-blue-bg); border-color: var(--accent-blue-border); }
+    .badge-teal { color: var(--accent-teal); background: var(--accent-teal-bg); border-color: var(--accent-teal-border); }
+    .badge-amber { color: var(--accent-amber); background: var(--accent-amber-bg); border-color: var(--accent-amber-border); }
+    .badge-rose { color: var(--accent-rose); background: var(--accent-rose-bg); border-color: var(--accent-rose-border); }
+    .badge-violet { color: var(--accent-violet); background: var(--accent-violet-bg); border-color: var(--accent-violet-border); }
+
+    .mono {
+      font-family: "SF Mono", "JetBrains Mono", Menlo, monospace;
+    }
+
+    /* ================= SLIDE 00: COVER ================= */
+    .cover-hero {
+      padding: 28px 6px 10px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .cover-title {
+      font-size: clamp(32px, 3.6vw, 50px);
+      font-weight: 850;
+      line-height: 1.18;
+      letter-spacing: -0.025em;
+      margin: 14px 0 18px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(125deg, var(--accent-blue), var(--accent-teal), var(--accent-violet));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .cover-lead {
+      font-size: clamp(15px, 1.25vw, 18px);
+      color: var(--text-secondary);
+      line-height: 1.68;
+      max-width: 660px;
+      margin-bottom: 24px;
+    }
+
+    .cover-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .agenda-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .agenda-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .agenda-item:hover {
+      border-color: var(--accent-blue-border);
+      transform: translateX(4px);
+      background: var(--bg-card-hover);
+    }
+
+    .agenda-num {
+      font-family: "SF Mono", "JetBrains Mono", Menlo, monospace;
+      font-size: 13px;
+      font-weight: 700;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent-blue-bg);
+      color: var(--accent-blue);
+      border: 1px solid var(--accent-blue-border);
+      flex-shrink: 0;
+    }
+
+    .agenda-text h4 {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .agenda-text p {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    /* ================= SLIDE 01: PRODUCT LIFECYCLE ================= */
+    .platform-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 11px 18px;
+      border-radius: 12px;
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .platform-chips {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .lifecycle-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      position: relative;
+    }
+
+    .stage-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 15px 16px;
+    }
+
+    .stage-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .stage-idx {
+      font-family: "SF Mono", "JetBrains Mono", Menlo, monospace;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .stage-card h3 {
+      font-size: 16.5px;
+      font-weight: 750;
+      color: var(--text-primary);
+    }
+
+    .stage-card p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    .stage-deliverable {
+      margin-top: auto;
+      padding-top: 8px;
+      border-top: 1px dashed var(--border-subtle);
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .flywheel-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 13px 20px;
+      border-radius: 12px;
+      background: linear-gradient(90deg, var(--accent-teal-bg), var(--accent-blue-bg));
+      border: 1px solid var(--accent-teal-border);
+    }
+
+    /* ================= SLIDE 02: TRADITIONAL TEAM ================= */
+    .trad-roles-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 11px;
+    }
+
+    .trad-role {
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .trad-role-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .trad-role h4 {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .trad-role p {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.48;
+    }
+
+    .trad-artifact {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-top: auto;
+      padding-top: 6px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .handoff-chain {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      border-radius: 11px;
+      background: var(--accent-rose-bg);
+      border: 1px solid var(--accent-rose-border);
+      font-size: 12.5px;
+      color: var(--text-primary);
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pain-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .pain-card {
+      border-left: 3px solid var(--accent-rose);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .pain-card h4 {
+      font-size: 15px;
+      font-weight: 750;
+      color: var(--accent-rose);
+    }
+
+    .pain-card p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    /* ================= SLIDE 03: AI ERA THINKING (OCEAN & ROUTES) ================= */
+    .scarcity-banner {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 16px;
+      padding: 14px 20px;
+      border-radius: 14px;
+      background: linear-gradient(120deg, var(--accent-amber-bg), var(--accent-violet-bg));
+      border: 1px solid var(--accent-amber-border);
+      align-items: center;
+    }
+
+    .scarcity-pills {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .scarcity-pill {
+      padding: 7px 13px;
+      border-radius: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--accent-amber-border);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-amber);
+    }
+
+    .ocean-layout {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .ocean-canvas-card {
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .ocean-svg-wrap {
+      width: 100%;
+      border-radius: 11px;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+      background: radial-gradient(circle at 50% 50%, var(--ocean-mid), var(--ocean-deep));
+    }
+
+    .ocean-legend {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .legend-box {
+      padding: 7px 10px;
+      border-radius: 8px;
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .synergy-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .synergy-card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 16px 18px;
+    }
+
+    .synergy-card h3 {
+      font-size: 16.5px;
+      font-weight: 750;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .synergy-card p, .synergy-card li {
+      font-size: 13.2px;
+      color: var(--text-secondary);
+      line-height: 1.56;
+    }
+
+    .synergy-list {
+      padding-left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    /* ================= SLIDE 04: NEW SOFTWARE TEAM ================= */
+    .paradigm-pillars {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .pillar-box {
+      padding: 11px 14px;
+      border-radius: 12px;
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .pillar-box h4 {
+      font-size: 13.5px;
+      font-weight: 750;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pillar-box p {
+      font-size: 12.2px;
+      color: var(--text-secondary);
+      line-height: 1.48;
+    }
+
+    .roles-bento {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .role-new-card {
+      padding: 13px 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .role-new-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .role-new-top h3 {
+      font-size: 15.5px;
+      font-weight: 750;
+    }
+
+    .dual-track-item {
+      padding: 7px 10px;
+      border-radius: 8px;
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+      font-size: 12.3px;
+      line-height: 1.48;
+      color: var(--text-secondary);
+    }
+
+    .dual-track-item strong {
+      color: var(--text-primary);
+      display: inline-block;
+      margin-right: 4px;
+    }
+
+    /* ================= SLIDE 05: 4 MEMBERS ASSIGNMENT ================= */
+    .scope-notice {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: 11px;
+      background: var(--accent-violet-bg);
+      border: 1px solid var(--accent-violet-border);
+      font-size: 12.8px;
+    }
+
+    .members-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 13px;
+    }
+
+    .member-card {
+      padding: 14px 17px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      position: relative;
+    }
+
+    .member-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .member-person {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .member-name {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .member-role {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .member-points {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .member-points li {
+      position: relative;
+      padding-left: 15px;
+    }
+
+    .member-points li::before {
+      content: "•";
+      position: absolute;
+      left: 2px;
+      color: var(--accent-blue);
+      font-weight: 900;
+    }
+
+    .align-tags {
+      margin-top: auto;
+      padding-top: 7px;
+      border-top: 1px dashed var(--border-subtle);
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .topology-box {
+      padding: 12px 18px;
+      border-radius: 13px;
+      background: var(--bg-card);
+      border: 1px solid var(--accent-teal-border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .pipeline-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      align-items: center;
+    }
+
+    .pipe-node {
+      padding: 8px 12px;
+      border-radius: 9px;
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-strong);
+      font-size: 12.5px;
+      position: relative;
+    }
+
+    .pipe-node:not(:last-child)::after {
+      content: "➔";
+      position: absolute;
+      right: -10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 11px;
+      color: var(--accent-teal);
+      font-weight: 800;
+      z-index: 2;
+    }
+
+    @media (max-width: 1120px) {
+      .pipe-node:not(:last-child)::after {
+        display: none;
+      }
+    }
+
+    .pipe-node strong {
+      display: block;
+      font-size: 13px;
+      color: var(--accent-teal);
+      margin-bottom: 2px;
+    }
+
+    /* ================= SLIDE 06: RHYTHM & NEXT STEPS ================= */
+    .rhythm-layout {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 16px;
+    }
+
+    .cadence-hero {
+      padding: 18px 20px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent-blue-bg), var(--accent-teal-bg));
+      border: 1px solid var(--accent-blue-border);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .clock-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .time-pill {
+      font-family: "SF Mono", "JetBrains Mono", Menlo, monospace;
+      font-size: 18px;
+      font-weight: 800;
+      padding: 8px 16px;
+      border-radius: 11px;
+      background: var(--bg-card);
+      border: 1px solid var(--accent-blue-border);
+      color: var(--accent-blue);
+    }
+
+    .deliverable-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .deliv-item {
+      padding: 12px 14px;
+      border-radius: 11px;
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .deliv-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
+      background: var(--accent-teal-bg);
+      color: var(--accent-teal);
+      border: 1px solid var(--accent-teal-border);
+      font-family: "SF Mono", "JetBrains Mono", Menlo, monospace;
+      font-size: 12.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .mindset-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 13px;
+    }
+
+    /* Speaker Notes Drawer */
+    .notes-drawer {
+      position: fixed;
+      bottom: 16px;
+      right: 20px;
+      width: min(480px, calc(100vw - 40px));
+      background: var(--bg-elevated);
+      border: 1px solid var(--accent-amber-border);
+      border-radius: 14px;
+      padding: 14px 18px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5);
+      z-index: 60;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .notes-drawer.open {
+      display: flex;
+    }
+
+    .notes-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--accent-amber);
+    }
+
+    .notes-body {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Spotlight Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 7, 18, 0.76);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 80;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      width: min(720px, 100%);
+      background: var(--bg-elevated);
+      border: 1px solid var(--accent-blue-border);
+      border-radius: 18px;
+      padding: 28px 32px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Overview Grid Modal */
+    .overview-modal {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-topbar);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 75;
+      display: none;
+      flex-direction: column;
+      padding: 32px 44px;
+      overflow-y: auto;
+    }
+
+    .overview-modal.open {
+      display: flex;
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .overview-item {
+      padding: 18px;
+      border-radius: 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .overview-item:hover, .overview-item.current {
+      border-color: var(--accent-blue);
+      transform: translateY(-3px);
+    }
+
+    @media (max-width: 1120px) {
+      .cover-hero, .ocean-layout, .rhythm-layout, .scarcity-banner {
+        grid-template-columns: 1fr;
+      }
+      .lifecycle-grid, .trad-roles-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .roles-bento, .pain-grid, .paradigm-pillars, .mindset-strip {
+        grid-template-columns: 1fr;
+      }
+      .members-grid, .pipeline-steps {
+        grid-template-columns: 1fr;
+      }
+      .slide {
+        padding: 18px 20px 28px;
+      }
+      .slide-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .slide-subtitle {
+        text-align: left;
+      }
+    }
+
+    @media print {
+      html, body {
+        height: auto;
+        overflow: visible;
+        background: #ffffff !important;
+        color: #0f172a !important;
+      }
+      .topbar, .progress-track, .notes-drawer, .modal-backdrop, .overview-modal {
+        display: none !important;
+      }
+      .deck-stage {
+        height: auto;
+        overflow: visible;
+      }
+      .slide {
+        position: relative;
+        display: flex !important;
+        opacity: 1 !important;
+        transform: none !important;
+        page-break-after: always;
+        min-height: 95vh;
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation & Presenter Controls -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-dot"></span>
+      <span>AI-NATIVE R&amp;D</span>
+    </div>
+
+    <nav class="nav-tabs" id="navTabs">
+      <button class="nav-tab active" data-index="0">封面</button>
+      <button class="nav-tab" data-index="1">01 研发迭代流程</button>
+      <button class="nav-tab" data-index="2">02 传统团队与痛点</button>
+      <button class="nav-tab" data-index="3">03 AI时代思考</button>
+      <button class="nav-tab" data-index="4">04 新团队工作范式</button>
+      <button class="nav-tab" data-index="5">05 核心职责分工</button>
+      <button class="nav-tab" data-index="6">06 双周例会与落地</button>
+    </nav>
+
+    <div class="controls">
+      <button class="ctrl-btn" id="btnNotes" title="切换演讲提纲 (快捷键 N)">💡 提纲</button>
+      <button class="ctrl-btn" id="btnOverview" title="全览导航 (快捷键 G)">🗺 概览</button>
+      <button class="ctrl-btn" id="btnTheme" title="切换深浅色主题 (快捷键 T)">☀ 浅色</button>
+      <button class="ctrl-btn" id="btnFullscreen" title="全屏演示 (快捷键 F)">⛶ 全屏</button>
+      <button class="ctrl-btn" id="btnPrev" title="上一页 (←)">◀</button>
+      <span class="page-counter" id="pageCounter">1 / 7</span>
+      <button class="ctrl-btn" id="btnNext" title="下一页 (→)">▶</button>
+    </div>
+  </header>
+
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+
+  <!-- Main Slides Stage -->
+  <main class="deck-stage" id="deckStage">
+
+    <!-- ==================== SLIDE 00: COVER ==================== -->
+    <section class="slide active" data-notes="【开场话术提示】今晚召集大家一起开会，核心有两件事：第一，对齐我们对软件研发全貌、传统协作痛点以及 AI 时代团队如何协同的底层共识；第二，明确接下来我们团队在产品、UI/UX、iOS、Android、Go、Python 各个方向上的标准化建设分工，以及之后每周一、周四晚 8 点的常态化同步机制。">
+      <div class="slide-inner">
+        <div class="cover-hero">
+          <div>
+            <span class="badge badge-blue mono">TEAM ALIGNMENT &amp; KICKOFF · 2026.11.16</span>
+            <h1 class="cover-title">
+              AI 时代的软件研发<br />
+              <span class="gradient-text">范式重构与团队协同</span>
+            </h1>
+            <p class="cover-lead">
+              当大模型的智力基准持续跃迁，软件研发的需求与客观复杂度不会消失，但做好每一项工作的方式正在彻底重写：<strong>以标准化模块降低 AI 风险，以契约同构趋近零沟通损耗，把人类最稀缺的注意力留给创造与开拓。</strong>
+            </p>
+            <div class="cover-meta-row">
+              <span class="badge badge-teal">标准化与模块化底座</span>
+              <span class="badge badge-amber">100% AI 生产 + 低注意力验收</span>
+              <span class="badge badge-violet">上下游 0 沟通契约咬合</span>
+              <span class="badge">每周一 / 周四 20:00 同步例会</span>
+            </div>
+          </div>
+
+          <div class="agenda-stack">
+            <div class="agenda-item" onclick="goToSlide(1)">
+              <div class="agenda-num">01</div>
+              <div class="agenda-text">
+                <h4>软件产品的研发与迭代全流程</h4>
+                <p>覆盖 App / Web / 桌面应用的 8 环工程交付与数据飞轮</p>
+              </div>
+            </div>
+            <div class="agenda-item" onclick="goToSlide(2)">
+              <div class="agenda-num">02</div>
+              <div class="agenda-text">
+                <h4>传统团队的职位结构与协作痛点</h4>
+                <p>职能串行交接下的“翻译税”、文档腐烂与人肉验收黑洞</p>
+              </div>
+            </div>
+            <div class="agenda-item" onclick="goToSlide(3)">
+              <div class="agenda-num">03</div>
+              <div class="agenda-text">
+                <h4>AI 时代的核心思考：大海与航线</h4>
+                <p>人类三大唯一稀缺性 · 固化既有航线与开拓未知航线</p>
+              </div>
+            </div>
+            <div class="agenda-item" onclick="goToSlide(4)">
+              <div class="agenda-num">04</div>
+              <div class="agenda-text">
+                <h4>新软件团队的结构与工作组织流程</h4>
+                <p>六大角色全面升级：造标准化模具 + AI 深度生产 + 零沟通协同</p>
+              </div>
+            </div>
+            <div class="agenda-item" onclick="goToSlide(5)">
+              <div class="agenda-num">05</div>
+              <div class="agenda-text">
+                <h4>核心成员职责分工与跨端对齐架构</h4>
+                <p>子恒 · 越齐 · 思辰 · 艾颖四方模块边界与端到端变更链路</p>
+              </div>
+            </div>
+            <div class="agenda-item" onclick="goToSlide(6)">
+              <div class="agenda-num">06</div>
+              <div class="agenda-text">
+                <h4>常态化例会机制与首期落地标准</h4>
+                <p>周一/周四 20:00 同步节奏 · 合格规范三件套 · 试金石验证</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SLIDE 01: PRODUCT R&D LIFECYCLE ==================== -->
+    <section class="slide" data-notes="【第 1 页提示】先拉齐客观全貌：无论做 iOS/Android App、Web 还是桌面客户端，一套完整软件工程都逃不开这 8 个环节（在原本 7 环基础上补齐了连接开发与上线的测试验证环）。重点强调底部：数据分析和运维监控不是终点，而是反哺下一轮需求调研与产品设计的闭环飞轮。">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-pill">PAGE 01</span> SOFTWARE ENGINEERING LIFECYCLE</div>
+            <h2 class="slide-title">软件产品的研发与持续迭代全流程</h2>
+          </div>
+          <p class="slide-subtitle">
+            无论是移动 App、Web 应用还是桌面端软件，从想法诞生到持续生命力演进，均由以下环环相扣的工程闭环构成。
+          </p>
+        </div>
+
+        <div class="platform-strip">
+          <div style="font-size:13px;font-weight:700;color:var(--text-primary);">统一适用的产品终端形态：</div>
+          <div class="platform-chips">
+            <span class="badge badge-blue">📱 移动 App 应用（iOS / Android）</span>
+            <span class="badge badge-teal">🌐 Web 响应式应用（Browser / H5）</span>
+            <span class="badge badge-violet">🖥 桌面应用（macOS / Windows）</span>
+          </div>
+        </div>
+
+        <div class="lifecycle-grid">
+          <div class="card stage-card">
+            <div class="stage-top">
+              <span class="stage-idx badge-amber">STEP 01</span>
+              <span class="badge">价值源头</span>
+            </div>
+            <h3>需求调研</h3>
+            <p>洞察真实用户痛点与高频场景，评估市场空间与商业可行性，明确“为谁解决什么真问题”。</p>
+            <div class="stage-deliverable"><span>核心产出</span><strong>痛点洞察 / 机会边界</strong></div>
+          </div>
+
+          <div class="card stage-card">
+            <div class="stage-top">
+              <span class="stage-idx badge-blue">STEP 02</span>
+              <span class="badge">逻辑定义</span>
+            </div>
+            <h3>产品设计</h3>
+            <p>划定功能范围，抽象静态领域数据模型与动态业务规则，规划多端信息架构、流程与单页规格。</p>
+            <div class="stage-deliverable"><span>核心产出</span><strong>产品规格书 / 交互原型</strong></div>
+          </div>
+
+          <div class="card stage-card">
+            <div class="stage-top">
+              <span class="stage-idx badge-violet">STEP 03</span>
+              <span class="badge">体验具象</span>
+            </div>
+            <h3>UI / UX 设计</h3>
+            <p>建立品牌视觉语言（色彩/字体/间距）、跨页复用组件体系与多端栅格适配，打磨交互体验细节。</p>
+            <div class="stage-deliverable"><span>核心产出</span><strong>设计系统 / 高保真设计稿</strong></div>
+          </div>
+
+          <div class="card stage-card">
+            <div class="stage-top">
+              <span class="stage-idx badge-teal">STEP 04</span>
+              <span class="badge">视图交互</span>
+            </div>
+            <h3>前端 / 客户端开发</h3>
+            <p>在 App（iOS/Android）、Web 或桌面端实现界面组件渲染、本地状态管理、路由流转与接口对接。</p>
+            <div class="stage-deliverable"><span>核心产出</span><strong>多端客户端安装包 / 前端工程</strong></div>
+          </div>
+
+          <div class="card stage-card">
+            <div class="stage-top">
+              <span class="stage-idx badge-teal">STEP 05</span>
+              <span class="badge">数据与逻辑底座</span>
+            </div>
+            <h3>后端开发</h3>
+            <p>构建领域服务（Go / Python 等）、数据库持久化表结构、API 接口契约、权限鉴权与高并发治理。</p>
+            <div class="stage-deliverable"><span>核心产出</span><strong>服务端工程 / API 接口服务</strong></div>
+          </div>
+
+          <div class="card stage-card">
+            <div class="stage-top">
+              <span class="stage-idx badge-blue">STEP 06</span>
+              <span class="badge">质量门禁</span>
+            </div>
+            <h3>测试与验收</h3>
+            <p>前后端全链路联调，覆盖正常路径、边界条件与极端异常状态核验，确保交付质量符合预期。</p>
+            <div class="stage-deliverable"><span>核心产出</span><strong>验收报告 / 准出放行单</strong></div>
+          </div>
+
+          <div class="card stage-card">
+            <div class="stage-top">
+              <span class="stage-idx badge-violet">STEP 07</span>
+              <span class="badge">稳定交付</span>
+            </div>
+            <h3>系统运维</h3>
+            <p>搭建 CI/CD 持续集成部署流水线、多环境隔离、灰度发布策略、线上性能监控告警与容灾回滚。</p>
+            <div class="stage-deliverable"><span>核心产出</span><strong>稳定生产环境 / 监控体系</strong></div>
+          </div>
+
+          <div class="card stage-card">
+            <div class="stage-top">
+              <span class="stage-idx badge-amber">STEP 08</span>
+              <span class="badge">度量反哺</span>
+            </div>
+            <h3>数据分析</h3>
+            <p>围绕北极星指标与核心转化漏斗采集埋点事件，量化验证产品假设、定位流失卡点并驱动新迭代。</p>
+            <div class="stage-deliverable"><span>核心产出</span><strong>漏斗归因洞察 / 迭代输入</strong></div>
+          </div>
+        </div>
+
+        <div class="flywheel-bar">
+          <div style="display:flex;align-items:center;gap:10px;font-size:13.5px;">
+            <span class="badge badge-teal mono">ITERATION FLYWHEEL</span>
+            <span><strong>持续迭代闭环：</strong>需求调研 → 产品 → 设计 → 前后端研发 → 测试运维上线 → <strong>数据分析与线上反馈逆向驱动下一轮产品演进</strong></span>
+          </div>
+          <span class="mono" style="font-size:12px;color:var(--accent-teal);">01 ➔ 08 ➔ 01 LOOP</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SLIDE 02: TRADITIONAL TEAM & PAIN POINTS ==================== -->
+    <section class="slide" data-notes="【第 2 页提示】传统团队按职能切分成了 7~8 个独立工种。这套分工在纯手工时代合理，但今天暴露出三大致命内耗：1. 每一棒都在用不同语言重写同一件事（传话筒翻译税）；2. 文档和设计稿都是阶段性快照，改三次就和线上代码脱节（没有单一事实源，AI 读了也会精神分裂）；3. 因为上游没刚性契约，验收全靠人肉盯细节。">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-pill">PAGE 02</span> TRADITIONAL ORGANIZATION &amp; FRICTION</div>
+            <h2 class="slide-title">传统软件团队的职位结构与工作组织痛点</h2>
+          </div>
+          <p class="slide-subtitle">
+            按专业职能切分岗位、以人工文档和会议推进交接，每一棒都在产生“信息翻译损耗”。
+          </p>
+        </div>
+
+        <div class="trad-roles-grid">
+          <div class="card trad-role">
+            <div class="trad-role-head"><h4>用户与商业研究</h4><span class="badge">洞察岗</span></div>
+            <p>竞品调研、用户访谈、商业测算，输出独立的行业与用研分析报告。</p>
+            <div class="trad-artifact">传统交付：PPT 调研报告 / 访谈纪要</div>
+          </div>
+          <div class="card trad-role">
+            <div class="trad-role-head"><h4>产品经理 (PM)</h4><span class="badge">定义岗</span></div>
+            <p>把调研转化为功能需求，撰写大段自然语言 PRD，频繁拉会对齐各方理解。</p>
+            <div class="trad-artifact">传统交付：散文式 PRD / 阶段增量补充包</div>
+          </div>
+          <div class="card trad-role">
+            <div class="trad-role-head"><h4>UI / UX 设计师</h4><span class="badge">视觉岗</span></div>
+            <p>消化 PRD 后逐张绘制页面画板，手动维护图层命名、切图标注与交互说明。</p>
+            <div class="trad-artifact">传统交付：独立设计图层 / 静态标注稿</div>
+          </div>
+          <div class="card trad-role">
+            <div class="trad-role-head"><h4>前端开发工程师</h4><span class="badge">客户端岗</span></div>
+            <p>对照设计稿手写布局与状态逻辑，再对接后端接口字段，多端各自独立实现。</p>
+            <div class="trad-artifact">传统交付：各端异构 UI 与状态代码</div>
+          </div>
+          <div class="card trad-role">
+            <div class="trad-role-head"><h4>后端开发工程师</h4><span class="badge">服务端岗</span></div>
+            <p>自行理解业务并建表、写接口 CRUD，维护另一套接口文档供前端联调。</p>
+            <div class="trad-artifact">传统交付：数据库表 / 手写接口文档</div>
+          </div>
+          <div class="card trad-role">
+            <div class="trad-role-head"><h4>数据分析师</h4><span class="badge">度量岗</span></div>
+            <p>往往在功能开发尾声补提埋点表格，上线后手工写 SQL 取数制作分析报表。</p>
+            <div class="trad-artifact">传统交付：Excel 埋点需求表 / 专题报表</div>
+          </div>
+          <div class="card trad-role">
+            <div class="trad-role-head"><h4>运维工程师</h4><span class="badge">基建岗</span></div>
+            <p>管理服务器环境配置、打包发版审批、盯守线上报警并配合研发排查事故。</p>
+            <div class="trad-artifact">传统交付：部署脚本 / 运维工单响应</div>
+          </div>
+          <div class="card trad-role">
+            <div class="trad-role-head"><h4>测试 / QA (穿插)</h4><span class="badge">质检岗</span></div>
+            <p>重新阅读 PRD 编写测试用例，搭建前置数据并大量依靠人工点击回归验收。</p>
+            <div class="trad-artifact">传统交付：手工测试表 / Bug 缺陷单</div>
+          </div>
+        </div>
+
+        <div class="handoff-chain">
+          <strong>传统串行“传话筒”链路：</strong>
+          <span>用研报告 ➔ 散文 PRD ➔ 独立设计稿 ➔ iOS/Android/Web 各自理解编码 ⇄ 后端接口表 ➔ 手工测试回归 ➔ 事后补埋点</span>
+        </div>
+
+        <div class="pain-grid">
+          <div class="card pain-card">
+            <h4>痛点一：多源异构与高昂“翻译税”</h4>
+            <p>产品、设计、客户端、后端各自使用完全不同的目录结构与术语命名。每一次上下游交接都是一次“有损人工翻译”，开会拉通成本随人数呈指数级膨胀。</p>
+          </div>
+          <div class="card pain-card">
+            <h4>痛点二：快照文档腐烂，无单一事实源</h4>
+            <p>习惯堆砌“一期 PRD”、“V1.2 变更说明”，迭代三轮后没有任何一份文档代表当前系统的完整真相。AI 一旦读取这种前后矛盾的碎片，必然产生严重幻觉。</p>
+          </div>
+          <div class="card pain-card">
+            <h4>痛点三：高注意力消耗的验收黑洞</h4>
+            <p>因为上游缺乏严密的结构化契约，下游实现不可控，团队不得不把大量宝贵注意力耗费在反复评审对细节、逐行查低级 Bug 与手工凑数据点页面上。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SLIDE 03: AI ERA THINKING (OCEAN & SHIPPING LANES) ==================== -->
+    <section class="slide" data-notes="【第 3 页提示】这是整场会的灵魂页：大模型越来越强，代码和文档的生产本身不再稀缺，人类只剩三样东西真正稀缺：注意力、创造力、信息吞吐带宽。怎么协同？左边用大海打比方：大海是 AI 的全部知识与潜在能力圈；如果我们不在海上建航标规范，AI 就会概率发散迷航，我们验收要花 100% 注意力。所以第一件事是把已会做的事高度标准化、模块化，修成有灯塔的固定航线；第二件事是借助 AI 去未知海域开拓新航线，跑通后再修成新的自动化航线！">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-pill">PAGE 03</span> THINKING IN THE AI ERA</div>
+            <h2 class="slide-title">AI 时代的底层思考：稀缺性转移与“大海航线”协同论</h2>
+          </div>
+          <p class="slide-subtitle">
+            当大模型智力基准不断跃升，“生成与执行”不再稀缺，人机协同的核心转向保护与放大人类稀缺带宽。
+          </p>
+        </div>
+
+        <div class="scarcity-banner">
+          <div>
+            <div class="mono" style="font-size:11.5px;font-weight:700;color:var(--accent-amber);margin-bottom:3px;">THE ONLY TRUE SCARCITY</div>
+            <div style="font-size:15.5px;font-weight:750;color:var(--text-primary);">
+              随着大模型智力基准水平持续进步，未来唯一的稀缺性属于人类自身：
+            </div>
+          </div>
+          <div class="scarcity-pills">
+            <span class="scarcity-pill">🎯 人类的注意力</span>
+            <span class="scarcity-pill">✨ 人类的创造力</span>
+            <span class="scarcity-pill">⚡ 信息吞吐能力</span>
+          </div>
+        </div>
+
+        <div class="ocean-layout">
+          <!-- Left: Bespoke Ocean & Shipping Routes SVG Metaphor -->
+          <div class="card ocean-canvas-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <strong style="font-size:14.5px;">隐喻海图：AI 知识大海 × 已知固定航线 × 开拓新航线</strong>
+              <span class="badge badge-teal">能力扩张飞轮</span>
+            </div>
+
+            <div class="ocean-svg-wrap">
+              <svg viewBox="0 0 620 275" width="100%" height="100%" style="display:block;" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="laneKnown" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#3b82f6" />
+                    <stop offset="100%" stop-color="#2dd4bf" />
+                  </linearGradient>
+                  <linearGradient id="laneNew" x1="0%" y1="100%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#2dd4bf" />
+                    <stop offset="100%" stop-color="#fbbf24" />
+                  </linearGradient>
+                </defs>
+
+                <!-- Concentric Bathymetric Rings (Vast AI Ocean) -->
+                <ellipse cx="320" cy="145" rx="285" ry="118" fill="none" style="stroke:var(--ocean-ring)" stroke-dasharray="4 6" />
+                <ellipse cx="320" cy="145" rx="215" ry="88" fill="none" style="stroke:var(--ocean-ring)" stroke-dasharray="3 5" />
+                <ellipse cx="230" cy="165" rx="135" ry="58" style="fill:var(--accent-teal-bg);stroke:var(--accent-teal-border)" />
+
+                <!-- Ocean Label -->
+                <text x="392" y="34" style="fill:var(--text-secondary)" font-size="12" font-weight="600">🌊 浩瀚大海：AI 的全部知识与潜在能力圈</text>
+                <text x="392" y="51" style="fill:var(--text-muted)" font-size="10.5">（无规范裸奔 = 概率发散迷航，高验收风险）</text>
+
+                <!-- Harbor / Base Island -->
+                <circle cx="88" cy="185" r="24" style="fill:var(--accent-blue-bg);stroke:var(--accent-blue)" stroke-width="2" />
+                <circle cx="88" cy="185" r="7" style="fill:var(--accent-blue)" />
+                <text x="44" y="226" style="fill:var(--text-primary)" font-size="12" font-weight="700">核心能力母港</text>
+                <text x="40" y="241" style="fill:var(--text-muted)" font-size="10.5">已有专业经验沉淀</text>
+
+                <!-- Route 1: Standardized Shipping Lane (Solid) -->
+                <path d="M 112 182 C 185 178, 250 158, 348 158" fill="none" stroke="url(#laneKnown)" stroke-width="10" stroke-linecap="round" opacity="0.22" />
+                <path d="M 112 182 C 185 178, 250 158, 348 158" fill="none" stroke="url(#laneKnown)" stroke-width="3.5" stroke-linecap="round" />
+
+                <!-- Lighthouses / Modular Checkpoints on Route 1 -->
+                <circle cx="195" cy="173" r="6" style="fill:var(--accent-teal)" />
+                <circle cx="275" cy="161" r="6" style="fill:var(--accent-teal)" />
+                <rect x="344" y="144" width="28" height="28" rx="7" style="fill:var(--accent-teal-bg);stroke:var(--accent-teal)" stroke-width="2" />
+                <text x="351" y="162" style="fill:var(--accent-teal)" font-size="12" font-weight="800">✓</text>
+
+                <text x="148" y="144" style="fill:var(--accent-teal)" font-size="12.5" font-weight="700">① 既有航线（已掌握技能与工作）</text>
+                <text x="148" y="198" style="fill:var(--text-secondary)" font-size="11">标准化模块灯塔 · AI 自动航行 · 低注意力巡检</text>
+
+                <!-- Route 2: Pioneering New Route (Amber Dashed) -->
+                <path d="M 275 161 C 330 112, 415 88, 515 84" fill="none" stroke="url(#laneNew)" stroke-width="3" stroke-dasharray="7 5" stroke-linecap="round" />
+                <polygon points="523,84 510,78 512,90" style="fill:var(--accent-amber)" />
+                <circle cx="528" cy="84" r="16" style="fill:var(--accent-amber-bg);stroke:var(--accent-amber)" stroke-width="2" />
+                <text x="522" y="88" style="fill:var(--accent-amber)" font-size="12" font-weight="800">★</text>
+
+                <text x="336" y="80" style="fill:var(--accent-amber)" font-size="12.5" font-weight="700">② 开拓新航线（借助 AI 学习与破界）</text>
+                <text x="348" y="114" style="fill:var(--text-primary)" font-size="11">探索未知海域 (0→1)，跑通后筑塔固化为新航线！</text>
+
+                <!-- Feedback Flywheel Arrow from New Star down to Standardized Hub -->
+                <path d="M 528 104 C 525 165, 455 205, 378 168" fill="none" style="stroke:var(--accent-violet)" stroke-width="1.8" stroke-dasharray="4 4" />
+                <text x="430" y="205" style="fill:var(--accent-violet)" font-size="10.5" font-weight="600">沉淀为新标准模块 (1→100)</text>
+              </svg>
+            </div>
+
+            <div class="ocean-legend">
+              <div class="legend-box"><strong style="color:var(--accent-blue);">🌊 大海：</strong>AI 全量知识与能力上限</div>
+              <div class="legend-box"><strong style="color:var(--accent-teal);">⚓ 航线：</strong>已会技能的标准化模块</div>
+              <div class="legend-box"><strong style="color:var(--accent-amber);">🧭 开拓新航线：</strong>借 AI 习得新能力</div>
+            </div>
+          </div>
+
+          <!-- Right: Two Actionable Synergy Principles -->
+          <div class="synergy-col">
+            <div class="card synergy-card" style="border-left: 3px solid var(--accent-teal);">
+              <h3>
+                <span class="badge badge-teal mono">WAY 01</span>
+                把“已经会做的事”极致标准化、模块化
+              </h3>
+              <ul class="synergy-list">
+                <li><strong>核心目标：</strong>让 AI 能够以<strong>最小的错误风险</strong>推进一项工作，让自己能以<strong>最小的注意力成本</strong>来检查一项工作。</li>
+                <li><strong>为什么 AI 越强越需要标准化？</strong>没有模块化契约约束时，AI 会在大海中“概率发散”——写第 1 版极快，改第 3 版结构失控，人类反而要花 100% 注意力逐行通读排雷。</li>
+                <li><strong>范式跃迁：</strong>用严谨的目录分层、模板与准出门禁把工作装进“标准集装箱”，将人工验收从“读全量过程”降维成“看关键状态切面与契约结果”。</li>
+              </ul>
+            </div>
+
+            <div class="card synergy-card" style="border-left: 3px solid var(--accent-amber);">
+              <h3>
+                <span class="badge badge-amber mono">WAY 02</span>
+                通过 AI 的能力，扩展“自己已经会做的事”
+              </h3>
+              <ul class="synergy-list">
+                <li><strong>核心目标：</strong>站在 AI 全量知识大海之上<strong>开拓新航线</strong>——跨越原有岗位技能边界，借助 AI 快速学习并打通原本陌生领域的任务（实现 <code>0 → 1</code> 破界）。</li>
+                <li><strong>正循环飞轮：</strong>借 AI 探索跑通一条新航线后，不让它停留在单次临时经验，而是<strong>立即修筑灯塔将其标准化、模块化</strong>，转化为下一条低成本自动航线，释放注意力继续向更远海域进发。</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SLIDE 04: NEW SOFTWARE TEAM ==================== -->
+    <section class="slide" data-notes="【第 4 页提示】新团队里，为什么说“除去用户与商业研究，其余角色依然存在”？因为用研与商业判断正是第 3 页讲的人类创造力与痛点直觉源头，决定船往哪开，不放进自动生产流水线；而产品、设计、前后端、数分、运维这些客观工程环节不会凭空消失，但每个人的主职工作变成了：造自己岗位的标准化能力模块（像 Product 目录已经做出的 meta 模具 + spec 产物双舱架构），达到单任务 100% AI 生产 + 低注意力验收，并让上下游趋近 0 沟通成本（点击任意角色卡片可放大聚焦）。">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-pill">PAGE 04</span> AI-NATIVE TEAM &amp; WORKFLOW</div>
+            <h2 class="slide-title">新软件团队的结构与工作组织流程（点击卡片可放大）</h2>
+          </div>
+          <p class="slide-subtitle">
+            软件开发的客观工作不会因 AI 凭空消失，但每个角色的主职从“手写单次交付物”彻底转向“构建标准模块 + 低注意力验收”。
+          </p>
+        </div>
+
+        <div class="paradigm-pillars">
+          <div class="pillar-box">
+            <h4 style="color:var(--accent-amber);">💡 源头洞察归于人类创造力</h4>
+            <p><strong>除去“用户与商业研究”</strong>不纳入自动化流水线（它属于决定航向的人类商业直觉与真实连接源头），其余六大工程角色全部保留并重构工作方法。</p>
+          </div>
+          <div class="pillar-box">
+            <h4 style="color:var(--accent-teal);">⚙️ 单任务 100% AI 生产 + 低成本验收</h4>
+            <p>每个角色持续打磨本岗位的<strong>标准化能力模块（<code>meta</code> 模具）</strong>，让 AI 深度介入生产具体实例（<code>spec/code</code>），人工通过门禁与状态切面极速验收。</p>
+          </div>
+          <div class="pillar-box">
+            <h4 style="color:var(--accent-blue);">🔗 上下游无缝咬合（目标：0 沟通成本）</h4>
+            <p>上下游对齐同构目录、全局语义 ID 与强契约接口，用确定性的协议映射替代口头传话（参考已落地的 <a href="./Product/spec/08-verification/prototypes/index.html" target="_blank" style="color:var(--accent-blue);text-decoration:underline;">Product 双舱微原型样板 ↗</a>）。</p>
+          </div>
+        </div>
+
+        <div class="roles-bento">
+          <div class="card interactive role-new-card" onclick="openSpotlight('pm')">
+            <div class="role-new-top">
+              <h3>1. 产品经理 (PM)</h3>
+              <span class="badge badge-blue">规格契约源头</span>
+            </div>
+            <div class="dual-track-item">
+              <strong>标准化模块：</strong>维护正交分层产品元规范（<code>meta</code>）、全局语义 ID 编码、结构化规则决策表与验收模板。
+            </div>
+            <div class="dual-track-item">
+              <strong>AI 生产 + 验收：</strong>AI 原地更新活文档规格库（<code>spec</code>）并生成多状态可交互线框微原型；人工一键切状态低成本核验。
+            </div>
+          </div>
+
+          <div class="card interactive role-new-card" onclick="openSpotlight('uiux')">
+            <div class="role-new-top">
+              <h3>2. UI / UX 设计师</h3>
+              <span class="badge badge-violet">视觉与组件系统</span>
+            </div>
+            <div class="dual-track-item">
+              <strong>标准化模块：</strong>抽象原子 Design Tokens、跨页公共复合组件变体契约、多端自适应栅格与标准交付结构。
+            </div>
+            <div class="dual-track-item">
+              <strong>AI 生产 + 验收：</strong>AI 依据产品页面与组件规格自动拼装设计稿及下游结构化交付包；人工专注审美把控与组件抽象。
+            </div>
+          </div>
+
+          <div class="card interactive role-new-card" onclick="openSpotlight('fe')">
+            <div class="role-new-top">
+              <h3>3. 前端 / 客户端开发</h3>
+              <span class="badge badge-teal">多端同构实现</span>
+            </div>
+            <div class="dual-track-item">
+              <strong>标准化模块：</strong>建立与产品分层、设计组件严格对齐的标准工程结构、通用交互状态机底座与路由容器规范。
+            </div>
+            <div class="dual-track-item">
+              <strong>AI 生产 + 验收：</strong>AI 读取产品契约、设计产物与 API 格式 100% 生成视图与状态绑定代码；人工通过状态画板快照极速验收。
+            </div>
+          </div>
+
+          <div class="card interactive role-new-card" onclick="openSpotlight('be')">
+            <div class="role-new-top">
+              <h3>4. 后端开发</h3>
+              <span class="badge badge-teal">领域与 API 底座</span>
+            </div>
+            <div class="dual-track-item">
+              <strong>标准化模块：</strong>构建对齐领域模型的标准代码分层、统一前后端 API 契约格式、全局错误码与中间件模板。
+            </div>
+            <div class="dual-track-item">
+              <strong>AI 生产 + 验收：</strong>AI 依据实体字典与业务规则表自动生成接口实现、迁移脚本与契约单测；人工仅审领域边界与单测门禁。
+            </div>
+          </div>
+
+          <div class="card interactive role-new-card" onclick="openSpotlight('data')">
+            <div class="role-new-top">
+              <h3>5. 数据分析师</h3>
+              <span class="badge badge-amber">指标埋点闭环</span>
+            </div>
+            <div class="dual-track-item">
+              <strong>标准化模块：</strong>制定“北极星漏斗公式 ↔ 底层埋点事件字典”强绑定元规范、统一上报协议与自动诊断看板模板。
+            </div>
+            <div class="dual-track-item">
+              <strong>AI 生产 + 验收：</strong>AI 随业务代码同步注入合规埋点并自动产出漏斗异动归因摘要；人工聚焦策略判断与增长实验设计。
+            </div>
+          </div>
+
+          <div class="card interactive role-new-card" onclick="openSpotlight('ops')">
+            <div class="role-new-top">
+              <h3>6. 运维工程师</h3>
+              <span class="badge badge-violet">自动化交付底座</span>
+            </div>
+            <div class="dual-track-item">
+              <strong>标准化模块：</strong>沉淀声明式基础设施（IaC）、多环境 CI/CD 自动验证门禁流水线、监控告警与一键灰度回滚剧本。
+            </div>
+            <div class="dual-track-item">
+              <strong>AI 生产 + 验收：</strong>AI 自动执行构建巡检、测试准出校验与线上日志异常初筛；人工仅审批高风险变更与架构容量规划。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SLIDE 05: TEAM RESPONSIBILITIES ==================== -->
+    <section class="slide" data-notes="【第 5 页提示】具体落到我们现在的团队分工（点击任意成员卡片可放大单独讲解）：首期我们集中精力把产品、UI/UX、iOS、Android、Go、Python 跑通闭环；Web 和桌面端等这套范式成熟后直接平移复用；数据分析和系统运维目前先由我来负责统筹。重点看四个人的咬合关系：越齐和艾颖把产品规范与 iOS/Android 双端对齐；子恒把 UI/UX 模块化和下游交付对上产品与双端；艾颖牵头 Go 后端标准并和思辰的 Python 后端对齐，同时拉通统一 API 契约、跑通从产品变更到测试上线的全链路标准流程。">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-pill">PAGE 05</span> OWNERSHIP &amp; CROSS-STACK ALIGNMENT</div>
+            <h2 class="slide-title">团队核心成员职责分工与跨端对齐架构</h2>
+          </div>
+          <p class="slide-subtitle">
+            首期聚焦「产品 + 设计 + iOS/Android + Go/Python」跑通标杆；点击成员卡片可放大查看对齐细则。
+          </p>
+        </div>
+
+        <div class="scope-notice">
+          <div>
+            <strong>🎯 首期版图边界说明：</strong>聚焦移动端双端 + 双后端跑通端到端标准范式，<strong>Web / 桌面端</strong>后续直接平移复用；现阶段<strong>数据分析、系统运维</strong>及顶层架构统筹由<strong>我（主讲人）</strong>直接负责。
+          </div>
+          <span class="badge badge-violet">跨端同构 · 契约先行</span>
+        </div>
+
+        <div class="members-grid">
+          <!-- 1. 李子恒 -->
+          <div class="card interactive member-card" onclick="openSpotlight('liziheng')">
+            <div class="member-header">
+              <div class="member-person">
+                <div class="avatar badge-violet">子恒</div>
+                <div>
+                  <div class="member-name">1. 李子恒</div>
+                  <div class="member-role">UI / UX 设计模块化与交付规范 Owner</div>
+                </div>
+              </div>
+              <span class="badge badge-violet">Design Meta</span>
+            </div>
+            <ul class="member-points">
+              <li>负责抽象 <strong>UI/UX 的设计模块化能力</strong>（Design Tokens、跨页复用组件变体、多端响应式容器栅格）。</li>
+              <li>定义标准化、结构化的<strong>下游交付产物规范</strong>，让设计产出可被双端研发与 AI 低损耗直接映射消费。</li>
+            </ul>
+            <div class="align-tags">
+              <span class="badge">上游咬合：产品规格组件与页面层</span>
+              <span class="badge badge-blue">下游咬合：iOS / Android 设计稿消费标准</span>
+            </div>
+          </div>
+
+          <!-- 2. 郭越齐 -->
+          <div class="card interactive member-card" onclick="openSpotlight('guoyueqi')">
+            <div class="member-header">
+              <div class="member-person">
+                <div class="avatar badge-blue">越齐</div>
+                <div>
+                  <div class="member-name">2. 郭越齐</div>
+                  <div class="member-role">产品文档规范共建 &amp; iOS 标准工程 Owner</div>
+                </div>
+              </div>
+              <span class="badge badge-blue">Product + iOS</span>
+            </div>
+            <ul class="member-points">
+              <li>与艾颖紧密协作推进<strong>产品文档规范</strong>落地演进；主导 <strong>iOS 项目的标准代码结构与需求迭代方式</strong>。</li>
+              <li>确保 iOS 代码结构与迭代方式<strong>与 Android 端对齐</strong>、<strong>与产品文档分层结构对齐</strong>，同时<strong>与设计稿产出标准对齐</strong>，并参与拉通前后端 API 契约。</li>
+            </ul>
+            <div class="align-tags">
+              <span class="badge badge-teal">横向同构：Android (艾颖)</span>
+              <span class="badge badge-violet">上下游对齐：产品文档 + 设计稿标准 (子恒) + API</span>
+            </div>
+          </div>
+
+          <!-- 3. 刘思辰 -->
+          <div class="card interactive member-card" onclick="openSpotlight('liusichen')">
+            <div class="member-header">
+              <div class="member-person">
+                <div class="avatar badge-teal">思辰</div>
+                <div>
+                  <div class="member-name">3. 刘思辰</div>
+                  <div class="member-role">Python 后端标准工程 &amp; API 契约对齐 Owner</div>
+                </div>
+              </div>
+              <span class="badge badge-teal">Python + API</span>
+            </div>
+            <ul class="member-points">
+              <li>负责推进 <strong>Python 后端项目的标准代码结构和需求迭代方式</strong>。</li>
+              <li>确保 Python 后端工程结构<strong>与 Go 后端标准结构严格对齐</strong>；与艾颖、越齐协同拉通统一接口协议，确保代码结构及 <strong>API 格式与前端客户端保持一致</strong>。</li>
+            </ul>
+            <div class="align-tags">
+              <span class="badge badge-teal">横向同构：Go 后端结构 (艾颖)</span>
+              <span class="badge badge-blue">接口一致：统一 API 契约 ↔ iOS / Android 前端</span>
+            </div>
+          </div>
+
+          <!-- 4. 顾艾颖 -->
+          <div class="card interactive member-card" onclick="openSpotlight('guaiying')">
+            <div class="member-header">
+              <div class="member-person">
+                <div class="avatar badge-amber">艾颖</div>
+                <div>
+                  <div class="member-name">4. 顾艾颖</div>
+                  <div class="member-role">产品与 Android 规范 · Go 后端标准 · 全链路迭代闭环 Owner</div>
+                </div>
+              </div>
+              <span class="badge badge-amber">Android + Go + E2E</span>
+            </div>
+            <ul class="member-points">
+              <li>推进<strong>产品文档与 Android 项目规范</strong>（两块均与越齐紧密协作）；一并牵头 <strong>Go 后端标准代码结构</strong>及需求中涉及 Go 后端迭代的部分，联合思辰、越齐拉通统一 API 契约。</li>
+              <li><strong>重点构思端到端迭代标准流程：</strong>打通单个需求从「产品变更 → 设计稿变更 → 前后端代码变更 → 测试上线」的完整链路，确保更新<strong>可管理、可控、易看</strong>。</li>
+            </ul>
+            <div class="align-tags">
+              <span class="badge badge-blue">紧密协作：越齐 (产品+双端) · 思辰 (Go/Python+API)</span>
+              <span class="badge badge-amber">核心主线：单需求全链路变更闭环</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- End-to-End Iteration Pipeline Strip -->
+        <div class="topology-box">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+            <span style="font-size:13px;font-weight:750;color:var(--text-primary);">
+              🔄 单个迭代需求的全链路同构穿透闭环（由顾艾颖重点串联设计 · 四方接口咬合）：
+            </span>
+            <span class="mono" style="font-size:11.5px;color:var(--accent-teal);">目标：更新可管理 · 风险可控 · Diff 易看易验收</span>
+          </div>
+          <div class="pipeline-steps">
+            <div class="pipe-node">
+              <strong>① 产品规格原地变更</strong>
+              越齐 × 艾颖｜更新结构化产品文档与微原型状态
+            </div>
+            <div class="pipe-node">
+              <strong>② 设计模块化产物变更</strong>
+              子恒｜对齐产品结构更新 UI/UX 组件与标准交付包
+            </div>
+            <div class="pipe-node">
+              <strong>③ 前后端同构代码变更</strong>
+              iOS(越齐) · Android(艾颖) ⇄ API ⇄ Go(艾颖) · Python(思辰)
+            </div>
+            <div class="pipe-node">
+              <strong>④ 门禁验证与测试上线</strong>
+              艾颖串联 + 自动化验收｜低注意力核验后安全发布
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SLIDE 06: MEETING CADENCE & EXECUTION ==================== -->
+    <section class="slide" data-notes="【第 6 页提示】最后明确我们接下来的推进节奏：从今天开始，每周一和周四晚上 8 点，我们准时一起开会（本周四晚 8 点就是第一次同步）。开会不搞形式主义汇报，每人直接投屏同步距离上次开会的实际进展，跨端对齐卡住的问题当场讨论拍板。前期大家造模具、定规范体感会比直接写业务代码慢一点，这是完全正常的基建复利投入，先搭最小骨架，尽快拿一个真实小需求跑通全链路试金石！">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-pill">PAGE 06</span> CADENCE, DELIVERABLES &amp; MINDSET</div>
+            <h2 class="slide-title">常态化例会机制、交付物标准与落地共识</h2>
+          </div>
+          <p class="slide-subtitle">
+            以高频短周期同步防止闭门造车跑偏，在真实需求演练中打磨出真正好用的 AI 标准化航道。
+          </p>
+        </div>
+
+        <div class="rhythm-layout">
+          <!-- Left: Mon & Thu 20:00 Fixed Sync Mechanism -->
+          <div class="cadence-hero">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span class="badge badge-blue mono">FIXED SYNC RHYTHM</span>
+              <span class="badge badge-amber">本周四 20:00 首次进展同步</span>
+            </div>
+
+            <h3 style="font-size:20px;font-weight:800;">固定双例会：全员进展同步与当场解卡</h3>
+
+            <div class="clock-row">
+              <div class="time-pill">📅 每周一 20:00</div>
+              <div class="time-pill">📅 每周四 20:00</div>
+            </div>
+
+            <p style="font-size:13.5px;color:var(--text-secondary);line-height:1.6;">
+              四方规范高度咬合，3~4 天一次的短周期碰头能有效避免各自闷头写完却发现上下游接口对不上的返工风险。每次开会聚焦两件事：
+            </p>
+
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:2px;">
+              <div class="card" style="padding:11px 14px;">
+                <strong style="font-size:13.5px;color:var(--accent-blue);">1. 逐人同步增量工作进展（拒绝形式主义周报）</strong>
+                <p style="font-size:12.5px;color:var(--text-secondary);margin-top:3px;">每人直接投屏展示距离上次开会推进的实际成果（目录结构草稿、元规范条目、样板工程或流程设计）。</p>
+              </div>
+              <div class="card" style="padding:11px 14px;">
+                <strong style="font-size:13.5px;color:var(--accent-teal);">2. 跨端衔接问题当场沟通拍板</strong>
+                <p style="font-size:12.5px;color:var(--text-secondary);margin-top:3px;">把产品↔设计、iOS↔Android、Go↔Python、前端↔API 对齐中遇到的分歧或卡点直接摆上桌面，当场讨论定案。</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: What Good Looks Like (3 Deliverables) -->
+          <div class="card" style="display:flex;flex-direction:column;justify-content:space-between;gap:12px;">
+            <div>
+              <span class="badge badge-teal mono" style="margin-bottom:6px;">DEFINITION OF DONE</span>
+              <h3 style="font-size:18px;font-weight:800;">每个模块的“合格规范交付物”长什么样？</h3>
+              <p style="font-size:12.8px;color:var(--text-muted);margin-top:3px;">参考已落地的 <code>Product/meta</code> 双舱思路，不止写口头约定，而是沉淀可执行的工程资产：</p>
+            </div>
+
+            <div class="deliverable-list">
+              <div class="deliv-item">
+                <div class="deliv-num">01</div>
+                <div>
+                  <strong style="font-size:14px;">领域元规范文档（人可读 + AI 可直接执行）</strong>
+                  <p style="font-size:12.5px;color:var(--text-secondary);margin-top:2px;">明确分层职责红线、命名与 ID 映射规则、标准模板，可直接作为 AI Agent 的 Rules / Skills 调用。</p>
+                </div>
+              </div>
+              <div class="deliv-item">
+                <div class="deliv-num">02</div>
+                <div>
+                  <strong style="font-size:14px;">同构标准工程骨架 / 组件样板库</strong>
+                  <p style="font-size:12.5px;color:var(--text-secondary);margin-top:2px;">提供与上下游结构严格对齐的标准目录脚手架与最小参考示例，杜绝每次新建模块自由发挥。</p>
+                </div>
+              </div>
+              <div class="deliv-item">
+                <div class="deliv-num">03</div>
+                <div>
+                  <strong style="font-size:14px;">低注意力准出门禁与迭代检查机制</strong>
+                  <p style="font-size:12.5px;color:var(--text-secondary);margin-top:2px;">配套自动化校验清单、可视化状态画板或结构化变更对比方式，真正做到“可管理、可控、易看”。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mindset-strip">
+          <div class="card" style="padding:12px 16px;border-top:2px solid var(--accent-amber);">
+            <strong style="font-size:13.5px;color:var(--accent-amber);">🧪 试金石验证目标</strong>
+            <p style="font-size:12.5px;color:var(--text-secondary);margin-top:4px;">初版骨架拉通后，立即用一个<strong>真实微型迭代需求</strong>实测“产品改 → 设计改 → 双端双后端改 → 测试上线”全流程顺畅度。</p>
+          </div>
+          <div class="card" style="padding:12px 16px;border-top:2px solid var(--accent-blue);">
+            <strong style="font-size:13.5px;color:var(--accent-blue);">⏳ 接受“先慢后快”，拒绝闭门空想</strong>
+            <p style="font-size:12.5px;color:var(--text-secondary);margin-top:4px;">前期“修航道、造模具”体感比直接写业务慢是正常投资；但切忌追求一步到位的完美规范，在真实迭代中演进。</p>
+          </div>
+          <div class="card" style="padding:12px 16px;border-top:2px solid var(--accent-violet);">
+            <strong style="font-size:13.5px;color:var(--accent-violet);">🚀 放大十倍个人杠杆</strong>
+            <p style="font-size:12.5px;color:var(--text-secondary);margin-top:4px;">把确定性的编码与绘图交给 AI，把省下来的注意力投入高水平架构抽象、高品味验收与开拓新航线。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Collapsible Speaker Notes Drawer -->
+  <aside class="notes-drawer" id="notesDrawer">
+    <div class="notes-header">
+      <span>💡 本页演讲提纲提示 (按 N 键隐藏)</span>
+      <button class="ctrl-btn" onclick="toggleNotes()" style="padding:2px 7px;font-size:11px;">关闭</button>
+    </div>
+    <div class="notes-body" id="notesBody"></div>
+  </aside>
+
+  <!-- Spotlight Detail Modal (for Role & Member Cards) -->
+  <div class="modal-backdrop" id="spotlightModal" onclick="if(event.target===this)closeSpotlight()">
+    <div class="modal-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <span class="badge badge-blue mono" id="spotBadge">DETAIL VIEW</span>
+        <button class="ctrl-btn" onclick="closeSpotlight()">✕ 关闭 (Esc)</button>
+      </div>
+      <h3 style="font-size:24px;font-weight:800;" id="spotTitle"></h3>
+      <div id="spotContent" style="display:flex;flex-direction:column;gap:12px;font-size:15px;color:var(--text-secondary);line-height:1.68;"></div>
+    </div>
+  </div>
+
+  <!-- Slide Overview Grid Modal -->
+  <div class="overview-modal" id="overviewModal">
+    <div style="display:flex;align-items:center;justify-content:space-between;max-width:1320px;width:100%;margin:0 auto;">
+      <div>
+        <h3 style="font-size:22px;font-weight:800;color:var(--text-primary);">演示文稿全览导航</h3>
+        <p style="font-size:13px;color:var(--text-muted);margin-top:2px;">点击任意页面直接跳转 · 按 Esc 或 G 返回当前页</p>
+      </div>
+      <button class="ctrl-btn" onclick="toggleOverview()">✕ 返回演示</button>
+    </div>
+    <div class="overview-grid" id="overviewGrid" style="max-width:1320px;width:100%;margin:20px auto 0;"></div>
+  </div>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const navTabs = Array.from(document.querySelectorAll('.nav-tab'));
+    const progressFill = document.getElementById('progressFill');
+    const pageCounter = document.getElementById('pageCounter');
+    const notesDrawer = document.getElementById('notesDrawer');
+    const notesBody = document.getElementById('notesBody');
+    const btnNotes = document.getElementById('btnNotes');
+    const btnTheme = document.getElementById('btnTheme');
+    const overviewModal = document.getElementById('overviewModal');
+    const spotlightModal = document.getElementById('spotlightModal');
+
+    let currentIndex = 0;
+
+    const spotlightData = {
+      pm: {
+        badge: 'ROLE TRANSFORMATION · 01',
+        title: '产品经理 (PM)：从写散文 PRD 到维护结构化规格契约',
+        items: [
+          '<strong>标准化能力模块（造模具）：</strong>建立并迭代正交八层产品文档元规范（如 <code>Product/meta</code>），统一定义领域实体字典、业务规则决策矩阵、跨页公共组件与页面状态枚举模板。',
+          '<strong>100% AI 生产 + 低注意力验收：</strong>需求演进时由 AI 在单点归属层原地更新活文档（拒绝碎片化补充包），并自动同步生成可一键切换正常态/空状态/异常态的 HTML 线框微原型；产品经理无需肉眼排查长篇文字矛盾，点击状态按钮即可完成低注意力验收。',
+          '<strong>上下游零沟通衔接：</strong>通过全局唯一语义化 ID（<code>DOM-*</code> / <code>RULE-*</code> / <code>PAGE-*</code> / <code>EVT-*</code>）直接驱动设计稿组装与前后端代码生成。'
+        ]
+      },
+      uiux: {
+        badge: 'ROLE TRANSFORMATION · 02',
+        title: 'UI / UX 设计师：从逐页手动画图层到构建模块化视觉系统',
+        items: [
+          '<strong>标准化能力模块（造模具）：</strong>抽象色彩、字阶、圆角、间距等原子 Design Tokens，封装与产品公共组件层严格对应的复合 UI 组件变体，制定多端视口断点栅格与结构化下游交付标准。',
+          '<strong>100% AI 生产 + 低注意力验收：</strong>面对常规迭代需求，由 AI 依据产品单页规格与现有组件库自动拼装界面设计稿并导出客户端可直接读取的布局/样式契约；设计师将稀缺注意力集中在审美品质把控与新交互模式探索。',
+          '<strong>上下游零沟通衔接：</strong>组件命名、状态变体与上游产品规格及下游 iOS / Android 代码组件库保持 1:1 映射，消灭人工标注与反复走查偏差。'
+        ]
+      },
+      fe: {
+        badge: 'ROLE TRANSFORMATION · 03',
+        title: '前端 / 客户端开发：从人肉还原页面到多端同构自动化工程',
+        items: [
+          '<strong>标准化能力模块（造模具）：</strong>打造与产品文档目录、设计组件标准严格对齐的项目代码分层（iOS / Android / Web / 桌面端同构），封装统一路由容器、鉴权拦截、网络状态机与公共 UI 底座。',
+          '<strong>100% AI 生产 + 低注意力验收：</strong>AI 读取产品页面规格、设计交付产物与统一 API Schema，自动生成视图代码、状态绑定与异常兜底逻辑；开发者通过组件预览画板与验收清单快速核验。',
+          '<strong>上下游零沟通衔接：</strong>客户端目录与产品功能空间同构，API 调用层直接绑定统一接口契约，彻底告别跨端行为不一致与口头对字段。'
+        ]
+      },
+      be: {
+        badge: 'ROLE TRANSFORMATION · 04',
+        title: '后端开发：从重复手写 CRUD 到领域模型与契约驱动工程',
+        items: [
+          '<strong>标准化能力模块（造模具）：</strong>制定跨语言对齐的服务端标准分层结构（Go / Python 同构），统一 API 请求/响应包体格式、分页排序规范、全局错误码枚举及日志/事务中间件。',
+          '<strong>100% AI 生产 + 低注意力验收：</strong>AI 基于上游静态领域实体与动态业务规则矩阵，自动生成表迁移、领域服务逻辑、接口层及契约单元测试；研发人员仅需审查核心领域边界与自动化测试门禁结果。',
+          '<strong>上下游零沟通衔接：</strong>以强类型 API Schema 作为前后端唯一事实源，无需手工维护易过期的接口文档。'
+        ]
+      },
+      data: {
+        badge: 'ROLE TRANSFORMATION · 05',
+        title: '数据分析师：从事后追埋点跑 SQL 到指标字典自动化闭环',
+        items: [
+          '<strong>标准化能力模块（造模具）：</strong>在规格阶段确立“北极星及漏斗指标数学公式 ↔ 底层埋点事件及属性契约”双向强绑定规范，封装多端统一埋点校验工具与标准看板模板。',
+          '<strong>100% AI 生产 + 低注意力验收：</strong>AI 在生成前后端业务代码时同步织入精确的埋点上报与自动化触发校验，上线后自动产出漏斗转化日报与异动归因摘要；分析师聚焦深度业务洞察与下一轮迭代假设。',
+          '<strong>首期安排说明：</strong>现阶段数据分析模块规范与基建先由主讲人直接统筹推进。'
+        ]
+      },
+      ops: {
+        badge: 'ROLE TRANSFORMATION · 06',
+        title: '运维工程师：从手工配环境救火到声明式流水线与智能巡检',
+        items: [
+          '<strong>标准化能力模块（造模具）：</strong>构建声明式基础设施（IaC）、标准化容器镜像模板、集成自动化测试门禁的 CI/CD 发布流水线，以及标准化监控告警与一键回滚剧本。',
+          '<strong>100% AI 生产 + 低注意力验收：</strong>每次代码合入自动触发构建、契约校验与预发部署，线上异常由 AI 自动聚合日志定位变更根因；人工仅在关键发布门禁与高危架构变更时低成本审批。',
+          '<strong>首期安排说明：</strong>现阶段系统运维基建先由主讲人统筹，并与顾艾颖设计的“测试上线”标准化迭代流程无缝衔接。'
+        ]
+      },
+      liziheng: {
+        badge: 'TEAM OWNERSHIP · 李子恒',
+        title: '李子恒｜UI / UX 设计模块化与下游交付标准',
+        items: [
+          '<strong>核心职责 1（向内模块化）：</strong>系统性抽象 UI/UX 的设计模块化能力——包括全局 Design Tokens（色彩/排版/圆角/阴影/间距）、跨页面复用公共组件的场景变体规范、多端容器与栅格系统。',
+          '<strong>核心职责 2（向外标准化交付）：</strong>定义清晰、结构化的下游设计交付产物标准，让设计稿不再只是“给人眼看的静态图”，而是结构上与产品文档对齐、能被 iOS / Android 工程与 AI 零歧义解析转换的标准输入。',
+          '<strong>关键协同对象：</strong>与<strong>郭越齐、顾艾颖</strong>对齐「产品组件/页面规格 ↔ 设计稿结构 ↔ iOS/Android 视图组件消费标准」。'
+        ]
+      },
+      guoyueqi: {
+        badge: 'TEAM OWNERSHIP · 郭越齐',
+        title: '郭越齐｜产品文档规范共建 & iOS 项目标准化',
+        items: [
+          '<strong>核心职责 1（产品工程规范）：</strong>与顾艾颖紧密协作，共同推进产品文档规范的持续完善与团队落地。',
+          '<strong>核心职责 2（iOS 标准架构与迭代流）：</strong>主导建立 iOS 项目的标准代码目录分层结构、通用基础模块与单次需求的标准迭代方式。',
+          '<strong>三维强制对齐要求：</strong>① iOS 代码结构与需求迭代方式必须<strong>与 Android 端（艾颖）对齐</strong>；② 代码模块划分必须<strong>与产品文档结构对齐</strong>；③ 视图与组件组织必须<strong>与设计稿产出标准（子恒）对齐</strong>，并协同拉通前后端 API 契约。'
+        ]
+      },
+      liusichen: {
+        badge: 'TEAM OWNERSHIP · 刘思辰',
+        title: '刘思辰｜Python 后端标准化 & 前后端 API 契约对齐',
+        items: [
+          '<strong>核心职责 1（Python 后端标准架构）：</strong>负责推进 Python 后端项目的标准代码分层结构、工程脚手架与需求迭代演进方式。',
+          '<strong>核心职责 2（跨后端与前后端协议一致）：</strong>① Python 后端的项目结构与迭代方式必须<strong>与 Go 后端结构（艾颖牵头）对齐</strong>，实现双后端认知同构；② 代码结构中的 <strong>API 格式</strong>（请求/响应结构、字段命名风格、状态与错误码、分页鉴权协议）必须<strong>与前端（iOS/Android）保持严格一致</strong>。',
+          '<strong>关键协同对象：</strong>与<strong>顾艾颖</strong>对齐 Go / Python 双后端架构基线，与<strong>顾艾颖、郭越齐</strong>共同敲定前后端统一 API 契约规范。'
+        ]
+      },
+      guaiying: {
+        badge: 'TEAM OWNERSHIP · 顾艾颖',
+        title: '顾艾颖｜产品与 Android 规范 · Go 后端标准 · 全链路迭代闭环',
+        items: [
+          '<strong>核心职责 1（产品 + Android 规范）：</strong>推进产品文档规范与 Android 项目标准代码结构及迭代方式——这两块工作均与<strong>郭越齐紧密协作</strong>，确保双端高度同构。',
+          '<strong>核心职责 2（Go 后端基线与迭代）：</strong>牵头确立 Go 后端标准代码结构基线，负责需求中涉及 Go 后端迭代的部分，并与刘思辰、郭越齐共同拉通前后端统一 API 契约。',
+          '<strong>核心职责 3（端到端迭代标准流程总串联）：</strong>重点构思并打通单个迭代需求从<strong>「产品变更 → 设计稿变更 → 前后端代码变更 → 测试上线」</strong>的完整标准化流程，建立清晰的变更追踪与准出门禁，确保每次更新<strong>可管理、可控、易看</strong>。'
+        ]
+      }
+    };
+
+    const slideTitles = [
+      { num: '封面', title: 'AI 时代的软件研发范式重构与团队协同', desc: '启动会总纲与六大核心议题导航' },
+      { num: 'PAGE 01', title: '软件产品的研发与持续迭代全流程', desc: 'App / Web / 桌面端通用的 8 环研发交付与数据反馈飞轮' },
+      { num: 'PAGE 02', title: '传统团队的职位结构与工作组织痛点', desc: '职能串行交接下的翻译税、快照文档腐烂与人肉验收黑洞' },
+      { num: 'PAGE 03', title: 'AI 时代的思考：稀缺性转移与大海航线', desc: '注意力/创造力/信息吞吐稀缺 · 标准化既有航线与借 AI 开拓新航线' },
+      { num: 'PAGE 04', title: '新软件团队的结构与工作组织流程', desc: '用研归于人类源头洞察 · 六大角色打造标准模块达成 100% AI 生产 + 低成本验收' },
+      { num: 'PAGE 05', title: '核心成员工作职责安排与跨端对齐', desc: '李子恒 · 郭越齐 · 刘思辰 · 顾艾颖职责矩阵与单需求全链路变更流水线' },
+      { num: 'PAGE 06', title: '每周一/四 20:00 例会机制与落地共识', desc: '双周同步解卡制度 · 合格规范三件套 · 真实微型需求试金石演练' }
+    ];
+
+    function renderSlide() {
+      slides.forEach((s, idx) => {
+        s.classList.toggle('active', idx === currentIndex);
+      });
+      navTabs.forEach((t, idx) => {
+        t.classList.toggle('active', idx === currentIndex);
+      });
+      const pct = ((currentIndex + 1) / slides.length) * 100;
+      progressFill.style.width = pct + '%';
+      pageCounter.textContent = (currentIndex + 1) + ' / ' + slides.length;
+      notesBody.textContent = slides[currentIndex].getAttribute('data-notes') || '';
+    }
+
+    function goToSlide(idx) {
+      if (idx < 0 || idx >= slides.length) return;
+      currentIndex = idx;
+      renderSlide();
+      overviewModal.classList.remove('open');
+    }
+
+    function nextSlide() {
+      if (currentIndex < slides.length - 1) goToSlide(currentIndex + 1);
+    }
+
+    function prevSlide() {
+      if (currentIndex > 0) goToSlide(currentIndex - 1);
+    }
+
+    function toggleNotes() {
+      notesDrawer.classList.toggle('open');
+      btnNotes.classList.toggle('active', notesDrawer.classList.contains('open'));
+    }
+
+    function toggleTheme() {
+      const root = document.documentElement;
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      btnTheme.textContent = next === 'dark' ? '☀ 浅色' : '🌙 深色';
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    function toggleOverview() {
+      const isOpen = overviewModal.classList.toggle('open');
+      if (isOpen) {
+        const grid = document.getElementById('overviewGrid');
+        grid.innerHTML = slideTitles.map((item, i) => `
+          <div class="overview-item ${i === currentIndex ? 'current' : ''}" onclick="goToSlide(${i})">
+            <div class="mono" style="font-size:11.5px;color:var(--accent-blue);font-weight:700;margin-bottom:6px;">${item.num}</div>
+            <div style="font-size:16px;font-weight:750;color:var(--text-primary);margin-bottom:6px;">${item.title}</div>
+            <div style="font-size:12.5px;color:var(--text-muted);line-height:1.5;">${item.desc}</div>
+          </div>
+        `).join('');
+      }
+    }
+
+    function openSpotlight(key) {
+      const info = spotlightData[key];
+      if (!info) return;
+      document.getElementById('spotBadge').textContent = info.badge;
+      document.getElementById('spotTitle').textContent = info.title;
+      document.getElementById('spotContent').innerHTML = info.items.map(
+        line => `<div style="padding:12px 15px;border-radius:11px;background:var(--bg-card-subtle);border:1px solid var(--border-subtle);">${line}</div>`
+      ).join('');
+      spotlightModal.classList.add('open');
+    }
+
+    function closeSpotlight() {
+      spotlightModal.classList.remove('open');
+    }
+
+    navTabs.forEach(tab => {
+      tab.addEventListener('click', () => goToSlide( Number(tab.dataset.index) ));
+    });
+
+    document.getElementById('btnNext').addEventListener('click', nextSlide);
+    document.getElementById('btnPrev').addEventListener('click', prevSlide);
+    btnNotes.addEventListener('click', toggleNotes);
+    btnTheme.addEventListener('click', toggleTheme);
+    document.getElementById('btnFullscreen').addEventListener('click', toggleFullscreen);
+    document.getElementById('btnOverview').addEventListener('click', toggleOverview);
+
+    window.addEventListener('keydown', (e) => {
+      if (spotlightModal.classList.contains('open')) {
+        if (e.key === 'Escape') closeSpotlight();
+        return;
+      }
+      if (overviewModal.classList.contains('open')) {
+        if (e.key === 'Escape' || e.key.toLowerCase() === 'g') toggleOverview();
+        return;
+      }
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key.toLowerCase() === 'n') {
+        toggleNotes();
+      } else if (e.key.toLowerCase() === 't') {
+        toggleTheme();
+      } else if (e.key.toLowerCase() === 'f') {
+        toggleFullscreen();
+      } else if (e.key.toLowerCase() === 'g') {
+        toggleOverview();
+      } else if (e.key >= '0' && e.key <= '6') {
+        goToSlide(Number(e.key));
+      }
+    });
+
+    renderSlide();
+  </script>
+</body>
+</html>

@@ -27,11 +27,11 @@
 
 ```mermaid
 flowchart LR
-    M1["01-layered-architecture.md<br>(八层职责红线与二级分包法则)"]
-    M2["02-id-and-traceability.md<br>(全局语义化 ID 与跨层引用铁律)"]
-    M3["03-authoring-templates.md<br>(各层标准结构模板与排版规范)"]
-    M4["04-verification-and-prototyping.md<br>(验收清单与双轨可交互微原型规范)"]
-    M5["05-lifecycle-and-governance.md<br>(从零建库 SOP、活文档演进与门禁)"]
+    M1["01-layered-architecture.md · 八层职责红线与分包法则"]
+    M2["02-id-and-traceability.md · 全局语义化 ID 与引用铁律"]
+    M3["03-authoring-templates.md · 各层标准结构模板与排版规范"]
+    M4["04-verification-and-prototyping.md · 验收清单与双轨微原型"]
+    M5["05-lifecycle-and-governance.md · 建库 SOP 与演进门禁"]
 
     M1 --> M2 --> M3 --> M4 --> M5
 ```
