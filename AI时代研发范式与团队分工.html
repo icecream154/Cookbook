@@ -465,6 +465,11 @@
       line-height: 1.42;
     }
 
+    .agenda-item.span-full {
+      grid-column: 1 / -1;
+      align-items: center;
+    }
+
     /* ================= SLIDE 01: PRODUCT LIFECYCLE ================= */
     .platform-strip {
       display: flex;
@@ -1052,7 +1057,165 @@
       color: var(--text-primary);
     }
 
-    /* ================= SLIDE 07: 4 MEMBERS ASSIGNMENT ================= */
+    /* ================= SLIDE 07: NORTH STAR METRIC (COOKBOOK CASE) ================= */
+    .nsm-def-banner {
+      display: grid;
+      grid-template-columns: 1.22fr 0.78fr;
+      gap: 16px;
+      padding: 13px 20px;
+      border-radius: 14px;
+      background: linear-gradient(125deg, var(--accent-teal-bg), var(--accent-blue-bg), var(--accent-amber-bg));
+      border: 1px solid var(--accent-teal-border);
+      align-items: center;
+    }
+
+    .nsm-pills {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .nsm-main-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .nsm-case-card {
+      padding: 15px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 11px;
+    }
+
+    .nsm-compare-grid {
+      display: grid;
+      grid-template-columns: 0.92fr 1.08fr;
+      gap: 10px;
+    }
+
+    .nsm-box-vanity {
+      padding: 11px 13px;
+      border-radius: 11px;
+      background: var(--accent-rose-bg);
+      border: 1px solid var(--accent-rose-border);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .nsm-box-star {
+      padding: 11px 13px;
+      border-radius: 11px;
+      background: var(--accent-teal-bg);
+      border: 1px solid var(--accent-teal-border);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .nsm-triggers-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+    }
+
+    .nsm-trigger-item {
+      padding: 9px 11px;
+      border-radius: 10px;
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-strong);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nsm-trigger-item strong {
+      font-size: 12.6px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .nsm-trigger-item p {
+      font-size: 11.6px;
+      color: var(--text-secondary);
+      line-height: 1.42;
+    }
+
+    .nsm-trigger-evt {
+      margin-top: auto;
+      padding-top: 5px;
+      border-top: 1px dashed var(--border-subtle);
+      font-family: "SF Mono", "JetBrains Mono", Menlo, monospace;
+      font-size: 10.8px;
+      color: var(--accent-teal);
+      font-weight: 600;
+    }
+
+    .nsm-funnel-strip {
+      padding: 10px 13px;
+      border-radius: 10px;
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--accent-blue-border);
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .nsm-funnel-chain {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 5px;
+      font-size: 11.5px;
+    }
+
+    .nsm-value-col {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .nsm-val-card {
+      flex: 1;
+      padding: 12px 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .nsm-val-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .nsm-val-head h4 {
+      font-size: 14.2px;
+      font-weight: 750;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .nsm-val-card p {
+      font-size: 12.4px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ================= SLIDE 08: 4 MEMBERS ASSIGNMENT ================= */
     .scope-notice {
       display: flex;
       align-items: center;
@@ -1380,13 +1543,13 @@
     }
 
     @media (max-width: 1120px) {
-      .cover-hero, .ocean-layout, .rhythm-layout, .scarcity-banner, .autosoft-banner {
+      .cover-hero, .ocean-layout, .rhythm-layout, .scarcity-banner, .autosoft-banner, .nsm-def-banner, .nsm-main-grid, .nsm-compare-grid {
         grid-template-columns: 1fr;
       }
       .lifecycle-grid, .trad-roles-grid, .agenda-stack {
         grid-template-columns: repeat(2, 1fr);
       }
-      .roles-bento, .pain-grid, .paradigm-pillars, .mindset-strip, .endgame-grid {
+      .roles-bento, .pain-grid, .paradigm-pillars, .mindset-strip, .endgame-grid, .nsm-triggers-grid {
         grid-template-columns: 1fr;
       }
       .members-grid, .pipeline-steps, .tiers-overview-grid, .plane-row, .tier-flow-row, .tier-labor-grid {
@@ -1447,8 +1610,9 @@
       <button class="nav-tab" data-index="4">04 新团队范式</button>
       <button class="nav-tab" data-index="5">05 Auto-Software目标</button>
       <button class="nav-tab" data-index="6">06 需求变更沙盘</button>
-      <button class="nav-tab" data-index="7">07 核心职责分工</button>
-      <button class="nav-tab" data-index="8">08 双周例会落地</button>
+      <button class="nav-tab" data-index="7">07 北极星指标</button>
+      <button class="nav-tab" data-index="8">08 核心职责分工</button>
+      <button class="nav-tab" data-index="9">09 双周例会落地</button>
     </nav>
 
     <div class="controls">
@@ -1457,7 +1621,7 @@
       <button class="ctrl-btn" id="btnTheme" title="切换深浅色主题 (快捷键 T)">☀ 浅色</button>
       <button class="ctrl-btn" id="btnFullscreen" title="全屏演示 (快捷键 F)">⛶ 全屏</button>
       <button class="ctrl-btn" id="btnPrev" title="上一页 (←)">◀</button>
-      <span class="page-counter" id="pageCounter">1 / 9</span>
+      <span class="page-counter" id="pageCounter">1 / 10</span>
       <button class="ctrl-btn" id="btnNext" title="下一页 (→)">▶</button>
     </div>
   </header>
@@ -1536,15 +1700,22 @@
             <div class="agenda-item" onclick="goToSlide(7)">
               <div class="agenda-num">07</div>
               <div class="agenda-text">
-                <h4>核心成员首期职责分工</h4>
-                <p>子恒 · 越齐 · 思辰 · 艾颖四大标准基线同构推进</p>
+                <h4>什么是北极星指标与团队价值</h4>
+                <p>以 Cookbook 为例 · 锚定核心价值交付与精益埋点</p>
               </div>
             </div>
             <div class="agenda-item" onclick="goToSlide(8)">
               <div class="agenda-num">08</div>
               <div class="agenda-text">
+                <h4>核心成员首期职责分工</h4>
+                <p>子恒 · 越齐 · 思辰 · 艾颖四大标准基线同构推进</p>
+              </div>
+            </div>
+            <div class="agenda-item span-full" onclick="goToSlide(9)">
+              <div class="agenda-num">09</div>
+              <div class="agenda-text">
                 <h4>双周例会机制与落地共识</h4>
-                <p>周一/周四 20:00 同步解卡 · 合格规范三件套</p>
+                <p>每周一 / 周四 20:00 常态化同步解卡 · 合格规范三件套（元规范 + 工程样板 + 低注意力门禁） · 真实微型需求试金石演练</p>
               </div>
             </div>
           </div>
@@ -2204,12 +2375,163 @@
       </div>
     </section>
 
-    <!-- ==================== SLIDE 07: TEAM RESPONSIBILITIES ==================== -->
-    <section class="slide" data-notes="【第 7 页提示】看完了 Auto-Software 的终极蓝图和四类需求的理想运行方式，再回来看我们现在的首期分工就非常清晰了（点击任意成员卡片可放大）：要让未来的需求能像刚才那样自动级联传导，前提是我们必须先把产品、UI/UX、iOS、Android、Go、Python 的标准基线项目跑通并严格对齐！Web 和桌面端后续直接平移复用；数据分析和系统运维目前先由我来负责统筹。">
+    <!-- ==================== SLIDE 07: NORTH STAR METRIC (COOKBOOK EXAMPLE) ==================== -->
+    <section class="slide" data-notes="【第 7 页提示】前面讲了 Auto-Software 能让需求变更自动传导、十倍提效；但船开得越快，越怕方向偏——如果失去价值校准，AI 只会让我们以十倍速度堆砌没人用的无效功能。所以在进入具体职责分工前，我们以已经落地的 Cookbook 产品规范第 07 层（指标与埋点）为例，拉齐“什么是北极星指标”。先看左边：如果拿 DAU、浏览量或收藏数当目标，用户可能只是睡前刷美图过眼瘾、收藏夹吃灰，关掉 App 还是点外卖；真正的北极星指标必须捕捉“产品把核心价值真正交付给用户的那一刻”——在 Cookbook 里就是“周有效下厨采纳活跃用户数（WAC）”，只有发生复制买菜清单、手动调人数折算克数、或启动全屏跟做才算数。再看右边它对团队的四大重要性（点击任意卡片可放大）：统一产品设计研发靶心、果断砍掉评论盖楼等伪需求、按漏斗精准定位故障归属模块、并倒逼全站只埋 12 个零废话的精益埋点。">
       <div class="slide-inner">
         <div class="slide-header">
           <div>
-            <div class="eyebrow"><span class="eyebrow-pill">PAGE 07</span> PHASE-1 OWNERSHIP &amp; BASELINE ALIGNMENT</div>
+            <div class="eyebrow"><span class="eyebrow-pill">PAGE 07</span> NORTH STAR METRIC &amp; TEAM VALUE ALIGNMENT</div>
+            <h2 class="slide-title">什么是北极星指标？以 Cookbook 为例看团队价值牵引</h2>
+          </div>
+          <p class="slide-subtitle">
+            当 AI 让生产功能的速度提升十倍，团队更需要唯一正确的“价值罗盘”，防止以十倍速度堆砌无效功能。
+          </p>
+        </div>
+
+        <div class="nsm-def-banner">
+          <div>
+            <div class="mono" style="font-size:11.5px;font-weight:700;color:var(--accent-teal);margin-bottom:3px;">WHAT IS A NORTH STAR METRIC?</div>
+            <div style="font-size:14.8px;font-weight:750;color:var(--text-primary);line-height:1.52;">
+              <strong>什么是北极星指标？</strong> —— 衡量<strong>“产品真正把核心价值交付给用户那一刻”</strong>的唯一顶层指标。它剥离“来了多少人、刷了多少页”的流量表象，用<strong>单一可量化契约</strong>将用户真实获益与全团队迭代方向死死锚定在一起。
+            </div>
+          </div>
+          <div class="nsm-pills">
+            <span class="badge badge-teal">🎯 捕捉真实获益瞬间</span>
+            <span class="badge badge-rose">🚫 剔除纯浏览虚荣流量</span>
+            <span class="badge badge-amber">🧭 全栈唯一决策标尺</span>
+          </div>
+        </div>
+
+        <div class="nsm-main-grid">
+          <!-- Left: Cookbook Concrete Example -->
+          <div class="card nsm-case-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+              <strong style="font-size:15.2px;color:var(--text-primary);">🍳 实例拆解：【菜谱 Cookbook】如何定义北极星指标？</strong>
+              <span class="badge badge-blue mono">Product/spec/07 · MET-NSM</span>
+            </div>
+
+            <!-- Anti-Vanity vs True North Star Contrast -->
+            <div class="nsm-compare-grid">
+              <div class="nsm-box-vanity">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
+                  <strong style="font-size:12.8px;color:var(--accent-rose);">❌ 易踩坑的“虚荣指标”反例</strong>
+                  <span class="mono" style="font-size:10.5px;color:var(--accent-rose);">流量假繁荣</span>
+                </div>
+                <div style="font-size:13px;font-weight:750;color:var(--text-primary);">日活 DAU / 详情浏览 UV / 收藏总数</div>
+                <p style="font-size:11.8px;color:var(--text-secondary);line-height:1.46;">
+                  用户睡前刷美食图过眼瘾、“收藏夹吃灰只收不做”，关掉 App 转头还是点外卖——<strong>数字涨了，做饭痛点却没解决</strong>。
+                </p>
+              </div>
+
+              <div class="nsm-box-star">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
+                  <strong style="font-size:12.8px;color:var(--accent-teal);">✅ 真正的北极星指标（MET-NSM）</strong>
+                  <span class="mono" style="font-size:10.5px;color:var(--accent-teal);">价值真闭环</span>
+                </div>
+                <div style="font-size:13.5px;font-weight:800;color:var(--text-primary);">周有效下厨用户数（WAC · 每周真动手做饭的人数）</div>
+                <p style="font-size:11.8px;color:var(--text-secondary);line-height:1.46;">
+                  按<strong>去重用户/设备</strong>（未登录游客也算）以<strong>自然周</strong>统计，契合家庭“工作日快手菜 + 周末做大餐”的真实生活节奏。
+                </p>
+              </div>
+            </div>
+
+            <!-- 3 High-Intent Value Delivery Triggers -->
+            <div>
+              <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:6px;">
+                📌 怎么判断用户“真去下厨了”？一周内只要做过以下<strong style="color:var(--text-primary);">任意 1 个备菜 / 做菜动作</strong>即计入 WAC：
+              </div>
+              <div class="nsm-triggers-grid">
+                <div class="nsm-trigger-item">
+                  <strong>🍳 1. 点开全屏跟做</strong>
+                  <p>进入大字号分步做菜页，真正把手机或平板支在灶台旁开火做饭。</p>
+                  <div class="nsm-trigger-evt">EVT-11 · stage=='start'</div>
+                </div>
+                <div class="nsm-trigger-item">
+                  <strong>⚖️ 2. 按吃饭人数改用量</strong>
+                  <p>详情页把 2 人份改成 4 人份看调料克数（连点只算最终停下的 1 次）。</p>
+                  <div class="nsm-trigger-evt">EVT-10 · servings_scaled</div>
+                </div>
+                <div class="nsm-trigger-item">
+                  <strong>📋 3. 复制买菜清单</strong>
+                  <p>把早中晚三餐要买的菜合并成一张清单，复制到剪贴板准备去买菜。</p>
+                  <div class="nsm-trigger-evt">EVT-06 · action=='copy'</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Upward/Downward Spec Binding -->
+            <div class="nsm-funnel-strip">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+                <strong style="color:var(--accent-blue);font-size:12.2px;">🔗 07 层上下咬合：5 段过程转化率共同托举北极星（全站仅靠 12 个精益埋点支撑）：</strong>
+                <span class="badge badge-teal mono" style="font-size:10.5px;">0 无效曝光埋点</span>
+              </div>
+              <div class="nsm-funnel-chain">
+                <span class="badge">① 填口味忌口比例</span>
+                <span>➔</span>
+                <span class="badge">② 推荐三餐被采纳比例</span>
+                <span>➔</span>
+                <span class="badge">③ 搜菜点进详情比例</span>
+                <span>➔</span>
+                <span class="badge">④ 跟做到最后一步比例</span>
+                <span>➔</span>
+                <span class="badge">⑤ 收藏夹回头再看比例</span>
+                <strong style="color:var(--accent-teal);">⟹ 推高 WAC</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: 4 Core Values to the Team -->
+          <div class="nsm-value-col">
+            <div class="card interactive nsm-val-card" onclick="openSpotlight('nsm_v1')" style="border-left:3px solid var(--accent-blue);">
+              <div class="nsm-val-head">
+                <h4><span class="badge badge-blue mono">价值 01</span> 统一跨职能靶心：把“做完功能”对齐为“帮用户做成饭”</h4>
+                <span class="mono" style="font-size:11px;color:var(--text-muted);">点击放大 ↗</span>
+              </div>
+              <p>
+                防止各岗位自顾自刷局部数据（如推荐光推好看难做的硬菜骗点击、一上来强弹登录框把人吓跑）。全员只问<strong>“这改动让做饭更省心了吗？”</strong>——由此才有了<strong>免登录先看菜谱、改人数绝不算成 <code>0.7 个鸡蛋</code>、做菜时手机常亮不黑屏</strong>等核心设计。
+              </p>
+            </div>
+
+            <div class="card interactive nsm-val-card" onclick="openSpotlight('nsm_v2')" style="border-left:3px solid var(--accent-amber);">
+              <div class="nsm-val-head">
+                <h4><span class="badge badge-amber mono">价值 02</span> 需求排期硬过滤器：防 AI 时代“十倍速堆砌伪需求”</h4>
+                <span class="mono" style="font-size:11px;color:var(--text-muted);">点击放大 ↗</span>
+              </div>
+              <p>
+                不靠拍脑袋争优先级，直接拿 WAC 当尺子量：<strong>“评论区盖楼 / 晒图朋友圈”</strong>虽能让人多刷会儿手机，却不帮人把饭做出来，果断砍掉不做；而<strong>“输入家里仅剩的土豆和鸡蛋，直接搜出能做哪道菜”</strong>能立刻促成下厨，优先排期。
+              </p>
+            </div>
+
+            <div class="card interactive nsm-val-card" onclick="openSpotlight('nsm_v3')" style="border-left:3px solid var(--accent-violet);">
+              <div class="nsm-val-head">
+                <h4><span class="badge badge-violet mono">价值 03</span> 出问题精准定位模块：看哪环掉链子，告别跨岗扯皮</h4>
+                <span class="mono" style="font-size:11px;color:var(--text-muted);">点击放大 ↗</span>
+              </div>
+              <p>
+                WAC 不涨时顺着 5 段漏斗直接找病根：用户连点“换一换”超 <code>4次</code> 还不满意 ➔ 查<strong>后端配餐推荐规则</strong>；搜不出菜超 <code>10%</code> ➔ 补<strong>同义词库（如搜番茄也能出西红柿）</strong>；跟做一半退出多 ➔ 调<strong>设计/客户端湿手翻页与计时器交互</strong>。
+              </p>
+            </div>
+
+            <div class="card interactive nsm-val-card" onclick="openSpotlight('nsm_v4')" style="border-left:3px solid var(--accent-teal);">
+              <div class="nsm-val-head">
+                <h4><span class="badge badge-teal mono">价值 04</span> 倒逼“以终为始”精益埋点：少写脏代码，复盘不吵架</h4>
+                <span class="mono" style="font-size:11px;color:var(--text-muted);">点击放大 ↗</span>
+              </div>
+              <p>
+                严守第 <code>07</code> 层红线：<strong>算指标用不上的曝光埋点一律不埋</strong>。全站只维护 <code>12</code> 个关键埋点，且写代码前就定死防刷规则（如从 2 人连点调到 6 人只记 1 次、来回切页面不重复计数），研发省事、数据干净。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SLIDE 08: TEAM RESPONSIBILITIES ==================== -->
+    <section class="slide" data-notes="【第 8 页提示】看完了 Auto-Software 的终极蓝图、四类需求的运行方式以及牵引全团队的北极星指标罗盘，再回来看我们现在的首期分工就非常清晰了（点击任意成员卡片可放大）：要让未来的需求能像刚才那样高质量自动级联传导，前提是我们必须先把产品、UI/UX、iOS、Android、Go、Python 的标准基线项目跑通并严格对齐！Web 和桌面端后续直接平移复用；数据分析和系统运维目前先由我来负责统筹。">
+      <div class="slide-inner">
+        <div class="slide-header">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-pill">PAGE 08</span> PHASE-1 OWNERSHIP &amp; BASELINE ALIGNMENT</div>
             <h2 class="slide-title">以终为始的首期分工：核心成员职责与跨端基线对齐</h2>
           </div>
           <p class="slide-subtitle">
@@ -2344,12 +2666,12 @@
       </div>
     </section>
 
-    <!-- ==================== SLIDE 08: MEETING CADENCE & EXECUTION ==================== -->
-    <section class="slide" data-notes="【第 8 页提示】最后明确我们接下来的推进节奏：从今天开始，每周一和周四晚上 8 点，我们准时一起开会（本周四晚 8 点就是第一次同步）。开会不搞形式主义汇报，每人直接投屏同步距离上次开会的实际进展，跨端对齐卡住的问题当场讨论拍板。前期大家造模具、定规范体感会比直接写业务代码慢一点，这是完全正常的基建复利投入，先搭最小骨架，尽快拿一个真实小需求跑通 Auto-Software 全链路试金石！">
+    <!-- ==================== SLIDE 09: MEETING CADENCE & EXECUTION ==================== -->
+    <section class="slide" data-notes="【第 9 页提示】最后明确我们接下来的推进节奏：从今天开始，每周一和周四晚上 8 点，我们准时一起开会（本周四晚 8 点就是第一次同步）。开会不搞形式主义汇报，每人直接投屏同步距离上次开会的实际进展，跨端对齐卡住的问题当场讨论拍板。前期大家造模具、定规范体感会比直接写业务代码慢一点，这是完全正常的基建复利投入，先搭最小骨架，尽快拿一个真实小需求跑通 Auto-Software 全链路试金石！">
       <div class="slide-inner">
         <div class="slide-header">
           <div>
-            <div class="eyebrow"><span class="eyebrow-pill">PAGE 08</span> CADENCE, DELIVERABLES &amp; MINDSET</div>
+            <div class="eyebrow"><span class="eyebrow-pill">PAGE 09</span> CADENCE, DELIVERABLES &amp; MINDSET</div>
             <h2 class="slide-title">常态化例会机制、交付物标准与落地共识</h2>
           </div>
           <p class="slide-subtitle">
@@ -2578,19 +2900,55 @@
           '<strong>后端基线与 API 契约协同：</strong>牵头确立 Go 后端标准代码结构基线及需求中涉及 Go 后端迭代的部分，联合刘思辰、郭越齐共同拉通前后端统一 API 契约规范。',
           '<strong>阶段演进衔接：</strong>待双端基线项目与后端契约率先打通对齐后，再在此坚实底座上延伸串联单个需求从「产品变更 → 设计稿变更 → 前后端代码变更 → 测试上线」的端到端标准闭环。'
         ]
+      },
+      nsm_v1: {
+        badge: 'NORTH STAR VALUE · 01',
+        title: '统一跨职能靶心：把“做完功能”对齐为“真正帮用户做成这顿饭”',
+        items: [
+          '<strong>没有北极星时的团队内耗：</strong>推荐侧为了刷点击率，专推重油重辣、步骤繁琐的硬菜（好看但新手根本不敢做）；增长侧为了刷注册量，一进首页就强弹登录框（直接把急着做晚饭的用户劝退）。',
+          '<strong>确立 WAC（周有效下厨用户数）后的共识：</strong>产品、设计、iOS/Android 与 Go/Python 对齐同一把尺子——<strong>“这项设计是不是让用户进厨房更省心了？”</strong>',
+          '<strong>Cookbook 落地印证：</strong>正因瞄准 WAC，产品才坚持：① <strong>不登录也能先看菜谱</strong>，点收藏触发登录完系统自动帮他收好，不用回头再点一遍；② <strong>改人数绝不算成反人类的 <code>0.7 个鸡蛋</code></strong>；③ <strong>做菜时手机屏幕自动常亮不锁屏</strong>，省去满手油污解锁手机的抓狂。'
+        ]
+      },
+      nsm_v2: {
+        badge: 'NORTH STAR VALUE · 02',
+        title: '需求排期硬过滤器：防止 AI 时代“十倍速堆砌伪需求”',
+        items: [
+          '<strong>AI 时代的新陷阱：</strong>当 AI 让写代码快十倍时，最大的危险不再是“做不出来”，而是“不加筛选地以十倍速度堆砌臃肿无用的功能”，最后把产品做成体验稀碎的四不像。',
+          '<strong>用北极星替代拍脑袋争论：</strong>面对任何新点子，团队只问一句：<strong>“做这件事，能帮更多用户真正动手把饭做出来（提升 WAC）吗？”</strong>',
+          '<strong>Cookbook 落地印证：</strong>“评论区盖楼、晒美食发动态圈”虽然能拉高刷手机的停留时长，但对帮用户备菜下厨毫无帮助，果断划入<strong>明确不做（Non-Goals）</strong>；相反，<strong>“输入冰箱里仅剩的土豆、鸡蛋，直接搜出今晚能做哪道菜；万一条件选太多（比如还限定 10 分钟做好）一道都搜不到，页面主动提示‘放宽到 20 分钟有 6 道家常菜可做’帮用户救场”</strong>，能直接避免用户放弃做饭去点外卖，自然优先排期。'
+        ]
+      },
+      nsm_v3: {
+        badge: 'NORTH STAR VALUE · 03',
+        title: '出问题精准定位模块：顺着漏斗找病根，告别跨岗扯皮',
+        items: [
+          '<strong>北极星是“果”，5 段过程转化率是“因”：</strong>只看顶层总人数没法直接指导改代码，所以同步把 WAC 拆成了从“填口味忌口 ➔ 看三餐推荐 ➔ 搜菜谱 ➔ 全屏跟做 ➔ 回看收藏”的 5 段转化率。',
+          '<strong>线上数据波动时直接定位责任方（Cookbook 实例）：</strong><br>• 用户在首页连点“换一换”超过 <code>4 次</code> 还不点进菜谱 ➔ <strong>后端配餐规则组</strong>去查是不是忌口过滤后可选的菜太少；<br>• 用户搜食材超过 <code>10%</code> 搜不出结果 ➔ <strong>检索/数据侧</strong>去补同义词库（比如让搜“番茄”也能搜出写着“西红柿”的菜谱）；<br>• 用户点开了全屏跟做，但一半人没看到最后一步就退出了 ➔ <strong>UI 设计与客户端</strong>去查是不是步骤切得太碎、或者倒计时弹窗挡住了湿手翻页。'
+        ]
+      },
+      nsm_v4: {
+        badge: 'NORTH STAR VALUE · 04',
+        title: '倒逼“以终为始”精益埋点：研发少写脏代码，复盘零口径打架',
+        items: [
+          '<strong>严守产品规范第 07 层红线：</strong>“算指标用不上的曝光埋点，一个都不许埋”。传统团队常拍脑袋提上百个曝光埋点，研发写得痛苦、上线后根本没人看；Cookbook 从 WAC 反向推导，全站<strong>只埋 12 个核心动作事件</strong>就完整算清了所有核心指标。',
+          '<strong>写代码前就定死防刷规则：</strong>为了防止虚假数据把北极星指标“注水”，文档提前定好细节——比如用户在详情页把人数从 2 人连点加号调到 6 人，系统等他停手半秒后<strong>只记 1 次换算</strong>（而不是连记 4 次）；用户在底部几个页面来回切换，也绝不重复算浏览次数。',
+          '<strong>团队协同收益：</strong>客户端代码干干净净，测试对照 12 条清单就能逐项打勾，上线后复盘再也不会出现“两套统计口径算出来数字打架”的内耗。'
+        ]
       }
     };
 
     const slideTitles = [
-      { num: '封面', title: 'AI 时代的软件研发范式重构与团队协同', desc: '启动会总纲与八大核心议题导航' },
+      { num: '封面', title: 'AI 时代的软件研发范式重构与团队协同', desc: '启动会总纲与九大核心议题导航' },
       { num: 'PAGE 01', title: '软件产品的研发与持续迭代全流程', desc: 'App / Web / 桌面端通用的 8 环研发交付与数据反馈飞轮' },
       { num: 'PAGE 02', title: '传统团队的职位结构与工作组织痛点', desc: '职能串行交接下的翻译税、快照文档腐烂与人肉验收黑洞' },
       { num: 'PAGE 03', title: 'AI 时代的思考：稀缺性转移与大海航线', desc: '注意力/创造力/信息吞吐稀缺 · 标准化既有航线与借 AI 开拓新航线' },
       { num: 'PAGE 04', title: '新软件团队的结构与工作组织流程', desc: '用研归于人类源头洞察 · 六大角色打造标准模块达成 100% AI 生产 + 低成本验收' },
       { num: 'PAGE 05', title: 'Auto-Software 长期建设目标', desc: '上下游标准规范对齐 · 源头改一处驱动各代码仓自动提 PR 与分仓把关合入' },
       { num: 'PAGE 06', title: '理想终态推演：不同需求变更过程与人类劳动', desc: 'L1 微小局部 / L2 纯业务逻辑 / L3 标准新功能 / L4 破界创新的实例与分角色劳动' },
-      { num: 'PAGE 07', title: '以终为始的首期分工：核心成员职责与基线对齐', desc: '李子恒 · 郭越齐 · 刘思辰 · 顾艾颖职责分工与四大基线同构对齐架构' },
-      { num: 'PAGE 08', title: '每周一/四 20:00 例会机制与落地共识', desc: '双周同步解卡制度 · 合格规范三件套 · 真实微型需求试金石演练' }
+      { num: 'PAGE 07', title: '什么是北极星指标？以 Cookbook 为例看价值牵引', desc: '周有效下厨用户数（WAC）反虚荣口径 · 统一团队靶心、裁剪伪需求、漏斗归因与精益埋点' },
+      { num: 'PAGE 08', title: '以终为始的首期分工：核心成员职责与基线对齐', desc: '李子恒 · 郭越齐 · 刘思辰 · 顾艾颖职责分工与四大基线同构对齐架构' },
+      { num: 'PAGE 09', title: '每周一/四 20:00 例会机制与落地共识', desc: '双周同步解卡制度 · 合格规范三件套 · 真实微型需求试金石演练' }
     ];
 
     const sandboxData = {
@@ -2752,6 +3110,9 @@
       navTabs.forEach((t, idx) => {
         t.classList.toggle('active', idx === currentIndex);
       });
+      if (navTabs[currentIndex]) {
+        navTabs[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+      }
       const pct = ((currentIndex + 1) / slides.length) * 100;
       progressFill.style.width = pct + '%';
       pageCounter.textContent = (currentIndex + 1) + ' / ' + slides.length;
@@ -2856,7 +3217,7 @@
         toggleFullscreen();
       } else if (e.key.toLowerCase() === 'g') {
         toggleOverview();
-      } else if (e.key >= '0' && e.key <= '8') {
+      } else if (e.key >= '0' && e.key <= '9') {
         goToSlide(Number(e.key));
       }
     });
