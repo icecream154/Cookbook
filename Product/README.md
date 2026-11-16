@@ -66,5 +66,8 @@ flowchart TB
   node preview.js
   ```
 
-执行后会自动唤起系统默认浏览器打开微原型总控台（默认地址 `http://127.0.0.1:8090/spec/08-verification/prototypes/index.html`，若端口占用会自动顺延），实现 **HTML 微原型 ↔ Markdown 规格书 ↔ Mermaid 架构图** 在同一浏览器内的双向无缝互跳。
+执行后会自动唤起系统默认浏览器打开 **`spec/` 全库一页全景通览工作台**（默认地址 `http://127.0.0.1:8090/spec`，若端口占用会自动顺延）：
+- **`http://127.0.0.1:8090/spec`（推荐 · 零新增文件全库一页通览）**：在单个网页内严格保持 `spec/` 完整物理目录树层级渲染全部 `41` 份 Markdown 规格书与 Mermaid 图表，支持基于 `.md` 原生相对引用与 `#anchor` 锚点的页内平滑定位高亮、“返回刚看处”悬浮胶囊、目录树全文/ID 实时过滤，以及“全库长卷 / 单篇聚焦”双模式切换；
+- **`http://127.0.0.1:8090/meta`**：同构一页通览全部 `meta/` 元规范文档；
+- **`http://127.0.0.1:8090/spec/08-verification/prototypes/index.html`**：打开双轨可交互 HTML 微原型总控台，与 Markdown 规格书无缝互跳（如需离线分享静态单文件快照，亦可运行 `node preview.js --export-spec spec-panorama.html` 导出）。
 
